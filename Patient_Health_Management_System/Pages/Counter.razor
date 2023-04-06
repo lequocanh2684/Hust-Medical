@@ -10,10 +10,13 @@
 
 @code {
     private int currentCount = 0;
+    private readonly IConfiguration _config;
+    private MedicineRepo medicineRepo;
 
     private void IncrementCount()
     {
-        currentCount++;
+        medicineRepo = new MedicineRepo(new MongoDbSetup(_config));
+        var test = medicineRepo.GetMedicines();
     }
 }
 
