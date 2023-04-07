@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Patient_Health_Management_System.Areas.Identity;
+﻿using Microsoft.EntityFrameworkCore;
 using Patient_Health_Management_System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,11 +12,14 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "Patient_Health_Management_System", Version = "v1" });
+});
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddSingleton<MedicineRepo>();
-
+builder.Services.AddScoped<IMedicineService, MedicineService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,6 +33,9 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patient_Health_Management_System v1"));
 
 app.UseHttpsRedirection();
 

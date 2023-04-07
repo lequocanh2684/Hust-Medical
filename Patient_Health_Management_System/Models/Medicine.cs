@@ -9,18 +9,20 @@
         public string MedicineId { get; set; }
 
         [BsonElement("name")]
+        [BsonRequired]
         public string Name { get; set; }
 
         [BsonElement("unit")] 
         public string Unit { get; set; }
 
-        [BsonElement("how_to_use")] 
+        [BsonElement("how_to_use")]
         public string HowToUse { get; set; }
 
         [BsonElement("quantity_default")]
         public int QuantityDefault { get; set; }
 
         [BsonElement("group_name")]
+        [BsonRequired]
         public string GroupName { get; set; }
 
         [BsonElement("import_price")] 
@@ -36,13 +38,13 @@
         public DateTime CreatedAt { get; set; }
 
         [BsonElement("created_by")]
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
 
         [BsonElement("updated_at")]
         public DateTime UpdatedAt { get; set; }
 
         [BsonElement("updated_by")]
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
         [BsonElement("is_deleted")]
         public bool IsDeleted { get; set; }
@@ -51,6 +53,6 @@
         public DateTime DeletedAt { get; set; }
 
         [BsonElement("deleted_by")]
-        public string DeletedBy { get; set; }
+        public string? DeletedBy { get; set; }
     }
 }
