@@ -10,7 +10,8 @@
         }
 
         public IMongoDatabase GetDatabase()
-        {   string directory = Directory.GetCurrentDirectory();
+        {
+            string directory = Directory.GetCurrentDirectory();
             IConfigurationRoot configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(directory)
                 .AddJsonFile("appsettings.json")

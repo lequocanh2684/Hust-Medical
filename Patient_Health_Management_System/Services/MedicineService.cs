@@ -1,4 +1,6 @@
-﻿namespace Patient_Health_Management_System.Services
+﻿using System.Collections;
+
+namespace Patient_Health_Management_System.Services
 {
     public class MedicineService : IMedicineService
     {
@@ -46,6 +48,18 @@
             }
         }
 
+        public async Task<List<Medicine>> GetMedicinesByName(string name)
+        {
+            try
+            {
+                return await _medicineRepo.GetMedicinesByName(name);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public async Task<List<Medicine>> GetMedicineByKeyword(string keyword)
         {
             try
@@ -74,7 +88,8 @@
         {
             try
             {
-                if (await _medicineRepo.GetMedicineByKeyword(medicineForm.Name) != null)
+                var medicineIsExisted = await _medicineRepo.GetMedicinesByName(medicineForm.Name);
+                if (medicineIsExisted.Any())
                 {
                     throw new Exception("Medicine name already exists");
                 }
@@ -122,7 +137,7 @@
                 medicine.MinimumStock = medicineForm.MinimumStock;
                 medicine.UpdatedAt = DateTime.Now;
                 medicine.UpdatedBy = userId;
-                await _medicineRepo.UpdateMedicineById(id, medicine);
+                await _medicineRepo.ModifyMedicineById(id, medicine);
             }
             catch (Exception e)
             {
@@ -138,7 +153,7 @@
                 medicine.IsDeleted = true;
                 medicine.DeletedAt = DateTime.Now;
                 medicine.DeletedBy = userId;
-                await _medicineRepo.DeleteMedicineById(id, medicine);
+                await _medicineRepo.ModifyMedicineById(id, medicine);
             }
             catch (Exception e)
             {
@@ -181,7 +196,10 @@
 
         public async Task<MedicineGroup> CreateMedicineGroup(MedicineGroupForm medicineGroupForm, string userId)
         {
-            if (await _medicineRepo.GetMedicineGroupByName(medicineGroupForm.Name) != null)
+            try
+            {
+            var checkMedicineGroupIsExisted = await _medicineRepo.GetMedicineGroupByName(medicineGroupForm.Name);
+            if (checkMedicineGroupIsExisted.Any())
             {
                 throw new Exception("Medicine group name already exists");
             }
@@ -198,6 +216,12 @@
                 DeletedBy = null
             };
             return await _medicineRepo.CreateMedicineGroup(medicineGroup);
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
         }
 
         public async Task DeleteMedicineGroupById(string id, string userId)
@@ -206,7 +230,7 @@
             medicineGroup.IsDeleted = true;
             medicineGroup.DeletedAt = DateTime.Now;
             medicineGroup.DeletedBy = userId;
-            await _medicineRepo.DeleteMedicineGroupById(id, medicineGroup);
+            await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
         }
 
         public async Task UpdateMedicineGroupById(string id, MedicineGroupForm medicineGroupForm, string userId)
@@ -216,7 +240,7 @@
             medicineGroup.Name = medicineGroupForm.Name;
             medicineGroup.UpdatedAt = DateTime.Now;
             medicineGroup.UpdatedBy = userId;
-            await _medicineRepo.UpdateMedicineGroupById(id, medicineGroup);
+            await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
         }
 
         private void ValidateMedicineGroupForm(MedicineGroupForm medicineGroupForm)

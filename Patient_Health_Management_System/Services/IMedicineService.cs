@@ -6,6 +6,7 @@ namespace Patient_Health_Management_System.Services
         Task<List<Medicine>> GetMedicines();
         Task<List<Medicine>> GetMedicinesByPage(int page, int pageSize);
         Task<Medicine> GetMedicineById(string id);
+        Task<List<Medicine>> GetMedicinesByName(string name);
         Task<List<Medicine>> GetMedicineByKeyword(string keyword);
         Task<List<Medicine>> GetMedicineByGroupName(string groupName);
         Task<Medicine> CreateMedicine(MedicineForm medicineForm, string userId);

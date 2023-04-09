@@ -29,7 +29,7 @@
 
     private void IncrementCount()
     {
-        collection = medicineRepo.GetMedicineByName("ngay 1 vien").Result;
+        collection = medicineRepo.GetMedicineByKeyword("ngay 1 vien").Result;
         var auhState = AuthenticationStateProvider.GetAuthenticationStateAsync();
         var a = auhState.Result.User.Claims;
         foreach (var item in a)

@@ -20,6 +20,8 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddSingleton<MedicineRepo>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
+builder.Services.AddSingleton<DiseaseRepo>();
+builder.Services.AddSingleton<DiseaseService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -5,6 +5,9 @@
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
+        [BsonElement("prescription_id")]
+        public string PrescriptionId { get; set; }
+
         [BsonElement("doctor_id")]
         public string DoctorId { get; set; }
 
@@ -36,10 +39,11 @@
         public string DeletedBy { get; set; }
 
         [BsonElement("medicines_prescription")]
-        public List<MedicinePrescription> MedicinesPrescription { get; set; }
+        [BsonRequired]
+        public List<MedicinesPrescription> MedicinesPrescription { get; set; }
     }
 
-    public class MedicinePrescription
+    public class MedicinesPrescription
     {
         [BsonElement("medicine_id")]
         public string MedicineId { get; set; }

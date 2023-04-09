@@ -5,16 +5,16 @@
         private readonly IMongoCollection<Medicine> _medicines;
         private readonly IMongoCollection<MedicineGroup> _medicineGroups;
 
-        public MedicineRepo(MongoDbSetup dbSetup)
+        public MedicineRepo(MongoDbSetup mongoDbSetup)
         {
-            _medicines = dbSetup.GetDatabase().GetCollection<Medicine>("medicine");
-            _medicineGroups = dbSetup.GetDatabase().GetCollection<MedicineGroup>("medicine_group");
+            _medicines = mongoDbSetup.GetDatabase().GetCollection<Medicine>("medicine");
+            _medicineGroups = mongoDbSetup.GetDatabase().GetCollection<MedicineGroup>("medicine_group");
         }
 
         #region medicine
-        public  async Task<List<Medicine>> GetMedicines()
+        public async Task<List<Medicine>> GetMedicines()
         {
-            return await _medicines.Find(medicine => true).ToListAsync();   
+            return await _medicines.Find(medicine => true).ToListAsync();
         }
 
         public async Task<List<Medicine>> GetMedicinesByPage(int page, int pageSize)
@@ -33,18 +33,18 @@
             return await _medicines.Find(filter).ToListAsync();
         }
 
+        public async Task<List<Medicine>> GetMedicinesByName(string name)
+        {
+            return await _medicines.Find(medicine => medicine.Name == name).ToListAsync();
+        }
+
         public async Task<Medicine> CreateMedicine(Medicine medicine)
         {
             await _medicines.InsertOneAsync(medicine);
             return medicine;
         }
 
-        public async Task UpdateMedicineById(string id, Medicine medicine)
-        {
-            await _medicines.ReplaceOneAsync(m => m.Id == id, medicine);
-        }
-
-        public async Task DeleteMedicineById(string id, Medicine medicine)
+        public async Task ModifyMedicineById(string id, Medicine medicine)
         {
             await _medicines.ReplaceOneAsync(m => m.Id == id, medicine);
         }
@@ -78,12 +78,7 @@
             return medicineGroup;
         }
 
-        public async Task DeleteMedicineGroupById(string id, MedicineGroup medicineGroup)
-        {
-            await _medicineGroups.ReplaceOneAsync(m => m.Id == id, medicineGroup);
-        }
-
-        public async Task UpdateMedicineGroupById(string id, MedicineGroup medicineGroup)
+        public async Task ModifyMedicineGroupById(string id, MedicineGroup medicineGroup)
         {
             await _medicineGroups.ReplaceOneAsync(m => m.Id == id, medicineGroup);
         }

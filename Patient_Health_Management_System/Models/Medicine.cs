@@ -5,14 +5,14 @@
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
-        [BsonElement("medicine_id")] 
+        [BsonElement("medicine_id")]
         public string MedicineId { get; set; }
 
         [BsonElement("name")]
         [BsonRequired]
         public string Name { get; set; }
 
-        [BsonElement("unit")] 
+        [BsonElement("unit")]
         public string Unit { get; set; }
 
         [BsonElement("how_to_use")]
@@ -25,13 +25,13 @@
         [BsonRequired]
         public string GroupName { get; set; }
 
-        [BsonElement("import_price")] 
+        [BsonElement("import_price")]
         public int ImportPrice { get; set; }
 
         [BsonElement("selling_price")]
         public int SellingPrice { get; set; }
 
-        [BsonElement("minimum_stock")] 
+        [BsonElement("minimum_stock")]
         public int MinimumStock { get; set; }
 
         [BsonElement("created_at")]
