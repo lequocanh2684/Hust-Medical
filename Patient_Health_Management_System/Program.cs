@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Patient_Health_Management_System.Data;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Patient_Health_Management_System", Version = "v1" });
 });
+builder.Services.AddMudServices();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddSingleton<MedicineRepo>();

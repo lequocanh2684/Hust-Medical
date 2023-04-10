@@ -7,10 +7,7 @@
 
 <p role="status">Current count: @currentCount</p>
 <p></p>
-<p>@foreach (var item in collection)
-    {
-        <p>@item.MedicineId</p>
-    }</p>
+
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
@@ -29,7 +26,7 @@
 
     private void IncrementCount()
     {
-        collection = medicineRepo.GetMedicineByKeyword("ngay 1 vien").Result;
+        //collection = medicineRepo.GetMedicineByKeyword("ngay 1 vien").Result;
         var auhState = AuthenticationStateProvider.GetAuthenticationStateAsync();
         var a = auhState.Result.User.Claims;
         foreach (var item in a)

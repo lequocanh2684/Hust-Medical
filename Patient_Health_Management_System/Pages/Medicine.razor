@@ -1,0 +1,60 @@
+﻿@page "/medicine" 
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMedicineService MedicineService
+@layout MainLayout
+
+<MudPaper Style="overflow:hidden; position:relative; margin-left:50px">
+<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.Sm">
+    <HeaderContent>
+        <MudTh>Mã thuốc</MudTh>
+        <MudTh>Tên</MudTh>
+        <MudTh>Cách dùng</MudTh>
+        <MudTh>Giá bán</MudTh>
+        <MudTh>Tồn kho</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
+        <MudTd DataLabel="Tên">@context.Name</MudTd>
+        <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
+        <MudTd DataLabel="Giá bán">@context.SellingPrice</MudTd>
+        <MudTd DataLabel="Tồn kho">@context.QuantityDefault</MudTd>
+        <MudTd>
+            <MudIconButton Icon="edit" Color="Color.Primary" Size="Size.Small" />
+            <MudIconButton Icon="delete" Color="Color.Error" Size="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+<MudExpansionPanel @bind-IsExpanded="isOpen" HideIcon="true">
+            <TitleContent>
+                <div class="d-flex">
+                    <MudText>Nhóm</MudText>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <MudList Clickable="true">
+        <MudListItem Text="Trash"/>
+        <MudListItem Text="Spam"/>
+        </MudList>
+            </ChildContent>
+        </MudExpansionPanel>
+
+    
+
+</MudPaper>
+
+
+
+@code {
+    private IEnumerable<Models.Medicine> Elements = new List<Models.Medicine>();
+    
+    private bool isOpen = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = await MedicineService.GetMedicines();
+    }
+}
+
