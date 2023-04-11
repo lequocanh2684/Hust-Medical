@@ -4,9 +4,14 @@
 @inject IDialogService DialogService
 @layout MainLayout
 
-<MudPaper Style="overflow:hidden; position:relative; margin-left:50px">
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+<MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
 
-    <MudTable Items="@Medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+    <MudTable Items="@medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
         <ToolBarContent>
             <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -16,14 +21,14 @@
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel Enabled="true" SortBy="new Func<Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel Enabled="true" SortBy="new Func<Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
             <MudTh>Đơn vị</MudTh>
-            <MudTh><MudTableSortLabel Enabled="true" SortBy="new Func<Models.Medicine, object>(x=>x.SellingPrice)">Giá bán</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Models.Medicine, object>(x=>x.SellingPrice)">Giá bán</MudTableSortLabel></MudTh>
             <MudTh>Cách dùng</MudTh>
             <MudTh>Chức năng</MudTh>
         </HeaderContent>
-        <RowTemplate>
+        <RowTemplate >
             <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
             <MudTd DataLabel="Tên">@context.Name</MudTd>
             <MudTd DataLabel="Đơn vị">@context.Unit</MudTd>
@@ -41,7 +46,7 @@
         </PagerContent>
 
         <NoRecordsContent>
-            <MudText>No matching records found</MudText>
+            <MudText>Không tìm thấy dữ liệu</MudText>
         </NoRecordsContent>
 
         <LoadingContent>
@@ -55,23 +60,26 @@
 
     <MudExpansionPanel @bind-IsExpanded="isOpen" HideIcon="true">
         <TitleContent>
-            <div class="d-flex">
-                <MudText>Nhóm</MudText>
-            </div>
+            <MudText>Nhóm</MudText>
         </TitleContent>
         <ChildContent>
             <MudList Clickable="true">
-                <MudListItem Text="Trash" />
-                <MudListItem Text="Spam" />
+                <MudListItem Text="Tất cả" OnClick="(e) => FilterByMedicineGroupName(null)"/>
+                @foreach (var item in medicineGroups)
+                {
+                <MudListItem Text=@item.Name OnClick="(e) => FilterByMedicineGroupName(item.Name)"/>
+                }
             </MudList>
         </ChildContent>
     </MudExpansionPanel>
-
 </MudPaper>
-
+    </Authorized>
+</AuthorizeView>
 
 @code {
-    private IEnumerable<Models.Medicine> Medicines = new List<Models.Medicine>();
+    private IEnumerable<Models.Medicine> medicines = new List<Models.Medicine>();
+
+    private IEnumerable<Models.MedicineGroup> medicineGroups = new List<Models.MedicineGroup>();
 
     private bool isOpen = true;
 
@@ -79,7 +87,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Medicines = await MedicineService.GetMedicines();
+        medicines = await MedicineService.GetMedicines();
+        medicineGroups = await MedicineService.GetMedicineGroups();
     }
 
     private async Task ShowDetail(string Id)
@@ -112,6 +121,13 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
+    private async Task FilterByMedicineGroupName(string? medicineGroupName)
+    {
+        if (string.IsNullOrWhiteSpace(medicineGroupName)) medicines = await MedicineService.GetMedicines();
+        else medicines = await MedicineService.GetMedicineByGroupName(medicineGroupName);
+        await InvokeAsync(StateHasChanged);
+    }
+
     private bool FilterS(Models.Medicine medicine) => FilterSearch(medicine, searchS);
 
     private bool FilterSearch(Models.Medicine medicine, string searchString)
@@ -123,10 +139,6 @@
         if (medicine.Unit?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         if (medicine.SellingPrice.ToString().Equals(searchString) == true) return true;
         return false;
-    }
-
-    private EventCallback<string> textChanged(){
-        return EventCallback.Factory.Create<string>(this, (e) => searchS = e);
     }
 }
 

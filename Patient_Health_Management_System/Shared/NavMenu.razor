@@ -3,6 +3,17 @@
         <MudNavMenu>
             <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store">Trang chủ</MudNavLink>
             <MudNavLink Href="medicine" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks">Thuốc</MudNavLink>
+            <AuthorizeView>
+                <NotAuthorized>
+                    <MudNavLink Href="Identity/Account/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">Đăng nhập</MudNavLink>
+                </NotAuthorized>
+                <Authorized>
+                    <MudNavLink Href="Identity/Account/Manage" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person">Tài khoản</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout">
+                        Đăng xuất
+                    </MudNavLink>
+                </Authorized>
+            </AuthorizeView>
         </MudNavMenu>
     </MudDrawer>
 </MudDrawerContainer>
