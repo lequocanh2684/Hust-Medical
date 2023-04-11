@@ -11,13 +11,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "Patient_Health_Management_System", Version = "v1" });
 });
 builder.Services.AddMudServices();
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddSingleton<MedicineRepo>();

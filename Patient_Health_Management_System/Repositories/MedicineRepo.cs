@@ -14,12 +14,12 @@
         #region medicine
         public async Task<List<Medicine>> GetMedicines()
         {
-            return await _medicines.Find(medicine => true).ToListAsync();
+            return await _medicines.Find(medicine => !medicine.IsDeleted).ToListAsync();
         }
 
         public async Task<List<Medicine>> GetMedicinesByPage(int page, int pageSize)
         {
-            return await _medicines.Find(medicine => true).Skip((page - 1) * pageSize).Limit(pageSize).ToListAsync();
+            return await _medicines.Find(medicine => !medicine.IsDeleted).Skip((page - 1) * pageSize).Limit(pageSize).ToListAsync();
         }
 
         public async Task<Medicine> GetMedicineById(string id)
@@ -29,13 +29,13 @@
 
         public async Task<List<Medicine>> GetMedicineByKeyword(string keyword)
         {
-            var filter = Builders<Medicine>.Filter.Text(keyword, new TextSearchOptions { CaseSensitive = false });
+            var filter = Builders<Medicine>.Filter.And(Builders<Medicine>.Filter.Text(keyword, new TextSearchOptions { CaseSensitive = false }), Builders<Medicine>.Filter.Eq(medicine => medicine.IsDeleted, false));
             return await _medicines.Find(filter).ToListAsync();
         }
 
         public async Task<List<Medicine>> GetMedicinesByName(string name)
         {
-            return await _medicines.Find(medicine => medicine.Name == name).ToListAsync();
+            return await _medicines.Find(medicine => medicine.Name == name && !medicine.IsDeleted).ToListAsync();
         }
 
         public async Task<Medicine> CreateMedicine(Medicine medicine)
@@ -58,7 +58,7 @@
         #region medicine_group
         public async Task<List<MedicineGroup>> GetMedicineGroups()
         {
-            return await _medicineGroups.Find(medicineGroup => true).ToListAsync();
+            return await _medicineGroups.Find(medicineGroup => !medicineGroup.IsDeleted).ToListAsync();
         }
 
         public async Task<MedicineGroup> GetMedicineGroupById(string id)
@@ -68,7 +68,7 @@
 
         public async Task<List<MedicineGroup>> GetMedicineGroupByName(string name)
         {
-            var filter = Builders<MedicineGroup>.Filter.Text(name, new TextSearchOptions { CaseSensitive = false });
+            var filter = Builders<MedicineGroup>.Filter.And(Builders<MedicineGroup>.Filter.Text(name, new TextSearchOptions { CaseSensitive = false }), Builders<MedicineGroup>.Filter.Eq(medicineGroup => medicineGroup.IsDeleted, false));
             return await _medicineGroups.Find(filter).ToListAsync();
         }
 

@@ -1,0 +1,39 @@
+@inject IMedicineService MedicineService
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Bạn có chắc muốn xoá thuốc: @medicine.Name này không?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Huỷ</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Submit">Xoá</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code{
+
+    private Models.Medicine medicine = new Models.Medicine();
+
+    private string userId = "123";
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        medicine = await MedicineService.GetMedicineById(Id);
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await MedicineService.DeleteMedicineById(Id, userId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

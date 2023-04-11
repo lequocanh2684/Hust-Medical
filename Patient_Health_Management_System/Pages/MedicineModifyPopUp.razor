@@ -1,0 +1,57 @@
+@inject IMedicineService MedicineService
+@inject IMapper mapper
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+            Sửa thông tin
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@medicineForm.Name" Label="Tên" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.GroupName" Label="Nhóm" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.MinimumStock" Label="Tồn kho" ReadOnly="false" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    private Forms.MedicineForm medicineForm = new Forms.MedicineForm();
+
+    private Models.Medicine medicine = new Models.Medicine();
+
+    private string userId = "123";
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        medicine = await MedicineService.GetMedicineById(Id);
+        mapper = new MapperConfiguration(cfg => cfg.CreateMap<Models.Medicine, Forms.MedicineForm>()).CreateMapper();
+        medicineForm = mapper.Map<Forms.MedicineForm>(medicine);
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await MedicineService.UpdateMedicineById(Id, medicineForm, userId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

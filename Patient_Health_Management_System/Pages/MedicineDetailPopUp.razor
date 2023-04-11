@@ -3,8 +3,8 @@
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1" />
-            Xóa thuốc ?
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3 mb-n1" />
+            Thông tin chi tiết
         </MudText>
     </TitleContent>
     <DialogContent>
@@ -12,12 +12,8 @@
         <MudTextField Value="@medicine.Name" Label="Tên" ReadOnly="true" />
         <MudTextField Value="@medicine.Unit" Label="Đơn vị" ReadOnly="true" />
         <MudTextField Value="@medicine.SellingPrice" Label="Giá bán" ReadOnly="true" />
-        <MudTextField Value="@medicine.QuantityDefault" Label="Tồn kho" ReadOnly="true" />
+        <MudTextField Value="@medicine.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="true" />
     </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Error">Xóa thuốc</MudButton>
-    </DialogActions>
 </MudDialog>
 
 

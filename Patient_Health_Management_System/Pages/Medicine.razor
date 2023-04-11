@@ -1,4 +1,4 @@
-﻿@page "/medicine" 
+﻿@page "/medicine"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicineService MedicineService
 @inject IDialogService DialogService
@@ -6,84 +6,127 @@
 
 <MudPaper Style="overflow:hidden; position:relative; margin-left:50px">
 
-<MudTable Items="@Elements" Hover="true" Breakpoint="Breakpoint.Sm">
+    <MudTable Items="@Medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
-    <ToolBarContent>
-        <MudSpacer />
-        <MudTextField T="string" Placeholder="Search" Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
+        <ToolBarContent>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
+            <MudSpacer />
+            <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search" Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
 
-    <HeaderContent>
-        <MudTh>Mã thuốc</MudTh>
-        <MudTh>Tên</MudTh>
-        <MudTh>Cách dùng</MudTh>
-        <MudTh>Giá bán</MudTh>
-        <MudTh>Tồn kho</MudTh>
-        <MudTh>Chức năng</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
-        <MudTd DataLabel="Tên">@context.Name</MudTd>
-        <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
-        <MudTd DataLabel="Giá bán">@context.SellingPrice</MudTd>
-        <MudTd DataLabel="Tồn kho">@context.QuantityDefault</MudTd>
-        <MudTd>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Small" />
-            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" />
-            <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Small" OnClick="(e) => ShowDetail(context.Id)" />
-        </MudTd>
-    </RowTemplate>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel Enabled="true" SortBy="new Func<Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel Enabled="true" SortBy="new Func<Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
+            <MudTh>Đơn vị</MudTh>
+            <MudTh><MudTableSortLabel Enabled="true" SortBy="new Func<Models.Medicine, object>(x=>x.SellingPrice)">Giá bán</MudTableSortLabel></MudTh>
+            <MudTh>Cách dùng</MudTh>
+            <MudTh>Chức năng</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
+            <MudTd DataLabel="Tên">@context.Name</MudTd>
+            <MudTd DataLabel="Đơn vị">@context.Unit</MudTd>
+            <MudTd DataLabel="Giá bán">@context.SellingPrice</MudTd>
+            <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
+            <MudTd>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium" OnClick="(e) => ShowModify(context.Id)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium" OnClick="(e) => ShowDelete(context.Id)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium" OnClick="(e) => ShowDetail(context.Id)" />
+            </MudTd>
+        </RowTemplate>
 
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
 
-    <NoRecordsContent>
-        <MudText>No matching records found</MudText>
-    </NoRecordsContent>
+        <NoRecordsContent>
+            <MudText>No matching records found</MudText>
+        </NoRecordsContent>
 
-    <LoadingContent>
-         <MudText>Loading...</MudText>
-    </LoadingContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
 
-    <PagerContent>
-         <MudTablePager />
-    </PagerContent>
-</MudTable>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
 
-<MudExpansionPanel @bind-IsExpanded="isOpen" HideIcon="true">
-            <TitleContent>
-                <div class="d-flex">
-                    <MudText>Nhóm</MudText>
-                </div>
-            </TitleContent>
-            <ChildContent>
-                <MudList Clickable="true">
-        <MudListItem Text="Trash"/>
-        <MudListItem Text="Spam"/>
-        </MudList>
-            </ChildContent>
-        </MudExpansionPanel>
-        
+    <MudExpansionPanel @bind-IsExpanded="isOpen" HideIcon="true">
+        <TitleContent>
+            <div class="d-flex">
+                <MudText>Nhóm</MudText>
+            </div>
+        </TitleContent>
+        <ChildContent>
+            <MudList Clickable="true">
+                <MudListItem Text="Trash" />
+                <MudListItem Text="Spam" />
+            </MudList>
+        </ChildContent>
+    </MudExpansionPanel>
+
 </MudPaper>
 
 
 @code {
-    private IEnumerable<Models.Medicine> Elements = new List<Models.Medicine>();
+    private IEnumerable<Models.Medicine> Medicines = new List<Models.Medicine>();
 
     private bool isOpen = true;
 
+    private string searchS = new string("");
+
     protected override async Task OnInitializedAsync()
     {
-        Elements = await MedicineService.GetMedicines();
+        Medicines = await MedicineService.GetMedicines();
     }
 
-    public async Task ShowDetail(string Id)
+    private async Task ShowDetail(string Id)
     {
         var parameter = new DialogParameters { ["Id"] = Id };
         var dialog = await DialogService.ShowAsync<MedicineDetailPopUp>("Thông tin", parameter);
         var result = await dialog.Result;
+    }
+
+    private async Task ShowAdd()
+    {
+        var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm");
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowModify(string Id)
+    {
+        var parameter = new DialogParameters { ["Id"] = Id };
+        var dialog = await DialogService.ShowAsync<MedicineModifyPopUp>("Chỉnh sửa", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowDelete(string Id)
+    {
+        var parameter = new DialogParameters { ["Id"] = Id };
+        var dialog = await DialogService.ShowAsync<MedicineDeletePopUp>("Xóa", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private bool FilterS(Models.Medicine medicine) => FilterSearch(medicine, searchS);
+
+    private bool FilterSearch(Models.Medicine medicine, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (medicine.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.MedicineId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.HowToUse?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.Unit?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.SellingPrice.ToString().Equals(searchString) == true) return true;
+        return false;
+    }
+
+    private EventCallback<string> textChanged(){
+        return EventCallback.Factory.Create<string>(this, (e) => searchS = e);
     }
 }
 

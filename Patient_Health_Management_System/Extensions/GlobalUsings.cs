@@ -9,3 +9,4 @@ global using Patient_Health_Management_System.Models;
 global using Patient_Health_Management_System.Repositories;
 global using Patient_Health_Management_System.Services;
 global using System.Security.Claims;
+global using AutoMapper;
