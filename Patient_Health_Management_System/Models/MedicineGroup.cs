@@ -6,7 +6,6 @@
         public string Id { get; set; }
 
         [BsonElement("medicine_group_name")]
-        [BsonRequired]
         public string Name { get; set; }
 
         [BsonElement("created_at")]

@@ -1,3 +1,4 @@
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicineService MedicineService
 
 <MudDialog>
@@ -14,7 +15,7 @@
 
     private Models.Medicine medicine = new Models.Medicine();
 
-    private string userId = "123";
+    private string userId = new string("");
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -35,5 +36,18 @@
     {
         await MedicineService.DeleteMedicineById(Id, userId);
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
     }
 }

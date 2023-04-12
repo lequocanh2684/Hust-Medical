@@ -1,3 +1,4 @@
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicineService MedicineService
 
 <MudDialog>
@@ -8,7 +9,8 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@medicineForm.Name" Label="Tên" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.MedicineId" Label="Mã thuốc" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.Name" Label="Tên thuốc" ReadOnly="false" />
         <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" />
         <MudTextField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" />
         <MudTextField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" />
@@ -26,7 +28,7 @@
 
 @code {
     private Forms.MedicineForm medicineForm = new Forms.MedicineForm();
-    private string userId = "123";
+    private string userId = new string("");
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -42,5 +44,18 @@
     {
         await MedicineService.CreateMedicine(medicineForm, userId);
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
     }
 }

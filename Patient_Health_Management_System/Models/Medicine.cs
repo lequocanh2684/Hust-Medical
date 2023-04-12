@@ -9,7 +9,6 @@
         public string MedicineId { get; set; }
 
         [BsonElement("name")]
-        [BsonRequired]
         public string Name { get; set; }
 
         [BsonElement("unit")]
@@ -22,7 +21,6 @@
         public int QuantityDefault { get; set; }
 
         [BsonElement("group_name")]
-        [BsonRequired]
         public string GroupName { get; set; }
 
         [BsonElement("import_price")]

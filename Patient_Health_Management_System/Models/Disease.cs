@@ -1,4 +1,6 @@
-﻿namespace Patient_Health_Management_System.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Patient_Health_Management_System.Models
 {
     public class Disease
     {
@@ -6,17 +8,13 @@
         [BsonElement("_id")]
         public string Id { get; set; }
 
-        [BsonRepresentation(BsonType.String)]
         [BsonElement("disease_id")]
-        [BsonRequired]
         public string DiseaseId { get; set; }
 
         [BsonElement("name")]
-        [BsonRequired]
         public string Name { get; set; }
 
         [BsonElement("group_name")]
-        [BsonRequired]
         public string GroupName { get; set; }
 
         [BsonElement("created_at")]

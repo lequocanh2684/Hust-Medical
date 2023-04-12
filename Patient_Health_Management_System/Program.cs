@@ -23,7 +23,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddSingleton<MedicineRepo>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
-builder.Services.AddSingleton<DiseaseRepo>();
+builder.Services.AddScoped<IDiseaseRepo, DiseaseRepo>();
 builder.Services.AddScoped<IDiseaseService, DiseaseService>();
 var app = builder.Build();
 

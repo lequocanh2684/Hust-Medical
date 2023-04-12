@@ -27,6 +27,11 @@
             return await _medicines.Find(medicine => medicine.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<Medicine> GetMedicineByMedicineId(string medicineId)
+        {
+            return await _medicines.Find(medicine => medicine.MedicineId == medicineId).FirstOrDefaultAsync();
+        }
+
         public async Task<List<Medicine>> GetMedicineByKeyword(string keyword)
         {
             var filter = Builders<Medicine>.Filter.And(Builders<Medicine>.Filter.Text(keyword, new TextSearchOptions { CaseSensitive = false }), Builders<Medicine>.Filter.Eq(medicine => medicine.IsDeleted, false));

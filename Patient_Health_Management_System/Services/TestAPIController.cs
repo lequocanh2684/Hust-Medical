@@ -7,9 +7,9 @@ namespace Patient_Health_Management_System.Services
     public class TestAPIController : ControllerBase
     {
         private readonly IMedicineService _medicineService;
-        private readonly DiseaseService _diseaseService;
+        private readonly IDiseaseService _diseaseService;
 
-        public TestAPIController(IMedicineService medicineService, DiseaseService diseaseService)
+        public TestAPIController(IMedicineService medicineService, IDiseaseService diseaseService)
         {
             _medicineService = medicineService;
             _diseaseService = diseaseService;
@@ -123,7 +123,7 @@ namespace Patient_Health_Management_System.Services
         }
 
         [HttpPost("/api/disease", Name = "CreateDisease")]
-        public async Task <Disease> CreateDisease([FromForm] DiseaseForm diseaseForm, [FromQuery] string userId)
+        public async Task<Disease> CreateDisease([FromForm] DiseaseForm diseaseForm, [FromQuery] string userId)
         {
             return await _diseaseService.CreateDisease(diseaseForm, userId);
         }

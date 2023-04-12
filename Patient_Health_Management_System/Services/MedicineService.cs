@@ -89,14 +89,15 @@ namespace Patient_Health_Management_System.Services
             try
             {
                 var medicineIsExisted = await _medicineRepo.GetMedicinesByName(medicineForm.Name);
-                if (medicineIsExisted.Any())
+                var medicineIdIsExisted = await _medicineRepo.GetMedicineByMedicineId(medicineForm.MedicineId);
+                if (medicineIsExisted.Any() || medicineIdIsExisted != null)
                 {
                     throw new Exception("Medicine name already exists");
                 }
                 ValidateMedicineForm(medicineForm);
                 var medicine = new Medicine
                 {
-                    MedicineId = GenerateMedicineId(),
+                    MedicineId = medicineForm.MedicineId,
                     Name = medicineForm.Name,
                     GroupName = medicineForm.GroupName,
                     Unit = medicineForm.Unit,
@@ -161,13 +162,6 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        private string GenerateMedicineId()
-        {
-            var randomNum = new Random();
-            var medicineId = "TH" + randomNum.Next(10000000, 99999999).ToString();
-            return medicineId;
-        }
-
         private void ValidateMedicineForm(MedicineForm medicineForm)
         {
             if (String.IsNullOrEmpty(medicineForm.Name))
@@ -177,6 +171,10 @@ namespace Patient_Health_Management_System.Services
             if (String.IsNullOrEmpty(medicineForm.GroupName))
             {
                 throw new Exception("Medicine group name is null");
+            }
+            if (String.IsNullOrEmpty(medicineForm.MedicineId))
+            {
+                throw new Exception("Medicine id is null");
             }
         }
         #endregion
@@ -198,26 +196,26 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-            var checkMedicineGroupIsExisted = await _medicineRepo.GetMedicineGroupByName(medicineGroupForm.Name);
-            if (checkMedicineGroupIsExisted.Any())
-            {
-                throw new Exception("Medicine group name already exists");
+                var checkMedicineGroupIsExisted = await _medicineRepo.GetMedicineGroupByName(medicineGroupForm.Name);
+                if (checkMedicineGroupIsExisted.Any())
+                {
+                    throw new Exception("Medicine group name already exists");
+                }
+                ValidateMedicineGroupForm(medicineGroupForm);
+                var medicineGroup = new MedicineGroup
+                {
+                    Name = medicineGroupForm.Name,
+                    IsDeleted = false,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = userId,
+                    UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
+                    UpdatedBy = null,
+                    DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
+                    DeletedBy = null
+                };
+                return await _medicineRepo.CreateMedicineGroup(medicineGroup);
             }
-            ValidateMedicineGroupForm(medicineGroupForm);
-            var medicineGroup = new MedicineGroup
-            {
-                Name = medicineGroupForm.Name,
-                IsDeleted = false,
-                CreatedAt = DateTime.Now,
-                CreatedBy = userId,
-                UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
-                UpdatedBy = null,
-                DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                DeletedBy = null
-            };
-            return await _medicineRepo.CreateMedicineGroup(medicineGroup);
-            }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }

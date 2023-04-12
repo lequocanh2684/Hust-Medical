@@ -1,6 +1,6 @@
 ﻿namespace Patient_Health_Management_System.Repositories
 {
-    public class DiseaseRepo
+    public class DiseaseRepo : IDiseaseRepo
     {
         private readonly IMongoCollection<Disease> _diseases;
         public DiseaseRepo(MongoDbSetup mongoDbSetup)
@@ -18,6 +18,10 @@
         public async Task<Disease> GetDiseaseById(string id)
         {
             return await _diseases.Find(disease => disease.Id == id).FirstOrDefaultAsync();
+        }
+        public async Task<Disease> GetDiseaseByDiseaseId(string diseaseId)
+        {
+            return await _diseases.Find(disease => disease.DiseaseId == diseaseId).FirstOrDefaultAsync();
         }
         public async Task<List<Disease>> GetDiseasesByName(string name)
         {

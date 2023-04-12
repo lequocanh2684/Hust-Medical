@@ -4,9 +4,9 @@ namespace Patient_Health_Management_System.Services
 {
     public class DiseaseService : IDiseaseService
     {
-        private readonly DiseaseRepo _diseaseRepo;
+        private readonly IDiseaseRepo _diseaseRepo;
 
-        public DiseaseService(DiseaseRepo diseaseRepo)
+        public DiseaseService(IDiseaseRepo diseaseRepo)
         {
             _diseaseRepo = diseaseRepo;
         }
@@ -64,7 +64,7 @@ namespace Patient_Health_Management_System.Services
             try
             {
                 var checkDiseaseByName = await _diseaseRepo.GetDiseasesByName(diseaseForm.Name);
-                var checkDiseaseByDiseaseId = await _diseaseRepo.GetDiseaseById(diseaseForm.DiseaseId);
+                var checkDiseaseByDiseaseId = await _diseaseRepo.GetDiseaseByDiseaseId(diseaseForm.DiseaseId);
                 if (checkDiseaseByName.Any() || checkDiseaseByDiseaseId != null)
                 {
                     throw new Exception("Disease already exists");
