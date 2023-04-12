@@ -24,7 +24,7 @@ builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddSingleton<MedicineRepo>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
 builder.Services.AddSingleton<DiseaseRepo>();
-builder.Services.AddSingleton<DiseaseService>();
+builder.Services.AddScoped<IDiseaseService, DiseaseService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

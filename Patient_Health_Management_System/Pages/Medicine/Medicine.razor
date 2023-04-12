@@ -105,17 +105,17 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowModify(string Id)
+    private async Task ShowModify(string id)
     {
-        var parameter = new DialogParameters { ["Id"] = Id };
+        var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicineModifyPopUp>("Chỉnh sửa", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowDelete(string Id)
+    private async Task ShowDelete(string id)
     {
-        var parameter = new DialogParameters { ["Id"] = Id };
+        var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicineDeletePopUp>("Xóa", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);

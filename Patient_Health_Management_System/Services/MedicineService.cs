@@ -236,10 +236,16 @@ namespace Patient_Health_Management_System.Services
         public async Task UpdateMedicineGroupById(string id, MedicineGroupForm medicineGroupForm, string userId)
         {
             var medicineGroup = await _medicineRepo.GetMedicineGroupById(id);
+            var medicines = await _medicineRepo.GetMedicineByGroupName(medicineGroup.Name);
             ValidateMedicineGroupForm(medicineGroupForm);
             medicineGroup.Name = medicineGroupForm.Name;
             medicineGroup.UpdatedAt = DateTime.Now;
             medicineGroup.UpdatedBy = userId;
+            foreach (var medicine in medicines)
+            {
+                medicine.GroupName = medicineGroupForm.Name;
+                await _medicineRepo.ModifyMedicineById(medicine.MedicineId, medicine);
+            }
             await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
         }
 

@@ -1,0 +1,113 @@
+@page "/disease"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IDiseaseService DiseaseService
+@inject IDialogService DialogService
+@layout MainLayout
+
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
+
+            <MudTable Items="@diseases" Hover="true" Bordered="true" Striped="true"
+                Filter="new Func<Models.Disease, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+
+                <ToolBarContent>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
+                    <MudSpacer />
+                    <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
+                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                        Class="mt-0"></MudTextField>
+                </ToolBarContent>
+
+                <HeaderContent>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.DiseaseId)">Mã bệnh
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.Name)">Tên bệnh</MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>
+                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.GroupName)">Tên nhóm bệnh
+                        </MudTableSortLabel>
+                    </MudTh>
+                    <MudTh>Chức năng</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Mã bệnh">@context.DiseaseId</MudTd>
+                    <MudTd DataLabel="Tên bệnh">@context.Name</MudTd>
+                    <MudTd DataLabel="Tên nhóm bệnh">@context.GroupName</MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                            OnClick="(e) => ShowModify(context.Id)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                            OnClick="(e) => ShowDelete(context.Id)" />
+                    </MudTd>
+                </RowTemplate>
+
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+
+                <NoRecordsContent>
+                    <MudText>Không tìm thấy dữ liệu</MudText>
+                </NoRecordsContent>
+
+                <LoadingContent>
+                    <MudText>Loading...</MudText>
+                </LoadingContent>
+
+                <PagerContent>
+                    <MudTablePager />
+                </PagerContent>
+            </MudTable>
+        </MudPaper>
+    </Authorized>
+</AuthorizeView>
+
+@code{
+    private IEnumerable<Models.Disease> diseases = new List<Models.Disease>();
+    private string searchS = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        diseases = await DiseaseService.GetDiseases();
+    }
+
+    private async Task ShowAdd()
+    {
+        var dialog = DialogService.Show<DiseaseCreatePopUp>("Thêm bệnh");
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowModify(string id)
+    {
+        var parameter = new DialogParameters { ["Id"] = id };
+        var dialog = DialogService.Show<DiseaseModifyPopUp>("Sửa bệnh", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowDelete(string id)
+    {
+        var parameter = new DialogParameters { ["Id"] = id };
+        var dialog = DialogService.Show<DiseaseDeletePopUp>("Xóa bệnh", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private bool FilterS(Models.Disease disease) => FilterSearch(disease, searchS);
+
+    private bool FilterSearch(Models.Disease disease, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (disease.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (disease.DiseaseId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (disease.GroupName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        return false;
+    }
+}

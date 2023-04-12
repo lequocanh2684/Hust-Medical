@@ -2,7 +2,7 @@
 
 namespace Patient_Health_Management_System.Services
 {
-    public class DiseaseService
+    public class DiseaseService : IDiseaseService
     {
         private readonly DiseaseRepo _diseaseRepo;
 
