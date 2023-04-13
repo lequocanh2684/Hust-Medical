@@ -1,0 +1,46 @@
+@page "/login"
+@layout LoginLayout
+
+@*Toan bo dien tich trang (= cua so trinh duyet)*@
+<MudPaper Class="d-flex flex-row justify-center align-center"
+    Style="width: 100vw;height: 100vh; overflow:hidden; position:relative">
+    @*Khung form chinh*@
+    <MudPaper Style="width: 200px; height: 300px" Class="rounded-8 border-solid border-1" Elevation="0">
+        <MudPaper Class="d-flex flex-column align-center" Style="margin-top:30px" Elevation="0">
+            @*Logo va welcome*@
+            <div>
+                <MudIcon Icon="@Icons.Material.Filled.LocalHospital" Size="Size.Large"></MudIcon>
+            </div>
+            <div>
+                <MudText>Welcome Back</MudText>
+            </div>
+        </MudPaper>
+        <MudPaper Elevation="0" Class="d-flex flex-column align-center">
+            @* Input and submit button*@
+            <div>
+
+                <MudTextField @bind-Value="Email" Label="Email" Variant="Variant.Outlined"></MudTextField>
+                <MudTextField @bind-Value="Password" Label="Mật khẩu" Variant="Variant.Outlined"></MudTextField>
+            </div>
+            <div style="margin-top:15px">
+                <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Tertiary">Đăng nhập</MudButton>
+            </div>
+        </MudPaper>
+        @*
+        <MudPaper Style="margin-left: 556px" Height="220px" Width="200px" Elevation="0" Class="d-flex gap-y-1">
+        <MudTextField Style="width:200px; height:60px;" @bind-Value="Email" Label="Email address"
+        Variant="Variant.Outlined"></MudTextField>
+        <MudTextField Style="width:200px; height:60px;" @bind-Value="Password" Label="Password"
+        Variant="Variant.Outlined"></MudTextField>
+        <MudButton Variant="Variant.Filled" Color="Color.Tertiary" Style="width: 200px; height:60px">Đăng nhập
+        </MudButton>
+        </MudPaper>
+        *@
+
+    </MudPaper>
+</MudPaper>
+
+@code {
+    public string? Email { get; set; }
+    public string? Password { get; set; }
+}

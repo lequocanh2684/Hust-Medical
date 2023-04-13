@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Patient_Health_Management_System.Models
+﻿namespace Patient_Health_Management_System.Models
 {
     public class Disease
     {
