@@ -1,12 +1,10 @@
-﻿using System.Collections;
-
-namespace Patient_Health_Management_System.Services
+﻿namespace Patient_Health_Management_System.Services
 {
     public class MedicineService : IMedicineService
     {
-        private readonly MedicineRepo _medicineRepo;
+        private readonly IMedicineRepo _medicineRepo;
 
-        public MedicineService(MedicineRepo medicineRepo)
+        public MedicineService(IMedicineRepo medicineRepo)
         {
             _medicineRepo = medicineRepo;
         }
