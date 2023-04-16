@@ -1,6 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Patient_Health_Management_System.Data;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using MudBlazor.Services;
+using Patient_Health_Management_System.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +15,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -25,6 +28,61 @@ builder.Services.AddScoped<IMedicineRepo, MedicineRepo>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
 builder.Services.AddScoped<IDiseaseRepo, DiseaseRepo>();
 builder.Services.AddScoped<IDiseaseService, DiseaseService>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+}
+).AddCookie()
+ .AddOpenIdConnect("Auth0", options =>
+ {
+     options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";
+
+     options.ClientId = builder.Configuration["Auth0:ClientId"];
+     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+
+     options.ResponseType = OpenIdConnectResponseType.Code;
+
+     options.Scope.Clear();
+     options.Scope.Add("openid");
+     options.Scope.Add("profile"); // <- Optional extra
+     options.Scope.Add("email");   // <- Optional extra
+
+     options.CallbackPath = new PathString("/callback");
+     options.ClaimsIssuer = "Auth0";
+     options.SaveTokens = true;
+     options.TokenValidationParameters = new TokenValidationParameters
+     {
+         NameClaimType = "name",
+     };
+
+     options.Events = new OpenIdConnectEvents
+     {
+         OnRedirectToIdentityProviderForSignOut = (context) =>
+         {
+             var logoutUri = $"https://{builder.Configuration["Auth0:Domain"]}/v2/logout?client_id={builder.Configuration["Auth0:ClientId"]}";
+
+             var postLogoutUri = context.Properties.RedirectUri;
+             if (!string.IsNullOrEmpty(postLogoutUri))
+             {
+                 if (postLogoutUri.StartsWith("/"))
+                 {
+                     var request = context.Request;
+                     postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
+                 }
+                 logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
+             }
+
+             context.Response.Redirect(logoutUri);
+             context.HandleResponse();
+
+             return Task.CompletedTask;
+         }
+     };
+ });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -54,6 +112,12 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+app.Use((context, next) =>
+{
+    context.Request.Scheme = "https";
+    return next(context);
+});
 
 app.Run();
 

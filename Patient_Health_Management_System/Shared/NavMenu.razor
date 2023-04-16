@@ -1,34 +1,17 @@
-﻿@* <MudDrawerContainer Class="mud-height-full">
-<MudDrawer @bind-Open="@open" Fixed="false" Elevation="1" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
-<MudNavMenu>
-<MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store">Trang chủ</MudNavLink>
-<MudNavLink Href="medicine" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks">Quản lý
-thuốc</MudNavLink>
-<MudNavLink Href="disease" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Sick">Quản lý bệnh tật</MudNavLink>
-<AuthorizeView>
-<NotAuthorized>
-<MudNavLink Href="Identity/Account/Login" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">Đăng
-nhập</MudNavLink>
-</NotAuthorized>
-<Authorized>
-<MudNavLink Href="Identity/Account/Manage" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Person">Tài
-khoản</MudNavLink>
-</Authorized>
-</AuthorizeView>
-</MudNavMenu>
-</MudDrawer>
-</MudDrawerContainer> *@
-
-<MudLayout>
+﻿<MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
             OnClick="@ToggleDrawer" />
         <MudSpacer />
-        <MudIconButton Href="Identity/Account/Manage" Color="Color.Inherit" Icon="@Icons.Material.Filled.Person">
-        </MudIconButton>
         <AuthorizeView>
+            <NotAuthorized>
+                <MudIconButton Href="Account/Login" Color="Color.Inherit" Icon="@Icons.Material.Filled.Person">
+                </MudIconButton>
+            </NotAuthorized>
             <Authorized>
-                <form method="post" action="Identity/Account/LogOut">
+                <MudIconButton Href="" Color="Color.Inherit" Icon="@Icons.Material.Filled.Person">
+                </MudIconButton>
+                <form method="post" action="Account/LogOut">
                     <MudIconButton ButtonType="ButtonType.Submit" Color="Color.Inherit"
                         Icon="@Icons.Material.Filled.Logout"></MudIconButton>
                 </form>

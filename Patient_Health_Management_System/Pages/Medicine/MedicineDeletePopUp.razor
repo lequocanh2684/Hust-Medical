@@ -25,6 +25,7 @@
     protected override async Task OnInitializedAsync()
     {
         medicine = await MedicineService.GetMedicineById(Id);
+        await GetUserId();
     }
 
     private void Cancel()

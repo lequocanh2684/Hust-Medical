@@ -1,0 +1,33 @@
+﻿@page
+@model Patient_Health_Management_System.Areas.Identity.Pages.Account.LoginModel
+
+
+<div Class="d-flex flex-row justify-content-center align-items-center"
+    Style="width:100%">
+    @*Khung form chinh*@
+    <div Style="width: 360px" Class="d-flex flex-column align-items-center">
+        <div Class="d-flex flex-column align-items-center" Style="margin-top:30px">
+            @*Logo va welcome*@
+            <img src="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1681484553/icon/local_hospital_black_24dp_x6oayq.svg"
+                 style="width: 50px;margin-bottom: 150px;" />
+            <p style="font-size:32px; font-weight:500">
+                Welcome Back
+            </p>
+        </div>
+        <div Class="d-flex flex-column align-items-center" style="width:100%">
+            @* Input and submit button*@
+            <div class="form-floating mb-3" style="width:100%">
+                <input type="email" class="form-control" id="floatingInput" placeholder="Email address">
+                <label for="floatingInput">Email address</label>
+            </div>
+            <div class="form-floating" style="width:100%">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                <label for="floatingPassword">Password</label>
+            </div>
+            <div style="margin-top:20px; width:100%">
+                <button type="button" class="btn btn-success btn-lg" style="width:100%">Đăng nhập</button>
+            </div>
+        </div>
+    </div>
+    </div>
+

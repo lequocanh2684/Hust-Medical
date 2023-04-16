@@ -44,6 +44,7 @@
         medicine = await MedicineService.GetMedicineById(Id);
         mapper = new MapperConfiguration(cfg => cfg.CreateMap<Models.Medicine, Forms.MedicineForm>()).CreateMapper();
         medicineForm = mapper.Map<Forms.MedicineForm>(medicine);
+        await GetUserId();
     }
 
     private void Cancel()
