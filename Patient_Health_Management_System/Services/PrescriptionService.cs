@@ -1,10 +1,10 @@
 ﻿namespace Patient_Health_Management_System.Services
 {
-    public class prescriptionRepo
+    public class PrescriptionService : IPrescriptionService
     {
-        private readonly PrescriptionRepo _presriptionRepo;
+        private readonly IPrescriptionRepo _presriptionRepo;
 
-        public prescriptionRepo(PrescriptionRepo prescriptionRepo)
+        public PrescriptionService(IPrescriptionRepo prescriptionRepo)
         {
             _presriptionRepo = prescriptionRepo;
         }
@@ -45,6 +45,18 @@
             }
         }
 
+        public async Task<Prescription> GetPrescriptionByPrescriptionId(string prescriptionId)
+        {
+            try
+            {
+                return await _presriptionRepo.GetPrescriptionByPrescriptionId(prescriptionId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public async Task<List<Prescription>> GetPrescriptionsByKeyword(string keyword)
         {
             try
@@ -61,11 +73,15 @@
         {
             try
             {
+                var checkPrescriptionExisted = await _presriptionRepo.GetPrescriptionByPrescriptionId(prescriptionForm.PrescriptionId);
+                if (checkPrescriptionExisted != null)
+                {
+                    throw new Exception("Prescription already existes");
+                }
                 var prescription = new Prescription()
                 {
-                    PrescriptionId = GeneratePrescriptionId(),
+                    PrescriptionId = prescriptionForm.PrescriptionId,
                     PatientId = prescriptionForm.PatientId,
-                    DoctorId = userId,
                     Note = prescriptionForm.Note,
                     MedicinesPrescription = prescriptionForm.MedicinesPrescription,
                     CreatedAt = DateTime.Now,
@@ -115,13 +131,6 @@
             {
                 throw new Exception(e.Message);
             }
-        } 
- 
-        private string GeneratePrescriptionId()
-        {
-            var randomNum = new Random();
-            var prescriptionId = "DT" + randomNum.Next(10000000, 99999999).ToString();
-            return prescriptionId;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Patient_Health_Management_System.Repositories
 {
-    public class PrescriptionRepo
+    public class PrescriptionRepo : IPrescriptionRepo
     {
         private readonly IMongoCollection<Prescription> _prescriptions;
 
@@ -38,6 +38,18 @@
             try
             {
                 return await _prescriptions.Find(prescription => prescription.Id == id).FirstOrDefaultAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Prescription> GetPrescriptionByPrescriptionId(string prescriptionId)
+        {
+            try
+            {
+                return await _prescriptions.Find(prescription => prescription.PrescriptionId == prescriptionId).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {

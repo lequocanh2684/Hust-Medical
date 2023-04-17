@@ -17,12 +17,16 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddMudServices();
 builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<MongoDbSetup>();
 builder.Services.AddScoped<IMedicineRepo, MedicineRepo>();
 builder.Services.AddScoped<IMedicineService, MedicineService>();
 builder.Services.AddScoped<IDiseaseRepo, DiseaseRepo>();
+builder.Services.AddScoped<IPrescriptionRepo, PrescriptionRepo>();
+builder.Services.AddScoped<IMedicineExaminationRepo, MedicalExaminationRepo>();
+builder.Services.AddScoped<IPatientRepo, PatientRepo>();
+//builder.Services.AddScoped<IPatientService, PatientService>();
 builder.Services.AddScoped<IDiseaseService, DiseaseService>();
+
 
 builder.Services.AddAuthentication(options =>
 {

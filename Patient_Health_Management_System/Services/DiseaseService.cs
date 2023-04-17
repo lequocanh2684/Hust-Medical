@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace Patient_Health_Management_System.Services
+﻿namespace Patient_Health_Management_System.Services
 {
     public class DiseaseService : IDiseaseService
     {
