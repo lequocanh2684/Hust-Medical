@@ -1,7 +1,22 @@
-﻿@page
+﻿@page "/login1"
 @model Patient_Health_Management_System.Areas.Identity.Pages.Account.LoginModel
+@{
+    Layout = "";
+}
 
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+   @* <link href="Patient_Health_Management_System.styles.css" rel="stylesheet" />*@
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+</head>
 
+<body>
 <div Class="d-flex flex-row justify-content-center align-items-center"
     Style="width:100%">
     @*Khung form chinh*@
@@ -29,5 +44,10 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
+
+<script src="_framework/blazor.server.js"></script>
+<script src="_content/MudBlazor/MudBlazor.min.js"></script>
+</body>
+</html>
 

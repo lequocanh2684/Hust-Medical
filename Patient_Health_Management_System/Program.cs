@@ -9,12 +9,7 @@ using Patient_Health_Management_System.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -89,6 +84,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.Use((context, next) =>
+{
+    context.Request.Scheme = "https";
+    return next(context);
+});
 }
 else
 {
@@ -112,12 +112,6 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-
-app.Use((context, next) =>
-{
-    context.Request.Scheme = "https";
-    return next(context);
-});
 
 app.Run();
 

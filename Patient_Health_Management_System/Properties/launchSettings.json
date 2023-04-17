@@ -11,7 +11,7 @@
     "Patient_Health_Management_System": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:44987",
+      "applicationUrl": "https://localhost:44987",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

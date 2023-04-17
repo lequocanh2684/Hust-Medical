@@ -7,6 +7,9 @@
 		<UserSecretsId>aspnet-Patient_Health_Management_System-599b8ea7-cc4e-48ec-ae13-0ca0a20e4078</UserSecretsId>
 	</PropertyGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <WarningLevel>4</WarningLevel>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
 	</ItemGroup>

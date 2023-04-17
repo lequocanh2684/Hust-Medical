@@ -8,9 +8,6 @@
         [BsonElement("prescription_id")]
         public string PrescriptionId { get; set; }
 
-        [BsonElement("doctor_id")]
-        public string DoctorId { get; set; }
-
         [BsonElement("patient_id")]
         public string PatientId { get; set; }
 
