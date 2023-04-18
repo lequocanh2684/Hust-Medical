@@ -3,9 +3,8 @@
     public interface IPatientRepo
     {
         Task<List<Patient>> GetPatients();
-        Task<List<Patient>> GetPatientsByPage(int page, int pageSize);
-        Task<Patient> GetPatientById(string id);
-        Task<Patient> CreatePatient(Patient patient);
-        Task ModifyPatientById(string id, Patient patient);
+        Task<Patient?> GetPatientById(Guid id);
+        Task CreatePatient(Patient patient);
+        Task ModifyPatientById(Patient patient);
     }
 }

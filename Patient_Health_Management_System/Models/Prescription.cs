@@ -35,20 +35,8 @@
         [BsonElement("deleted_by")]
         public string DeletedBy { get; set; }
 
-        [BsonElement("medicines_prescription")]
+        [BsonElement("medicine_ids")]
         [BsonRequired]
-        public List<MedicinesPrescription> MedicinesPrescription { get; set; }
-    }
-
-    public class MedicinesPrescription
-    {
-        [BsonElement("medicine_id")]
-        public string MedicineId { get; set; }
-
-        [BsonElement("quantity")]
-        public int Quantity { get; set; }
-
-        [BsonElement("unit")]
-        public string Unit { get; set; }
+        public List<string> MedicineIds { get; set; }
     }
 }

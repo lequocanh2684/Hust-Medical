@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Patient_Health_Management_System.Models
@@ -7,7 +6,12 @@ namespace Patient_Health_Management_System.Models
     {
         [Key]
         [Column("id")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id {get; set;}
+
+        [Column("patient_id")]
+        [Required]
+        public string PatientId {get; set;}
 
         [Column("name")]
         [Required]
@@ -16,6 +20,10 @@ namespace Patient_Health_Management_System.Models
         [Column("age")]
         [Required]
         public int Age {get; set;}
+
+        [Column("age_type")]
+        [Required]
+        public string AgeType {get; set;}
 
         [Column("gender")]
         [Required]
@@ -47,13 +55,14 @@ namespace Patient_Health_Management_System.Models
         public DateTime CreatedAt {get; set;}
 
         [Column("created_by")]
+        [Required]
         public string CreatedBy {get; set;}
 
         [Column("updated_at")]
         public DateTime UpdatedAt {get; set;}
 
         [Column("updated_by")]
-        public string UpdatedBy {get; set;}
+        public string? UpdatedBy {get; set;}
 
         [Column("is_deleted")]
         public bool IsDeleted {get; set;}
@@ -62,7 +71,7 @@ namespace Patient_Health_Management_System.Models
         public DateTime DeletedAt {get; set;}
 
         [Column("deleted_by")]
-        public string DeletedBy {get; set;}
+        public string? DeletedBy {get; set;}
 
     }
 }

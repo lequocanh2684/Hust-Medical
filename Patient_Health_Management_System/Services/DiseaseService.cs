@@ -94,13 +94,20 @@
             try
             {
                 var disease = await _diseaseRepo.GetDiseaseById(id);
-                ValidateDiseaseForm(diseaseForm);
-                disease.DiseaseId = diseaseForm.DiseaseId;
-                disease.Name = diseaseForm.Name;
-                disease.GroupName = diseaseForm.GroupName;
-                disease.UpdatedAt = DateTime.Now;
-                disease.UpdatedBy = userId;
-                await _diseaseRepo.ModifyDiseaseById(id, disease);
+                if (disease == null)
+                {
+                    throw new Exception("Disease not found");
+                }
+                else
+                {
+                    ValidateDiseaseForm(diseaseForm);
+                    disease.DiseaseId = diseaseForm.DiseaseId;
+                    disease.Name = diseaseForm.Name;
+                    disease.GroupName = diseaseForm.GroupName;
+                    disease.UpdatedAt = DateTime.Now;
+                    disease.UpdatedBy = userId;
+                    await _diseaseRepo.ModifyDiseaseById(id, disease);
+                }
             }
             catch (Exception e)
             {
@@ -113,10 +120,17 @@
             try
             {
                 var disease = await _diseaseRepo.GetDiseaseById(id);
-                disease.IsDeleted = true;
-                disease.DeletedAt = DateTime.Now;
-                disease.DeletedBy = userId;
-                await _diseaseRepo.ModifyDiseaseById(id, disease);
+                if (disease == null)
+                {
+                    throw new Exception("Disease not found");
+                }
+                else
+                {
+                    disease.IsDeleted = true;
+                    disease.DeletedAt = DateTime.Now;
+                    disease.DeletedBy = userId;
+                    await _diseaseRepo.ModifyDiseaseById(id, disease);
+                }
             }
             catch (Exception e)
             {
@@ -126,17 +140,10 @@
 
         private void ValidateDiseaseForm(DiseaseForm diseaseForm)
         {
-            if (string.IsNullOrEmpty(diseaseForm.Name))
+            var regex = new Regex(@"^[A-Z]\d{2}[.]\d{1}$");
+            if (!regex.IsMatch(diseaseForm.DiseaseId))
             {
-                throw new Exception("Disease name is required");
-            }
-            if (string.IsNullOrEmpty(diseaseForm.DiseaseId))
-            {
-                throw new Exception("Disease id is required");
-            }
-            if (string.IsNullOrEmpty(diseaseForm.GroupName))
-            {
-                throw new Exception("Disease group name is required");
+                throw new Exception("DiseaseId format is invalid");
             }
         }
     }

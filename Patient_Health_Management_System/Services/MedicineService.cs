@@ -125,18 +125,25 @@
             try
             {
                 var medicine = await _medicineRepo.GetMedicineById(id);
-                ValidateMedicineForm(medicineForm);
-                medicine.Name = medicineForm.Name;
-                medicine.GroupName = medicineForm.GroupName;
-                medicine.Unit = medicineForm.Unit;
-                medicine.HowToUse = medicineForm.HowToUse;
-                medicine.QuantityDefault = medicineForm.QuantityDefault;
-                medicine.ImportPrice = medicineForm.ImportPrice;
-                medicine.SellingPrice = medicineForm.SellingPrice;
-                medicine.MinimumStock = medicineForm.MinimumStock;
-                medicine.UpdatedAt = DateTime.Now;
-                medicine.UpdatedBy = userId;
-                await _medicineRepo.ModifyMedicineById(id, medicine);
+                if (medicine == null)
+                {
+                    throw new Exception("Medicine not found");
+                }
+                else
+                {
+                    ValidateMedicineForm(medicineForm);
+                    medicine.Name = medicineForm.Name;
+                    medicine.GroupName = medicineForm.GroupName;
+                    medicine.Unit = medicineForm.Unit;
+                    medicine.HowToUse = medicineForm.HowToUse;
+                    medicine.QuantityDefault = medicineForm.QuantityDefault;
+                    medicine.ImportPrice = medicineForm.ImportPrice;
+                    medicine.SellingPrice = medicineForm.SellingPrice;
+                    medicine.MinimumStock = medicineForm.MinimumStock;
+                    medicine.UpdatedAt = DateTime.Now;
+                    medicine.UpdatedBy = userId;
+                    await _medicineRepo.ModifyMedicineById(id, medicine);
+                }
             }
             catch (Exception e)
             {
@@ -149,10 +156,17 @@
             try
             {
                 var medicine = await _medicineRepo.GetMedicineById(id);
-                medicine.IsDeleted = true;
-                medicine.DeletedAt = DateTime.Now;
-                medicine.DeletedBy = userId;
-                await _medicineRepo.ModifyMedicineById(id, medicine);
+                if (medicine == null)
+                {
+                    throw new Exception("Medicine not found");
+                }
+                else
+                {
+                    medicine.IsDeleted = true;
+                    medicine.DeletedAt = DateTime.Now;
+                    medicine.DeletedBy = userId;
+                    await _medicineRepo.ModifyMedicineById(id, medicine);
+                }
             }
             catch (Exception e)
             {
@@ -162,17 +176,10 @@
 
         private void ValidateMedicineForm(MedicineForm medicineForm)
         {
-            if (String.IsNullOrEmpty(medicineForm.Name))
+            var regex = new Regex(@"^TH[0-9]{8}$");
+            if (!regex.IsMatch(medicineForm.MedicineId))
             {
-                throw new Exception("Medicine name is null");
-            }
-            if (String.IsNullOrEmpty(medicineForm.GroupName))
-            {
-                throw new Exception("Medicine group name is null");
-            }
-            if (String.IsNullOrEmpty(medicineForm.MedicineId))
-            {
-                throw new Exception("Medicine id is null");
+                throw new Exception("MedicineId format is invalid");
             }
         }
         #endregion
@@ -199,7 +206,6 @@
                 {
                     throw new Exception("Medicine group name already exists");
                 }
-                ValidateMedicineGroupForm(medicineGroupForm);
                 var medicineGroup = new MedicineGroup
                 {
                     Name = medicineGroupForm.Name,
@@ -223,33 +229,42 @@
         public async Task DeleteMedicineGroupById(string id, string userId)
         {
             var medicineGroup = await _medicineRepo.GetMedicineGroupById(id);
-            medicineGroup.IsDeleted = true;
-            medicineGroup.DeletedAt = DateTime.Now;
-            medicineGroup.DeletedBy = userId;
-            await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
+            if (medicineGroup == null)
+            {
+                throw new Exception("Medicine group not found");
+            }
+            else
+            {
+                medicineGroup.IsDeleted = true;
+                medicineGroup.DeletedAt = DateTime.Now;
+                medicineGroup.DeletedBy = userId;
+                await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
+            }
         }
 
         public async Task UpdateMedicineGroupById(string id, MedicineGroupForm medicineGroupForm, string userId)
         {
             var medicineGroup = await _medicineRepo.GetMedicineGroupById(id);
             var medicines = await _medicineRepo.GetMedicineByGroupName(medicineGroup.Name);
-            ValidateMedicineGroupForm(medicineGroupForm);
-            medicineGroup.Name = medicineGroupForm.Name;
-            medicineGroup.UpdatedAt = DateTime.Now;
-            medicineGroup.UpdatedBy = userId;
-            foreach (var medicine in medicines)
+            if (medicineGroup == null)
             {
-                medicine.GroupName = medicineGroupForm.Name;
-                await _medicineRepo.ModifyMedicineById(medicine.MedicineId, medicine);
+                throw new Exception("Medicine group not found");
             }
-            await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
-        }
-
-        private void ValidateMedicineGroupForm(MedicineGroupForm medicineGroupForm)
-        {
-            if (String.IsNullOrEmpty(medicineGroupForm.Name))
+            else if (!medicines.Any())
             {
-                throw new Exception("Medicine group name is null");
+                throw new Exception("List of medicines not found");
+            }
+            else
+            {
+                medicineGroup.Name = medicineGroupForm.Name;
+                medicineGroup.UpdatedAt = DateTime.Now;
+                medicineGroup.UpdatedBy = userId;
+                foreach (var medicine in medicines)
+                {
+                    medicine.GroupName = medicineGroupForm.Name;
+                    await _medicineRepo.ModifyMedicineById(medicine.MedicineId, medicine);
+                }
+                await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
             }
         }
         #endregion

@@ -105,11 +105,18 @@
             try
             {
                 var prescription = await _presriptionRepo.GetPrescriptionById(id);
-                prescription.Note = prescriptionForm.Note;
-                prescription.MedicinesPrescription = prescriptionForm.MedicinesPrescription;
-                prescription.UpdatedAt = DateTime.Now;
-                prescription.UpdatedBy = userId;
-                await _presriptionRepo.ModifyPrescriptionById(id, prescription);
+                if (prescription == null)
+                {
+                    throw new Exception("Prescription not found");
+                }
+                else
+                {
+                    prescription.Note = prescriptionForm.Note;
+                    prescription.MedicinesPrescription = prescriptionForm.MedicinesPrescription;
+                    prescription.UpdatedAt = DateTime.Now;
+                    prescription.UpdatedBy = userId;
+                    await _presriptionRepo.ModifyPrescriptionById(id, prescription);
+                }
             }
             catch (Exception e)
             {
@@ -122,10 +129,17 @@
             try
             {
                 var prescription = await _presriptionRepo.GetPrescriptionById(id);
-                prescription.IsDeleted = true;
-                prescription.DeletedAt = DateTime.Now;
-                prescription.DeletedBy = userId;
-                await _presriptionRepo.ModifyPrescriptionById(id, prescription);
+                if (prescription == null)
+                {
+                    throw new Exception("Prescription not found");
+                }
+                else
+                {
+                    prescription.IsDeleted = true;
+                    prescription.DeletedAt = DateTime.Now;
+                    prescription.DeletedBy = userId;
+                    await _presriptionRepo.ModifyPrescriptionById(id, prescription);
+                }
             }
             catch (Exception e)
             {

@@ -1,6 +1,8 @@
 ﻿global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
+global using System.Text.RegularExpressions;
 global using MongoDB.Bson;
 global using MongoDB.Bson.Serialization.Attributes;
 global using MongoDB.Driver;

@@ -1,30 +1,62 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿using Patient_Health_Management_System.Data;
+namespace Patient_Health_Management_System.Repositories
 {
     public class PatientRepo : IPatientRepo
     {
-        public Task<Patient> CreatePatient(Patient patient)
+        private readonly PatietHealthDbContext _context;
+
+        public PatientRepo(PatietHealthDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
+        }
+        public async Task CreatePatient(Patient patient)
+        {
+           try
+            {
+                _context.Patients.Add(patient);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
-        public Task<Patient> GetPatientById(string id)
+        public async Task<Patient?> GetPatientById(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Patients.Where(p => p.Id.Equals(id) && p.IsDeleted == false).FirstOrDefaultAsync();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
-        public Task<List<Patient>> GetPatients()
+        public async Task<List<Patient>> GetPatients()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Patients.Where(p => p.IsDeleted == false).ToListAsync();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
-        public Task<List<Patient>> GetPatientsByPage(int page, int pageSize)
+        public async Task ModifyPatientById(Patient patient)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task ModifyPatientById(string id, Patient patient)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Patients.Update(patient);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }
