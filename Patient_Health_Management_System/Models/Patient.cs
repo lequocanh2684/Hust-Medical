@@ -1,76 +1,63 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Patient_Health_Management_System.Models
 {
     public class Patient
     {
-        [Key]
-        [Column("id")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id {get; set;}
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id {get; set;}
 
-        [Column("patient_id")]
-        [Required]
+        [BsonElement("patient_id")]
         public string PatientId {get; set;}
 
-        [Column("name")]
-        [Required]
+        [BsonElement("name")]
         public string Name {get; set;}
 
-        [Column("age")]
-        [Required]
+        [BsonElement("age")]
         public int Age {get; set;}
 
-        [Column("age_type")]
-        [Required]
+        [BsonElement("age_type")]
         public string AgeType {get; set;}
 
-        [Column("gender")]
-        [Required]
+        [BsonElement("gender")]
         public string Gender {get; set;}
 
-        [Column("ethnic")]
-        [Required]
+        [BsonElement("ethnic")]
         public string Ethnic {get; set;}
 
-        [Column("medical_insurance_number")]
+        [BsonElement("medical_insurance_number")]
         public string MedicalInsuranceNumber {get; set;}
 
-        [Column("date_of_birth")]
-        [Required]
+        [BsonElement("date_of_birth")]
         public DateTime DateOfBirth {get; set;}
 
-        [Column("address")]
-        [Required]
+        [BsonElement("address")]
         public string Address {get; set;}
 
-        [Column("phone_number")]
-        [Required]
+        [BsonElement("phone_number")]
         public string PhoneNumber {get; set;}
 
-        [Column("email")]
+        [BsonElement("email")]
         public string Email {get; set;}
 
-        [Column("created_at")]
+        [BsonElement("created_at")]
         public DateTime CreatedAt {get; set;}
 
-        [Column("created_by")]
+        [BsonElement("created_by")]
         [Required]
         public string CreatedBy {get; set;}
 
-        [Column("updated_at")]
+        [BsonElement("updated_at")]
         public DateTime UpdatedAt {get; set;}
 
-        [Column("updated_by")]
+        [BsonElement("updated_by")]
         public string? UpdatedBy {get; set;}
 
-        [Column("is_deleted")]
+        [BsonElement("is_deleted")]
         public bool IsDeleted {get; set;}
 
-        [Column("deleted_at")]
+        [BsonElement("deleted_at")]
         public DateTime DeletedAt {get; set;}
 
-        [Column("deleted_by")]
+        [BsonElement("deleted_by")]
         public string? DeletedBy {get; set;}
 
     }
