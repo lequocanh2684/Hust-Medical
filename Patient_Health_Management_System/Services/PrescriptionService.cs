@@ -83,7 +83,6 @@
                     PrescriptionId = prescriptionForm.PrescriptionId,
                     PatientId = prescriptionForm.PatientId,
                     Note = prescriptionForm.Note,
-                    MedicinesPrescription = prescriptionForm.MedicinesPrescription,
                     CreatedAt = DateTime.Now,
                     CreatedBy = userId,
                     UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
@@ -112,10 +111,9 @@
                 else
                 {
                     prescription.Note = prescriptionForm.Note;
-                    prescription.MedicinesPrescription = prescriptionForm.MedicinesPrescription;
                     prescription.UpdatedAt = DateTime.Now;
                     prescription.UpdatedBy = userId;
-                    await _presriptionRepo.ModifyPrescriptionById(id, prescription);
+                    await _presriptionRepo.ModifyPrescriptionById(prescription);
                 }
             }
             catch (Exception e)
@@ -138,7 +136,7 @@
                     prescription.IsDeleted = true;
                     prescription.DeletedAt = DateTime.Now;
                     prescription.DeletedBy = userId;
-                    await _presriptionRepo.ModifyPrescriptionById(id, prescription);
+                    await _presriptionRepo.ModifyPrescriptionById(prescription);
                 }
             }
             catch (Exception e)

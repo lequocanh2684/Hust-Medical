@@ -1,6 +1,6 @@
 namespace Patient_Health_Management_System.Models
 {
-    public class Bill
+    public class Billing
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
@@ -20,6 +20,9 @@ namespace Patient_Health_Management_System.Models
         [BsonElement("total_price")]
         public int TotalPrice { get; set; }
 
+        [BsonElement("payment_method")]
+        public string? PaymentMethod { get; set; }
+
         [BsonElement("is_paid")]
         public bool IsPaid { get; set; }
 
@@ -28,9 +31,6 @@ namespace Patient_Health_Management_System.Models
 
         [BsonElement("paid_by")]
         public string? PaidBy { get; set; }
-
-        [BsonElement("payment_method")]
-        public string? PaymentMethod { get; set; }
 
         [BsonElement("created_at")]
         public DateTime CreatedAt { get; set; }

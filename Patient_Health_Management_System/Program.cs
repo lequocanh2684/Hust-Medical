@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor.Services;
 using Patient_Health_Management_System.Data;
+using Patient_Health_Management_System.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

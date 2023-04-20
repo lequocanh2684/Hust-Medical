@@ -28,9 +28,9 @@
         {
             return await _medicalExaminations.Find(medicalExamination => true).Skip((page - 1) * pageSize).Limit(pageSize).ToListAsync();
         }
-        public async Task ModifyMedicalExaminationById(string id, MedicalExamination medicalExamination)
+        public async Task ModifyMedicalExaminationById(MedicalExamination medicalExamination)
         {
-            await _medicalExaminations.ReplaceOneAsync(medicalExamination => medicalExamination.Id == id, medicalExamination);
+            await _medicalExaminations.ReplaceOneAsync(me => me.Id == medicalExamination.Id, medicalExamination);
         }
     }
 }

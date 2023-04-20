@@ -61,7 +61,7 @@ namespace Patient_Health_Management_System.Services
                 throw new Exception(e.Message);
             }
         }
-        public async Task UpdateMedicalExaminationById(string id,MedicalExaminationForm medicalExaminationForm, string userId)
+        public async Task UpdateMedicalExaminationById(string id, MedicalExaminationForm medicalExaminationForm, string userId)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Patient_Health_Management_System.Services
                     medicalExamination.Note = medicalExaminationForm.Note;
                     medicalExamination.UpdatedBy = userId;
                     medicalExamination.UpdatedAt = DateTime.Now;
-                    await _medicalExaminationRepo.ModifyMedicalExaminationById(id, medicalExamination);
+                    await _medicalExaminationRepo.ModifyMedicalExaminationById(medicalExamination);
                 }
             }
             catch (Exception e)
@@ -107,7 +107,7 @@ namespace Patient_Health_Management_System.Services
                     medicalExamination.IsDeleted = true;
                     medicalExamination.DeletedBy = userId;
                     medicalExamination.DeletedAt = DateTime.Now;
-                    await _medicalExaminationRepo.ModifyMedicalExaminationById(id, medicalExamination);
+                    await _medicalExaminationRepo.ModifyMedicalExaminationById(medicalExamination);
                 }
             }
             catch (Exception e)

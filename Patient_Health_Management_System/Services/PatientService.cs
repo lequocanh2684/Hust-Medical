@@ -20,7 +20,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task<Patient?> GetPatientById(Guid id)
+        public async Task<Patient?> GetPatientById(string id)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task UpdatePatientById(Guid id, PatientForm patientForm, string userId)
+        public async Task UpdatePatientById(string id, PatientForm patientForm, string userId)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task DeletePatientById(Guid id, string userId)
+        public async Task DeletePatientById(string id, string userId)
         {
             try
             {

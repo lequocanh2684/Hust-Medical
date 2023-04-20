@@ -83,11 +83,11 @@
             }
         }
 
-        public async Task ModifyPrescriptionById(string id, Prescription prescription)
+        public async Task ModifyPrescriptionById(Prescription prescription)
         {
             try
             {
-                await _prescriptions.ReplaceOneAsync(p => p.Id == id, prescription);
+                await _prescriptions.ReplaceOneAsync(p => p.Id == prescription.Id, prescription);
             }
             catch (Exception e)
             {

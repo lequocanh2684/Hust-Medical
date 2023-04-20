@@ -33,9 +33,9 @@
             await _diseases.InsertOneAsync(disease);
             return disease;
         }
-        public async Task ModifyDiseaseById(string id, Disease disease)
+        public async Task ModifyDiseaseById(Disease disease)
         {
-            await _diseases.ReplaceOneAsync(disease => disease.Id == id, disease);
+            await _diseases.ReplaceOneAsync(d => d.Id == disease.Id, disease);
         }
     }
 }

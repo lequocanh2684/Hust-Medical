@@ -142,7 +142,7 @@
                     medicine.MinimumStock = medicineForm.MinimumStock;
                     medicine.UpdatedAt = DateTime.Now;
                     medicine.UpdatedBy = userId;
-                    await _medicineRepo.ModifyMedicineById(id, medicine);
+                    await _medicineRepo.ModifyMedicineById(medicine);
                 }
             }
             catch (Exception e)
@@ -165,7 +165,7 @@
                     medicine.IsDeleted = true;
                     medicine.DeletedAt = DateTime.Now;
                     medicine.DeletedBy = userId;
-                    await _medicineRepo.ModifyMedicineById(id, medicine);
+                    await _medicineRepo.ModifyMedicineById(medicine);
                 }
             }
             catch (Exception e)
@@ -238,7 +238,7 @@
                 medicineGroup.IsDeleted = true;
                 medicineGroup.DeletedAt = DateTime.Now;
                 medicineGroup.DeletedBy = userId;
-                await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
+                await _medicineRepo.ModifyMedicineGroupById(medicineGroup);
             }
         }
 
@@ -262,9 +262,9 @@
                 foreach (var medicine in medicines)
                 {
                     medicine.GroupName = medicineGroupForm.Name;
-                    await _medicineRepo.ModifyMedicineById(medicine.MedicineId, medicine);
+                    await _medicineRepo.ModifyMedicineById(medicine);
                 }
-                await _medicineRepo.ModifyMedicineGroupById(id, medicineGroup);
+                await _medicineRepo.ModifyMedicineGroupById(medicineGroup);
             }
         }
         #endregion

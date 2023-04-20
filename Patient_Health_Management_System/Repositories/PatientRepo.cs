@@ -1,34 +1,34 @@
 ﻿using Patient_Health_Management_System.Data;
+
 namespace Patient_Health_Management_System.Repositories
 {
     public class PatientRepo : IPatientRepo
     {
-        private readonly PatietHealthDbContext _context;
+        private readonly IMongoCollection<Patient> patients;
 
-        public PatientRepo(PatietHealthDbContext context)
+        public PatientRepo(MongoDbSetup mongoDbSetup)
         {
-            _context = context;
+            patients = mongoDbSetup.GetDatabase().GetCollection<Patient>("patients");
         }
         public async Task CreatePatient(Patient patient)
         {
-           try
+            try
             {
-                _context.Patients.Add(patient);
-                await _context.SaveChangesAsync();
+                await patients.InsertOneAsync(patient);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
 
-        public async Task<Patient?> GetPatientById(Guid id)
+        public async Task<Patient?> GetPatientById(string id)
         {
             try
             {
-                return await _context.Patients.Where(p => p.Id.Equals(id) && p.IsDeleted == false).FirstOrDefaultAsync();
+                return await patients.Find(p => p.Id == id).FirstOrDefaultAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
@@ -38,9 +38,9 @@ namespace Patient_Health_Management_System.Repositories
         {
             try
             {
-                return await _context.Patients.Where(p => p.IsDeleted == false).ToListAsync();
+                return await patients.Find(p => true).ToListAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }
@@ -50,10 +50,9 @@ namespace Patient_Health_Management_System.Repositories
         {
             try
             {
-                _context.Patients.Update(patient);
-                await _context.SaveChangesAsync();
+                await patients.ReplaceOneAsync(p => p.Id == patient.Id, patient);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new Exception(e.Message);
             }

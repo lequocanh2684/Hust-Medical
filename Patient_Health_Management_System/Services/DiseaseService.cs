@@ -106,7 +106,7 @@
                     disease.GroupName = diseaseForm.GroupName;
                     disease.UpdatedAt = DateTime.Now;
                     disease.UpdatedBy = userId;
-                    await _diseaseRepo.ModifyDiseaseById(id, disease);
+                    await _diseaseRepo.ModifyDiseaseById(disease);
                 }
             }
             catch (Exception e)
@@ -129,7 +129,7 @@
                     disease.IsDeleted = true;
                     disease.DeletedAt = DateTime.Now;
                     disease.DeletedBy = userId;
-                    await _diseaseRepo.ModifyDiseaseById(id, disease);
+                    await _diseaseRepo.ModifyDiseaseById(disease);
                 }
             }
             catch (Exception e)

@@ -49,9 +49,9 @@
             return medicine;
         }
 
-        public async Task ModifyMedicineById(string id, Medicine medicine)
+        public async Task ModifyMedicineById(Medicine medicine)
         {
-            await _medicines.ReplaceOneAsync(m => m.Id == id, medicine);
+            await _medicines.ReplaceOneAsync(m => m.Id == medicine.Id, medicine);
         }
 
         public async Task<List<Medicine>> GetMedicineByGroupName(string groupName)
@@ -83,9 +83,9 @@
             return medicineGroup;
         }
 
-        public async Task ModifyMedicineGroupById(string id, MedicineGroup medicineGroup)
+        public async Task ModifyMedicineGroupById(MedicineGroup medicineGroup)
         {
-            await _medicineGroups.ReplaceOneAsync(m => m.Id == id, medicineGroup);
+            await _medicineGroups.ReplaceOneAsync(m => m.Id == medicineGroup.Id, medicineGroup);
         }
         #endregion
     }

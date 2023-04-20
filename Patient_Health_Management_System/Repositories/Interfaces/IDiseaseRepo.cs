@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿namespace Patient_Health_Management_System.Repositories.Interfaces
 {
     public interface IDiseaseRepo
     {
@@ -8,6 +8,6 @@
         Task<Disease> GetDiseaseByDiseaseId(string diseaseId);
         Task<List<Disease>> GetDiseasesByName(string name);
         Task<Disease> CreateDisease(Disease disease);
-        Task ModifyDiseaseById(string id, Disease disease);
+        Task ModifyDiseaseById(Disease disease);
     }
 }

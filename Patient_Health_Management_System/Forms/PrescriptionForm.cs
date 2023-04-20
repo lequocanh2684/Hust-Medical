@@ -6,6 +6,5 @@
         public string PrescriptionId { get; set; }
         public string PatientId { get; set; }
         public string Note { get; set; }
-        public List<MedicinesPrescription> MedicinesPrescription { get; set; }
     }
 }

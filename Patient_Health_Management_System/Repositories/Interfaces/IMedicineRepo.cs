@@ -1,4 +1,4 @@
-namespace Patient_Health_Management_System.Repositories
+namespace Patient_Health_Management_System.Repositories.Interfaces
 {
     public interface IMedicineRepo
     {
@@ -11,7 +11,7 @@ namespace Patient_Health_Management_System.Repositories
         Task<List<Medicine>> GetMedicinesByName(string name);
         Task<List<Medicine>> GetMedicineByGroupName(string groupName);
         Task<Medicine> CreateMedicine(Medicine medicine);
-        Task ModifyMedicineById(string id, Medicine medicine);
+        Task ModifyMedicineById(Medicine medicine);
         #endregion
 
         #region MedicineGroup
@@ -19,7 +19,7 @@ namespace Patient_Health_Management_System.Repositories
         Task<MedicineGroup> GetMedicineGroupById(string id);
         Task<List<MedicineGroup>> GetMedicineGroupByName(string name);
         Task<MedicineGroup> CreateMedicineGroup(MedicineGroup medicineGroup);
-        Task ModifyMedicineGroupById(string id, MedicineGroup medicineGroup);
+        Task ModifyMedicineGroupById(MedicineGroup medicineGroup);
         #endregion
     }
 }

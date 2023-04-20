@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿namespace Patient_Health_Management_System.Repositories.Interfaces
 {
     public interface IMedicineExaminationRepo
     {
@@ -7,6 +7,6 @@
         Task<MedicalExamination> GetMedicalExaminationById(string id);
         Task<List<MedicalExamination>> GetMedicalExaminationByKeyword(string keyword);
         Task<MedicalExamination> CreateMedicalExamination(MedicalExamination medicalExamination);
-        Task ModifyMedicalExaminationById(string id, MedicalExamination medicalExamination);
+        Task ModifyMedicalExaminationById(MedicalExamination medicalExamination);
     }
 }
