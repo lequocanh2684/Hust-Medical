@@ -1,20 +1,20 @@
-﻿using Patient_Health_Management_System.Data;
-
+﻿
 namespace Patient_Health_Management_System.Repositories
 {
     public class PatientRepo : IPatientRepo
     {
-        private readonly IMongoCollection<Patient> patients;
+        private readonly IMongoCollection<Patient> _patient;
 
         public PatientRepo(MongoDbSetup mongoDbSetup)
         {
-            patients = mongoDbSetup.GetDatabase().GetCollection<Patient>("patients");
+            _patient = mongoDbSetup.GetDatabase().GetCollection<Patient>("patient");
         }
+
         public async Task CreatePatient(Patient patient)
         {
             try
             {
-                await patients.InsertOneAsync(patient);
+                await _patient.InsertOneAsync(patient);
             }
             catch (Exception e)
             {
@@ -26,7 +26,7 @@ namespace Patient_Health_Management_System.Repositories
         {
             try
             {
-                return await patients.Find(p => p.Id == id).FirstOrDefaultAsync();
+                return await _patient.Find(p => p.Id == id).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace Patient_Health_Management_System.Repositories
         {
             try
             {
-                return await patients.Find(p => true).ToListAsync();
+                return await _patient.Find(p => true).ToListAsync();
             }
             catch (Exception e)
             {
@@ -50,7 +50,7 @@ namespace Patient_Health_Management_System.Repositories
         {
             try
             {
-                await patients.ReplaceOneAsync(p => p.Id == patient.Id, patient);
+                await _patient.ReplaceOneAsync(p => p.Id == patient.Id, patient);
             }
             catch (Exception e)
             {

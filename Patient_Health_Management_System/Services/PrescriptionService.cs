@@ -73,25 +73,30 @@
         {
             try
             {
+                ValidatePrescriptionForm(prescriptionForm);
                 var checkPrescriptionExisted = await _presriptionRepo.GetPrescriptionByPrescriptionId(prescriptionForm.PrescriptionId);
                 if (checkPrescriptionExisted != null)
                 {
                     throw new Exception("Prescription already existes");
                 }
-                var prescription = new Prescription()
+                else
                 {
-                    PrescriptionId = prescriptionForm.PrescriptionId,
-                    PatientId = prescriptionForm.PatientId,
-                    Note = prescriptionForm.Note,
-                    CreatedAt = DateTime.Now,
-                    CreatedBy = userId,
-                    UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
-                    UpdatedBy = "",
-                    IsDeleted = false,
-                    DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                    DeletedBy = ""
-                };
-                return await _presriptionRepo.CreatePrescription(prescription);
+                    var prescription = new Prescription()
+                    {
+                        PrescriptionId = prescriptionForm.PrescriptionId,
+                        PatientId = prescriptionForm.PatientId,
+                        Note = prescriptionForm.Note,
+                        MedicineIds = prescriptionForm.MedicineIds,
+                        CreatedAt = DateTime.Now,
+                        CreatedBy = userId,
+                        UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
+                        UpdatedBy = "",
+                        IsDeleted = false,
+                        DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
+                        DeletedBy = ""
+                    };
+                    return await _presriptionRepo.CreatePrescription(prescription);
+                }
             }
             catch (Exception e)
             {
@@ -103,14 +108,16 @@
         {
             try
             {
+                ValidatePrescriptionForm(prescriptionForm);
                 var prescription = await _presriptionRepo.GetPrescriptionById(id);
                 if (prescription == null)
                 {
                     throw new Exception("Prescription not found");
                 }
                 else
-                {
+                {  
                     prescription.Note = prescriptionForm.Note;
+                    prescription.MedicineIds = prescriptionForm.MedicineIds;
                     prescription.UpdatedAt = DateTime.Now;
                     prescription.UpdatedBy = userId;
                     await _presriptionRepo.ModifyPrescriptionById(prescription);
@@ -142,6 +149,15 @@
             catch (Exception e)
             {
                 throw new Exception(e.Message);
+            }
+        }
+
+        private void ValidatePrescriptionForm(PrescriptionForm prescriptionForm)
+        {
+            var regex = new Regex(@"^DT[0-9]{8}$");
+            if (!regex.IsMatch(prescriptionForm.PrescriptionId))
+            {
+                throw new Exception("PrescriptionId format is invalid");
             }
         }
     }

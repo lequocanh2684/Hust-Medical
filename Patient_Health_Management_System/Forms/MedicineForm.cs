@@ -7,8 +7,8 @@ namespace Patient_Health_Management_System.Forms
         public string MedicineId { get; set; }
         [Required]
         public string Name { get; set; }
-        public string Unit { get; set; }
-        public string HowToUse { get; set; }
+        public string? Unit { get; set; }
+        public string? HowToUse { get; set; }
         public int QuantityDefault { get; set; }
         [Required]
         public string GroupName { get; set; }

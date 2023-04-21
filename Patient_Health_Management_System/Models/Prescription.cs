@@ -12,7 +12,7 @@
         public string PatientId { get; set; }
 
         [BsonElement("note")]
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         [BsonElement("created_at")]
         public DateTime CreatedAt { get; set; }
@@ -24,7 +24,7 @@
         public DateTime UpdatedAt { get; set; }
 
         [BsonElement("updated_by")]
-        public string UpdatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
 
         [BsonElement("is_deleted")]
         public bool IsDeleted { get; set; }
@@ -33,10 +33,9 @@
         public DateTime DeletedAt { get; set; }
 
         [BsonElement("deleted_by")]
-        public string DeletedBy { get; set; }
+        public string? DeletedBy { get; set; }
 
         [BsonElement("medicine_ids")]
-        [BsonRequired]
         public List<string> MedicineIds { get; set; }
     }
 }

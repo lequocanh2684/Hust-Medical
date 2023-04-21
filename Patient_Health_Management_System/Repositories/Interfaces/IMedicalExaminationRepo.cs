@@ -1,6 +1,6 @@
 ﻿namespace Patient_Health_Management_System.Repositories.Interfaces
 {
-    public interface IMedicineExaminationRepo
+    public interface IMedicalExaminationRepo
     {
         Task<List<MedicalExamination>> GetMedicalExaminations();
         Task<List<MedicalExamination>> GetMedicalExaminationsByPage(int page, int pageSize);

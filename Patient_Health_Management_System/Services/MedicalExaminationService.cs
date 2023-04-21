@@ -2,8 +2,8 @@ namespace Patient_Health_Management_System.Services
 {
     public class MedicalExaminationService : IMedicalExaminationService
     {
-        private readonly IMedicineExaminationRepo _medicalExaminationRepo;
-        public MedicalExaminationService(IMedicineExaminationRepo medicalExaminationRepo)
+        private readonly IMedicalExaminationRepo _medicalExaminationRepo;
+        public MedicalExaminationService(IMedicalExaminationRepo medicalExaminationRepo)
         {
             _medicalExaminationRepo = medicalExaminationRepo;
         }
@@ -29,7 +29,7 @@ namespace Patient_Health_Management_System.Services
                 throw new Exception(e.Message);
             }
         }
-        public async Task CreateMedicalExamination(MedicalExaminationForm medicalExaminationForm, string userId)
+        public async Task <MedicalExamination> CreateMedicalExamination(MedicalExaminationForm medicalExaminationForm, string userId)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Patient_Health_Management_System.Services
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
                     DeletedBy = null
                 };
-                await _medicalExaminationRepo.CreateMedicalExamination(medicalExamination);
+                return await _medicalExaminationRepo.CreateMedicalExamination(medicalExamination);
             }
             catch (Exception e)
             {

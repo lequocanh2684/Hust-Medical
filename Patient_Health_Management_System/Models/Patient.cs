@@ -24,10 +24,10 @@ namespace Patient_Health_Management_System.Models
         public string Ethnic {get; set;}
 
         [BsonElement("medical_insurance_number")]
-        public string MedicalInsuranceNumber {get; set;}
+        public string? MedicalInsuranceNumber {get; set;}
 
         [BsonElement("date_of_birth")]
-        public DateTime DateOfBirth {get; set;}
+        public string DateOfBirth {get; set;}
 
         [BsonElement("address")]
         public string Address {get; set;}
@@ -36,13 +36,12 @@ namespace Patient_Health_Management_System.Models
         public string PhoneNumber {get; set;}
 
         [BsonElement("email")]
-        public string Email {get; set;}
+        public string? Email {get; set;}
 
         [BsonElement("created_at")]
         public DateTime CreatedAt {get; set;}
 
         [BsonElement("created_by")]
-        [Required]
         public string CreatedBy {get; set;}
 
         [BsonElement("updated_at")]
@@ -59,6 +58,5 @@ namespace Patient_Health_Management_System.Models
 
         [BsonElement("deleted_by")]
         public string? DeletedBy {get; set;}
-
     }
 }

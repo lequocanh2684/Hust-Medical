@@ -21,19 +21,19 @@ namespace Patient_Health_Management_System.Models
         public int Weight {get; set;}
 
         [BsonElement("blood_pressure")]
-        public string BloodPressure {get; set;}
+        public string? BloodPressure {get; set;}
 
         [BsonElement("vascular_index")]
-        public string VascularIndex {get; set;}
+        public string? VascularIndex {get; set;}
 
         [BsonElement("body_temperature")]
-        public string BodyTemperature {get; set;}
+        public string? BodyTemperature {get; set;}
 
         [BsonElement("breathing_rate")]
-        public string BreathingRate {get; set;}
+        public string? BreathingRate {get; set;}
 
         [BsonElement("note")]
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         [BsonElement("created_at")]
         public DateTime CreatedAt { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Patient_Health_Management_System.Repositories
 {
-    public class MedicalExaminationRepo : IMedicineExaminationRepo
+    public class MedicalExaminationRepo : IMedicalExaminationRepo
     {
         private readonly IMongoCollection<MedicalExamination> _medicalExaminations;
         public MedicalExaminationRepo(MongoDbSetup mongoDbSetup)
