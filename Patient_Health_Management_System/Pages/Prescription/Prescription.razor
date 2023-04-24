@@ -1,6 +1,6 @@
-@page "/disease"
+﻿@page "/prescription"
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IDiseaseService DiseaseService
+@inject IPrescriptionService PrescriptionService
 @inject IDialogService DialogService
 @layout MainLayout
 
@@ -10,41 +10,37 @@
     </NotAuthorized>
     <Authorized>
         <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
-
-            <MudTable Items="@diseases" Hover="true" Bordered="true" Striped="true"
-                Filter="new Func<Models.Disease, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+            <MudTable Items="@prescriptions" Hover="true" Bordered="true" Striped="true"
+                      Filter="new Func<Models.Prescription, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
                 <ToolBarContent>
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
                     <MudSpacer />
                     <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
-                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                        Class="mt-0"></MudTextField>
+                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                                  Class="mt-0"></MudTextField>
                 </ToolBarContent>
 
                 <HeaderContent>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.DiseaseId)">Mã bệnh
+                        <MudTableSortLabel SortBy="new Func<Models.Prescription, object>(x=>x.PrescriptionId)">
+                            Mã đơn thuốc
                         </MudTableSortLabel>
                     </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.Name)">Tên bệnh</MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.GroupName)">Tên nhóm bệnh
-                        </MudTableSortLabel>
-                    </MudTh>
+                    @*<MudTh>
+                        <MudTableSortLabel SortBy="new Func<Models.Prescription, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
+                    </MudTh>*@
                     <MudTh>Chức năng</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="Mã bệnh">@context.DiseaseId</MudTd>
-                    <MudTd DataLabel="Tên bệnh">@context.Name</MudTd>
-                    <MudTd DataLabel="Tên nhóm bệnh">@context.GroupName</MudTd>
+                    <MudTd DataLabel="Mã đơn thuốc">@context.PrescriptionId</MudTd>
+                    @*<MudTd DataLabel="Tên bệnh nhân">@context.Name</MudTd>*@
                     <MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                            OnClick="(e) => ShowUpdate(context.Id)" />
+                                       OnClick="(e) => ShowUpdate(context.Id)" />
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                            OnClick="(e) => ShowDelete(context.Id)" />
+                                       OnClick="(e) => ShowDelete(context.Id)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium" OnClick="(e) => ShowDetail(context.Id)" />
                     </MudTd>
                 </RowTemplate>
 
@@ -68,18 +64,26 @@
     </Authorized>
 </AuthorizeView>
 
-@code{
-    private IEnumerable<Models.Disease> diseases = new List<Models.Disease>();
+
+@code {
+    private IEnumerable<Models.Prescription> prescriptions = new List<Models.Prescription>();
     private string searchS = "";
 
     protected override async Task OnInitializedAsync()
     {
-        diseases = await DiseaseService.GetDiseases();
+        prescriptions = await PrescriptionService.GetPrescriptions();
+    }
+
+    private async Task ShowDetail(string Id)
+    {
+        var parameter = new DialogParameters { ["Id"] = Id };
+        var dialog = await DialogService.ShowAsync<PresDetailPopUp>("Thông tin đơn thuốc", parameter);
+        var result = await dialog.Result;
     }
 
     private async Task ShowAdd()
     {
-        var dialog = DialogService.Show<DiseaseCreatePopUp>("Thêm thông tin bệnh");
+        var dialog = DialogService.Show<PresCreatePopUp>("Thêm đơn thuốc");
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
@@ -87,27 +91,25 @@
     private async Task ShowUpdate(string id)
     {
         var parameter = new DialogParameters { ["Id"] = id };
-        var dialog = DialogService.Show<DiseaseUpdatePopUp>("Sửa thông tin bệnh", parameter);
+        var dialog = DialogService.Show<PresUpdatePopUp>("Sửa thông tin đơn thuốc", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowDelete(string id)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
-        var dialog = DialogService.Show<DiseaseDeletePopUp>("Xóa thông tin bệnh", parameter);
+        var parameter = new DialogParameters { ["Id"] = id};
+        var dialog = DialogService.Show<PresDeletePopUp>("Xóa đơn thuốc", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private bool FilterS(Models.Disease disease) => FilterSearch(disease, searchS);
+    private bool FilterS(Models.Prescription prescription) => FilterSearch(prescription, searchS);
 
-    private bool FilterSearch(Models.Disease disease, string searchString)
+    private bool FilterSearch(Models.Prescription prescription, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (disease.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (disease.DiseaseId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (disease.GroupName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
     }
 }

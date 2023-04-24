@@ -1,4 +1,4 @@
-@inject AuthenticationStateProvider AuthenticationStateProvider
+ @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicineService MedicineService
 
 <MudDialog>
@@ -34,6 +34,11 @@
 
     [Parameter]
     public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+    }
 
     private void Cancel()
     {

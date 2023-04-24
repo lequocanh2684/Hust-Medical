@@ -35,7 +35,7 @@
             <MudTd DataLabel="Giá bán">@context.SellingPrice</MudTd>
             <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
             <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium" OnClick="(e) => ShowModify(context.Id)"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium" OnClick="(e) => ShowUpdate(context.Id)"/>
                 <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium" OnClick="(e) => ShowDelete(context.Id)"/>
                 <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium" OnClick="(e) => ShowDetail(context.Id)" />
             </MudTd>
@@ -94,21 +94,21 @@
     private async Task ShowDetail(string Id)
     {
         var parameter = new DialogParameters { ["Id"] = Id };
-        var dialog = await DialogService.ShowAsync<MedicineDetailPopUp>("Thông tin", parameter);
+        var dialog = await DialogService.ShowAsync<MedicineDetailPopUp>("Thông tin thuốc", parameter);
         var result = await dialog.Result;
     }
 
     private async Task ShowAdd()
     {
-        var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm");
+        var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm thông tin thuốc");
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowModify(string id)
+    private async Task ShowUpdate(string id)
     {
         var parameter = new DialogParameters { ["Id"] = id };
-        var dialog = await DialogService.ShowAsync<MedicineModifyPopUp>("Chỉnh sửa", parameter);
+        var dialog = await DialogService.ShowAsync<MedicineUpdatePopUp>("Chỉnh sửa thông tin thuốc", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
@@ -116,7 +116,7 @@
     private async Task ShowDelete(string id)
     {
         var parameter = new DialogParameters { ["Id"] = id };
-        var dialog = await DialogService.ShowAsync<MedicineDeletePopUp>("Xóa", parameter);
+        var dialog = await DialogService.ShowAsync<MedicineDeletePopUp>("Xóa thông tin thuốc", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }

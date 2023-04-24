@@ -41,8 +41,7 @@ namespace Patient_Health_Management_System.Services
                 {
                     PatientId = patientForm.PatientId,
                     Name = patientForm.Name,
-                    Age = patientForm.Age,
-                    AgeType = patientForm.AgeType,
+                    Age = GetAge(patientForm.DateOfBirth, DateTime.Today),
                     Ethnic = patientForm.Ethnic,
                     Address = patientForm.Address,
                     PhoneNumber = patientForm.PhoneNumber,
@@ -81,9 +80,8 @@ namespace Patient_Health_Management_System.Services
                     ValidatePatientForm(patientForm);
                     patient.PatientId = patientForm.PatientId;
                     patient.Name = patientForm.Name;
-                    patient.Age = patientForm.Age;
+                    patient.Age = GetAge(patientForm.DateOfBirth, DateTime.Today);
                     patient.Address = patientForm.Address;
-                    patient.AgeType = patientForm.AgeType;
                     patient.DateOfBirth = patientForm.DateOfBirth;
                     patient.Address = patientForm.Address;
                     patient.Email = patientForm.Email;
@@ -132,6 +130,11 @@ namespace Patient_Health_Management_System.Services
             {
                 throw new Exception("PatientId format is invalid");
             }
+        }
+
+        private int GetAge(DateTime? start, DateTime end)
+        {
+            return (end.Year - start.Value.Year - 1) + (((end.Month > start.Value.Month) || (end.Month == start.Value.Month) && (end.Day >= start.Value.Day)) ? 1 : 0);
         }
     }
 }

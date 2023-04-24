@@ -1,0 +1,42 @@
+﻿@inject IPatientService PatientService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3 mb-n1" />
+            Thông tin chi tiết
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@patient.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@patient.Name" Label="Tên bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@patient.Age" Label="Tuổi" ReadOnly="true" />
+        <MudTextField Value="@patient.Gender" Label="Giới tính" ReadOnly="true" />
+        <MudTextField Value="@patient.Ethnic" Label="Dân tộc" ReadOnly="true" />
+        <MudTextField Value="@patient.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="true" />
+        <MudTextField Value="@patient.DateOfBirth.GetValueOrDefault().ToLocalTime()" Label="Ngày tháng năm sinh" ReadOnly="true" />
+        <MudTextField Value="@patient.Address" Label="Địa chỉ" ReadOnly="true" />
+        <MudTextField Value="@patient.PhoneNumber" Label="Số điện thoại" ReadOnly="true" />
+        <MudTextField Value="@patient.Email" Label="Email" ReadOnly="true" />
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+    private Models.Patient? patient = new Models.Patient();
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        patient = await PatientService.GetPatientById(Id);
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

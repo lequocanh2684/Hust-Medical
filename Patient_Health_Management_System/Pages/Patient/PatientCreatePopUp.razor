@@ -1,0 +1,69 @@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IPatientService PatientService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            Thêm thông tin bệnh nhân
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@patientForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
+        <MudTextField @bind-Value="@patientForm.Name" Label="Tên bệnh nhân" ReadOnly="false" />
+        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@patientForm.Gender">
+            <MudSelectItem Value="@("Nam")" />
+            <MudSelectItem Value="@("Nữ")" />
+        </MudSelect>
+        <MudTextField @bind-Value="@patientForm.Ethnic" Label="Dân tộc" ReadOnly="false" />
+        <MudTextField @bind-Value="@patientForm.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="false" />
+        <MudDatePicker @bind-Date="@patientForm.DateOfBirth" Editable="true" Label="Ngày tháng năm sinh" ReadOnly="false" />
+        <MudTextField @bind-Value="@patientForm.Address" Label="Địa chỉ" ReadOnly="false" />
+        <MudTextField @bind-Value="@patientForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
+        <MudTextField @bind-Value="@patientForm.Email" Label="Email" ReadOnly="false" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    private Forms.PatientForm patientForm = new Forms.PatientForm();
+    private string userId = new string("");
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await PatientService.CreatePatient(patientForm, userId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
+    }
+}

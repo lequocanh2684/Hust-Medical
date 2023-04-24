@@ -1,0 +1,56 @@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IPatientService PatientService
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Bạn có chắc muốn xoá bệnh nhân: @name này không?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Huỷ</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Submit">Xoá</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code{
+
+    private Models.Patient patient = new Models.Patient();
+
+    private string userId = new string("");
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string name { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await PatientService.DeletePatientById(Id, userId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
+    }
+}

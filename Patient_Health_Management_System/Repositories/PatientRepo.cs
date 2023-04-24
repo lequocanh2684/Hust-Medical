@@ -38,7 +38,7 @@ namespace Patient_Health_Management_System.Repositories
         {
             try
             {
-                return await _patient.Find(p => true).ToListAsync();
+                return await _patient.Find(p => !p.IsDeleted).ToListAsync();
             }
             catch (Exception e)
             {
