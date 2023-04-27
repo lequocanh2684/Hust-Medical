@@ -1,6 +1,6 @@
 ﻿@page "/prescription"
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IPrescriptionService PrescriptionService
+@inject IPrescriptionService prescriptionService
 @inject IDialogService DialogService
 @layout MainLayout
 
@@ -71,7 +71,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        prescriptions = await PrescriptionService.GetPrescriptions();
+        prescriptions = await prescriptionService.GetPrescriptions();
     }
 
     private async Task ShowDetail(string Id)

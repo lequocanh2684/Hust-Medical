@@ -1,0 +1,26 @@
+@using RestSharp;
+@using RestSharp.Authenticators;
+
+@code {
+
+    private void TokenGenerator()
+    {
+        var client = new RestClient("https://dev-2a9djp5w.us.auth0.com/oauth/token");
+        var request = new RestRequest(Method.Post.ToString());
+        request.AddHeader("content-type", "application/json");
+        request.AddParameter("application/json",
+        "{\"client_id\":\"Kqlfl7nzNrEgAaMB5IGxVFmJMzUPejFz\",\"client_secret\":\"KngCbLf2FS7h_uEJqIl4i_YpV1b2H0RsNh4qH8m0ujKy_ZSR30t1tlz-cIQhNRl7\",\"audience\":\"https://dev-2a9djp5w.us.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}",
+        ParameterType.RequestBody);
+        RestResponse response = client.Execute(request);
+    }
+    public void GetDatabase()
+    {
+        string directory = Directory.GetCurrentDirectory();
+        IConfigurationRoot configurationRoot = new ConfigurationBuilder()
+        .SetBasePath(directory)
+        .AddJsonFile("appsettings.json")
+        .Build();
+        var client = new MongoClient(configurationRoot.GetConnectionString("MongoDBConnection"));
+
+    }
+}

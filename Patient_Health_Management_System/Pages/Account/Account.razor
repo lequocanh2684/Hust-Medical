@@ -1,0 +1,40 @@
+@page "/account"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@layout MainLayout
+
+<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
+    <MudTable Items="@userClaim" Hover="true" Bordered="true" Striped="true">
+        <HeaderContent>
+            <MudTh>Claim Type</MudTh>
+            <MudTh>Claim Value</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Claim Type">@context.Type</MudTd>
+            <MudTd DataLabel="Claim Value">@context.Value</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
+
+@code{
+    private string userId;
+
+    private IEnumerable<Claim> userClaim;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
+    }
+}
