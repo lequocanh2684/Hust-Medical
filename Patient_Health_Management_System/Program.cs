@@ -13,7 +13,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddMudServices();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMvcCore().AddApiExplorer();
-builder.Services.AddHttpClient();
 
 // Add Repositories
 builder.AddRepositories();
