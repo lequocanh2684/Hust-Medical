@@ -11,7 +11,7 @@
     <Authorized>
 <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
 
-    <MudTable Items="@medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+    <MudTable Items="@medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Domain.Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
         <ToolBarContent>
             <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -21,10 +21,10 @@
         </ToolBarContent>
 
         <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
             <MudTh>Đơn vị</MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Models.Medicine, object>(x=>x.SellingPrice)">Giá bán</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.SellingPrice)">Giá bán</MudTableSortLabel></MudTh>
             <MudTh>Cách dùng</MudTh>
             <MudTh>Chức năng</MudTh>
         </HeaderContent>
@@ -77,9 +77,9 @@
 </AuthorizeView>
 
 @code {
-    private IEnumerable<Models.Medicine> medicines = new List<Models.Medicine>();
+    private IEnumerable<Domain.Models.Medicine> medicines = new List<Domain.Models.Medicine>();
 
-    private IEnumerable<Models.MedicineGroup> medicineGroups = new List<Models.MedicineGroup>();
+    private IEnumerable<Domain.Models.MedicineGroup> medicineGroups = new List<Domain.Models.MedicineGroup>();
 
     private bool isOpen = true;
 
@@ -128,9 +128,9 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private bool FilterS(Models.Medicine medicine) => FilterSearch(medicine, searchS);
+    private bool FilterS(Domain.Models.Medicine medicine) => FilterSearch(medicine, searchS);
 
-    private bool FilterSearch(Models.Medicine medicine, string searchString)
+    private bool FilterSearch(Domain.Models.Medicine medicine, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (medicine.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;

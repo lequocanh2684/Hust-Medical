@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Forms
+﻿namespace Patient_Health_Management_System.Domain.Forms
 {
     public class BillingForm
     {

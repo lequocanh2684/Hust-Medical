@@ -1,34 +1,38 @@
 @page "/account"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ProtectedLocalStorage ProtectedLocalStorage
+@inject IAccountService AccountService
 @layout MainLayout
 
 <MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
-    <MudTable Items="@userClaim" Hover="true" Bordered="true" Striped="true">
-        <HeaderContent>
-            <MudTh>Claim Type</MudTh>
-            <MudTh>Claim Value</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Claim Type">@context.Type</MudTd>
-            <MudTd DataLabel="Claim Value">@context.Value</MudTd>
-        </RowTemplate>
-    </MudTable>
+    <MudTextField Label="Name" @bind-Value="userResponse.Name" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Email" @bind-Value="userResponse.Email" ReadOnly="true"></MudTextField>
+    <MudAvatar Size="Size.Medium" Rounded="true">
+        <MudImage Src="@userResponse.Picture"/>
+    </MudAvatar>
 </MudPaper>
 
 @code{
     private string userId;
 
-    private IEnumerable<Claim> userClaim;
+    private UserResponse userResponse = new UserResponse();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await GetUserId();
+        if (firstRender)
+        {
+            await GetUserId();
+            var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+            userResponse = await AccountService.GetUserResponseById(userId, access_token.Value);
+            StateHasChanged();
+        }
     }
 
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        userClaim = authState.User.Claims;
+        var userClaim = authState.User.Claims;
         foreach (var item in userClaim)
         {
             if (item.Type == ClaimTypes.NameIdentifier)

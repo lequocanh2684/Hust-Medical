@@ -22,9 +22,9 @@
 
 
 @code {
-    private Forms.DiseaseForm diseaseForm = new Forms.DiseaseForm();
+    private DiseaseForm diseaseForm = new Domain.Forms.DiseaseForm();
 
-    private Models.Disease disease = new Models.Disease();
+    private Domain.Models.Disease disease = new Domain.Models.Disease();
 
     private string userId = new string("");
 
@@ -36,8 +36,8 @@
     protected override async Task OnInitializedAsync()
     {
         disease = await DiseaseService.GetDiseaseById(Id);
-        mapper = new MapperConfiguration(cfg => cfg.CreateMap<Models.Disease, Forms.DiseaseForm>()).CreateMapper();
-        diseaseForm = mapper.Map<Forms.DiseaseForm>(disease);
+        mapper = new MapperConfiguration(cfg => cfg.CreateMap<Domain.Models.Disease, DiseaseForm>()).CreateMapper();
+        diseaseForm = mapper.Map<DiseaseForm>(disease);
         await GetUserId();
     }
 

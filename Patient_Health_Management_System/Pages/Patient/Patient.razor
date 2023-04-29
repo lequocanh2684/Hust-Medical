@@ -11,7 +11,7 @@
     <Authorized>
         <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
             <MudTable Items="@patients" Hover="true" Bordered="true" Striped="true"
-                      Filter="new Func<Models.Patient, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+                      Filter="new Func<Domain.Models.Patient, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
                 <ToolBarContent>
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -23,12 +23,12 @@
 
                 <HeaderContent>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Patient, object>(x=>x.PatientId)">
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Patient, object>(x=>x.PatientId)">
                             Mã bệnh nhân
                         </MudTableSortLabel>
                     </MudTh>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Patient, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Patient, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
                     </MudTh>
                     <MudTh>Chức năng</MudTh>
                 </HeaderContent>
@@ -66,7 +66,7 @@
 
 
 @code {
-    private IEnumerable<Models.Patient> patients = new List<Models.Patient>();
+    private IEnumerable<Domain.Models.Patient> patients = new List<Domain.Models.Patient>();
     private string searchS = "";
 
     protected override async Task OnInitializedAsync()
@@ -104,9 +104,9 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private bool FilterS(Models.Patient patient) => FilterSearch(patient, searchS);
+    private bool FilterS(Domain.Models.Patient patient) => FilterSearch(patient, searchS);
 
-    private bool FilterSearch(Models.Patient patient, string searchString)
+    private bool FilterSearch(Domain.Models.Patient patient, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (patient.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;

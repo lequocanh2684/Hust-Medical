@@ -1,4 +1,3 @@
-
 namespace Patient_Health_Management_System.Controller
 {
     [Route("api/[controller]")]

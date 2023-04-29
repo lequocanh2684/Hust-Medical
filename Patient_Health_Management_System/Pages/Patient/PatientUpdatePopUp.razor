@@ -28,9 +28,9 @@
 
 
 @code {
-    private Forms.PatientForm patientForm = new Forms.PatientForm();
+    private PatientForm patientForm = new Domain.Forms.PatientForm();
 
-    private Models.Patient? patient = new Models.Patient();
+    private Domain.Models.Patient? patient = new Domain.Models.Patient();
 
     private string userId = new string("");
 
@@ -42,8 +42,8 @@
     protected override async Task OnInitializedAsync()
     {
         patient = await PatientService.GetPatientById(Id);
-        mapper = new MapperConfiguration(cfg => cfg.CreateMap<Models.Patient, Forms.PatientForm>()).CreateMapper();
-        patientForm = mapper.Map<Forms.PatientForm>(patient);
+        mapper = new MapperConfiguration(cfg => cfg.CreateMap<Domain.Models.Patient, PatientForm>()).CreateMapper();
+        patientForm = mapper.Map<PatientForm>(patient);
         patientForm.DateOfBirth = patientForm.DateOfBirth.GetValueOrDefault().ToLocalTime();
         await GetUserId();
     }

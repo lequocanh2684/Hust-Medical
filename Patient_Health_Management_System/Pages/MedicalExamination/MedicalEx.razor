@@ -11,7 +11,7 @@
     <Authorized>
         <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
             <MudTable Items="@medicalExaminations" Hover="true" Bordered="true" Striped="true"
-                      Filter="new Func<Models.MedicalExamination, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+                      Filter="new Func<Domain.Models.MedicalExamination, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
                 <ToolBarContent>
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -23,12 +23,12 @@
 
                 <HeaderContent>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.MedicalExamination, object>(x=>x.MedicalExaminationId)">
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.MedicalExamination, object>(x=>x.MedicalExaminationId)">
                             Mã đơn khám
                         </MudTableSortLabel>
                     </MudTh>
                     @*<MudTh>
-                    <MudTableSortLabel SortBy="new Func<Models.MedicalExamination, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
+                    <MudTableSortLabel SortBy="new Func<Domain.Models.MedicalExamination, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
                     </MudTh>*@
                     <MudTh>Chức năng</MudTh>
                 </HeaderContent>
@@ -66,7 +66,7 @@
 
 
 @code {
-    private IEnumerable<Models.MedicalExamination> medicalExaminations = new List<Models.MedicalExamination>();
+    private IEnumerable<Domain.Models.MedicalExamination> medicalExaminations = new List<Domain.Models.MedicalExamination>();
     private string searchS = "";
 
     protected override async Task OnInitializedAsync()
@@ -104,9 +104,9 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private bool FilterS(Models.MedicalExamination medicalExam) => FilterSearch(medicalExam, searchS);
+    private bool FilterS(Domain.Models.MedicalExamination medicalExam) => FilterSearch(medicalExam, searchS);
 
-    private bool FilterSearch(Models.MedicalExamination medicalExam, string searchString)
+    private bool FilterSearch(Domain.Models.MedicalExamination medicalExam, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (medicalExam.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;

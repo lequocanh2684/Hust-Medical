@@ -29,7 +29,7 @@ namespace Patient_Health_Management_System.Services
                 throw new Exception(e.Message);
             }
         }
-        public async Task <MedicalExamination> CreateMedicalExamination(MedicalExaminationForm medicalExaminationForm, string userId)
+        public async Task<MedicalExamination> CreateMedicalExamination(MedicalExaminationForm medicalExaminationForm, string userId)
         {
             try
             {

@@ -11,7 +11,7 @@
     <Authorized>
         <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
             <MudTable Items="@prescriptions" Hover="true" Bordered="true" Striped="true"
-                      Filter="new Func<Models.Prescription, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+                      Filter="new Func<Domain.Models.Prescription, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
                 <ToolBarContent>
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -23,12 +23,12 @@
 
                 <HeaderContent>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Prescription, object>(x=>x.PrescriptionId)">
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Prescription, object>(x=>x.PrescriptionId)">
                             Mã đơn thuốc
                         </MudTableSortLabel>
                     </MudTh>
                     @*<MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Prescription, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Prescription, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
                     </MudTh>*@
                     <MudTh>Chức năng</MudTh>
                 </HeaderContent>
@@ -66,7 +66,7 @@
 
 
 @code {
-    private IEnumerable<Models.Prescription> prescriptions = new List<Models.Prescription>();
+    private IEnumerable<Domain.Models.Prescription> prescriptions = new List<Domain.Models.Prescription>();
     private string searchS = "";
 
     protected override async Task OnInitializedAsync()
@@ -104,9 +104,9 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private bool FilterS(Models.Prescription prescription) => FilterSearch(prescription, searchS);
+    private bool FilterS(Domain.Models.Prescription prescription) => FilterSearch(prescription, searchS);
 
-    private bool FilterSearch(Models.Prescription prescription, string searchString)
+    private bool FilterSearch(Domain.Models.Prescription prescription, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;

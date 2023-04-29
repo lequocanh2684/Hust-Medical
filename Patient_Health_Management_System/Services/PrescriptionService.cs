@@ -115,7 +115,7 @@
                     throw new Exception("Prescription not found");
                 }
                 else
-                {  
+                {
                     prescription.Note = prescriptionForm.Note;
                     prescription.MedicineIds = prescriptionForm.MedicineIds;
                     prescription.UpdatedAt = DateTime.Now;

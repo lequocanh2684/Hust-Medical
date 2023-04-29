@@ -1,4 +1,4 @@
-namespace Patient_Health_Management_System.Models
+namespace Patient_Health_Management_System.Domain.Models
 {
     public class MedicalExamination
     {
@@ -15,22 +15,22 @@ namespace Patient_Health_Management_System.Models
         public string DiseaseId { get; set; }
 
         [BsonElement("height")]
-        public int Height {get; set;}
+        public int Height { get; set; }
 
         [BsonElement("weight")]
-        public int Weight {get; set;}
+        public int Weight { get; set; }
 
         [BsonElement("blood_pressure")]
-        public string? BloodPressure {get; set;}
+        public string? BloodPressure { get; set; }
 
         [BsonElement("vascular_index")]
-        public string? VascularIndex {get; set;}
+        public string? VascularIndex { get; set; }
 
         [BsonElement("body_temperature")]
-        public string? BodyTemperature {get; set;}
+        public string? BodyTemperature { get; set; }
 
         [BsonElement("breathing_rate")]
-        public string? BreathingRate {get; set;}
+        public string? BreathingRate { get; set; }
 
         [BsonElement("note")]
         public string? Note { get; set; }

@@ -26,6 +26,7 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IMedicalExaminationService, MedicalExaminationService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IBillingService, BillingService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
         }
 
         public static void AddAuthentication(this WebApplicationBuilder builder)

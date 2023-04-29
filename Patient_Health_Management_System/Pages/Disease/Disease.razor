@@ -12,7 +12,7 @@
         <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
 
             <MudTable Items="@diseases" Hover="true" Bordered="true" Striped="true"
-                Filter="new Func<Models.Disease, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+                Filter="new Func<Domain.Models.Disease, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
                 <ToolBarContent>
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -24,14 +24,14 @@
 
                 <HeaderContent>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.DiseaseId)">Mã bệnh
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Disease, object>(x=>x.DiseaseId)">Mã bệnh
                         </MudTableSortLabel>
                     </MudTh>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.Name)">Tên bệnh</MudTableSortLabel>
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Disease, object>(x=>x.Name)">Tên bệnh</MudTableSortLabel>
                     </MudTh>
                     <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Models.Disease, object>(x=>x.GroupName)">Tên nhóm bệnh
+                        <MudTableSortLabel SortBy="new Func<Domain.Models.Disease, object>(x=>x.GroupName)">Tên nhóm bệnh
                         </MudTableSortLabel>
                     </MudTh>
                     <MudTh>Chức năng</MudTh>
@@ -69,7 +69,7 @@
 </AuthorizeView>
 
 @code{
-    private IEnumerable<Models.Disease> diseases = new List<Models.Disease>();
+    private IEnumerable<Domain.Models.Disease> diseases = new List<Domain.Models.Disease>();
     private string searchS = "";
 
     protected override async Task OnInitializedAsync()
@@ -100,9 +100,9 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private bool FilterS(Models.Disease disease) => FilterSearch(disease, searchS);
+    private bool FilterS(Domain.Models.Disease disease) => FilterSearch(disease, searchS);
 
-    private bool FilterSearch(Models.Disease disease, string searchString)
+    private bool FilterSearch(Domain.Models.Disease disease, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (disease.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
