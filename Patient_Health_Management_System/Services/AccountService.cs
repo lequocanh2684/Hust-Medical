@@ -15,14 +15,14 @@ namespace Patient_Health_Management_System.Services
             client_secret = configuration.GetSection("Auth0").GetSection("ClientSecret").Value;
         }
 
-        public async Task<string> TokenGenerator()
+        public async Task<Auth0Token> TokenGenerator()
         {
             var client = new RestClient($"https://{domain}/oauth/token");
             var request = new RestRequest();
             request.AddHeader("content-type", "application/json");
             request.AddJsonBody($"{{\"client_id\":\"{client_id}\",\"client_secret\":\"{client_secret}\",\"audience\":\"https://{domain}/api/v2/\",\"grant_type\":\"client_credentials\"}}");
             var response = await client.PostAsync<Auth0Token>(request);
-            return response.access_token;
+            return response;
         }
 
         public async Task<UserResponse> GetUserResponseById(string id, string access_token)
@@ -34,5 +34,10 @@ namespace Patient_Health_Management_System.Services
             var response = await client.GetAsync<UserResponse>(request);
             return response;
         }
+
+        // public async Task<bool> IsExpired(this string access_token)
+        // {
+
+        // }
     }
 }

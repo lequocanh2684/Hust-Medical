@@ -27,6 +27,7 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IBillingService, BillingService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<Medicine>>());
         }
 
         public static void AddAuthentication(this WebApplicationBuilder builder)

@@ -1,41 +1,32 @@
-@page "/temp"
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@layout MainLayout
+@page "/"
+@using Microsoft.Extensions.Logging
+@inject ILogger<Domain.Models.Medicine> Logger 
 
-<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
-    <MudTable Items="@userClaim" Hover="true" Bordered="true" Striped="true">
-        <HeaderContent>
-            <MudTh>Claim Type</MudTh>
-            <MudTh>Claim Value</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Claim Type">@context.Type</MudTd>
-            <MudTd DataLabel="Claim Value">@context.Value</MudTd>
-        </RowTemplate>
-    </MudTable>
-</MudPaper>
+<button @onclick="LogInformation">Log information (and trigger a render)</button>
 
 @code {
+    private string message = "Initial assigned message.";
 
-    private string userId;
-
-    private IEnumerable<Claim> userClaim;
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnAfterRender(bool firstRender)
     {
-        await GetUserId();
+        Logger.LogInformation("OnAfterRender(1): firstRender: " +
+            "{FirstRender}, message: {Message}", firstRender, message);
+
+        if (firstRender)
+        {
+            message = "Executed for the first render.";
+        }
+        else
+        {
+            message = "Executed after the first render.";
+        }
+
+        Logger.LogInformation("OnAfterRender(2): firstRender: " +
+            "{FirstRender}, message: {Message}", firstRender, message);
     }
 
-    private async Task GetUserId()
+    private void LogInformation()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        Logger.LogInformation("LogInformation called");
     }
 }
