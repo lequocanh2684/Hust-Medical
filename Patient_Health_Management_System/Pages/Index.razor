@@ -1,26 +1,21 @@
-﻿@page "/index"
+﻿@page "/"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject IAccountService AccountService
 
 @code{
 
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var value = await ProtectedLocalStorage.GetAsync<string>("access_token");
-            if (String.IsNullOrEmpty(value.Value))
+            var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+            if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
             {
                 var auth0Token = await AccountService.TokenGenerator();
                 await ProtectedLocalStorage.SetAsync("access_token", auth0Token.access_token);
-                await ProtectedLocalStorage.SetAsync("expire_in", auth0Token.expires_in);
             }
             StateHasChanged();
         }
     }
-
-    
 }
-

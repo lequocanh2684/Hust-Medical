@@ -3,18 +3,21 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject IAccountService AccountService
+@inject IDialogService DialogService
 @layout MainLayout
 
+
+
 <MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
-    <MudTextField Label="Name" @bind-Value="userResponse.Name" ReadOnly="true"></MudTextField>
-    <MudTextField Label="Email" @bind-Value="userResponse.Email" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Name" Value="@userResponse.Name" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Email" Value="@userResponse.Email" ReadOnly="true"></MudTextField>
     <MudAvatar Size="Size.Medium" Rounded="true">
         <MudImage Src="@userResponse.Picture"/>
     </MudAvatar>
 </MudPaper>
 
 @code{
-    private string userId;
+    private string userId = new string("");
 
     private UserResponse userResponse = new UserResponse();
 
@@ -24,7 +27,16 @@
         {
             await GetUserId();
             var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
-            userResponse = await AccountService.GetUserResponseById(userId, access_token.Value);
+            if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
+            {
+                var auth0Token = await AccountService.TokenGenerator();
+                await ProtectedLocalStorage.SetAsync("access_token", auth0Token.access_token);
+                userResponse = await AccountService.GetUserResponseById(userId, access_token.Value);
+            }
+            else
+            {
+                userResponse = await AccountService.GetUserResponseById(userId, access_token.Value);
+            }
             StateHasChanged();
         }
     }
