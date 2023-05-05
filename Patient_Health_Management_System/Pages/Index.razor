@@ -14,6 +14,7 @@
             {
                 var auth0Token = await AccountService.TokenGenerator();
                 await ProtectedLocalStorage.SetAsync("access_token", auth0Token.access_token);
+                await OnAfterRenderAsync(firstRender);
             }
             StateHasChanged();
         }

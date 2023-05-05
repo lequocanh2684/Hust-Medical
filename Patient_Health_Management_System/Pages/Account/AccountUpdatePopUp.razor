@@ -1,9 +1,9 @@
 ﻿@using RestSharp;
-@using RestSharp.Authenticators;
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ProtectedLocalStorage ProtectedLocalStorage
-@inject AccountService AccountService
+@inject IAccountService AccountService
+@inject IUserService UserService
 @inject IMapper Mapper
 
 <MudDialog>
@@ -14,8 +14,10 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@userForm.Name" Label="Mã bệnh" ReadOnly="true" />
-        <MudTextField @bind-Value="@userForm.Email" Label="Tên bệnh" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.Name" Label="Họ và tên" ReadOnly="true" />
+        <MudTextField @bind-Value="@userForm.Email" Label="Email" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" />
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
@@ -26,22 +28,20 @@
 @code {
     private UserForm userForm = new UserForm();
 
+    private AccountForm accountForm = new AccountForm();
+
     private string userId = new string("");
 
     [Parameter]
-    public UserResponse userResponse { get; set; }
+    public User user { get; set; }
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if(firstRender)
-        {
-            Mapper = new MapperConfiguration(cfg => cfg.CreateMap<UserResponse, UserForm>()).CreateMapper();
-            userForm = Mapper.Map<UserForm>(userResponse);
-            await GetUserId();
-            StateHasChanged();
-        }
+        Mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper();
+        userForm = Mapper.Map<UserForm>(user);
+        await GetUserId();
     }
 
     private void Cancel()
@@ -51,8 +51,17 @@
 
     private async Task Submit()
     {
+        Mapper = new MapperConfiguration(cfg => cfg.CreateMap<UserForm, AccountForm>()).CreateMapper();
+        accountForm = Mapper.Map<AccountForm>(userForm);
+        await UserService.UpdateUserByUserId(userForm, userId);
         var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
-        await AccountService.UpdateUserById(userId, access_token.Value, userForm);
+        if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
+        {
+            var newToken = await AccountService.TokenGenerator();
+            await ProtectedLocalStorage.SetAsync("access_token", newToken.access_token);
+            access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+        }
+        await AccountService.UpdateUserById(userId, access_token.Value, accountForm);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

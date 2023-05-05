@@ -57,7 +57,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task UpdateUserById(string id, string access_token, UserForm userForm)
+        public async Task UpdateUserById(string id, string access_token, AccountForm accountForm)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Patient_Health_Management_System.Services
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
-                request.AddJsonBody(userForm);
+                request.AddJsonBody(accountForm);
                 await client.PatchAsync(request);
             }
             catch (Exception ex)
@@ -82,16 +82,11 @@ namespace Patient_Health_Management_System.Services
                 IJwtValidator _validator = new JwtValidator(_serializer, _provider);
                 IJwtDecoder decoder = new JwtDecoder(_serializer, _validator, _urlEncoder, _algorithm);
                 var _token = decoder.DecodeToObject<Auth0Token>(access_token);
-                DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(_token.expires_in);
-                if (dateTimeOffset.LocalDateTime >= DateTime.Now)
-                {
-                    return true;
-                }
-                else return false;
+                return false;
             }
             catch (TokenExpiredException tee)
             {
-                throw new TokenExpiredException(tee.Message);
+                return true;
             }
             catch (SignatureVerificationException sve)
             {

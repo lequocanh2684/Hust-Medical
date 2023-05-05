@@ -74,9 +74,9 @@
         medicalExaminations = await medicalExamService.GetMedicalExaminations();
     }
 
-    private async Task ShowDetail(string Id)
+    private async Task ShowDetail(string id)
     {
-        var parameter = new DialogParameters { ["Id"] = Id };
+        var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicalExDetailPopUp>("Thông tin đơn khám", parameter);
         var result = await dialog.Result;
     }

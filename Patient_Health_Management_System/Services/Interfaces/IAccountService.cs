@@ -6,7 +6,7 @@ namespace Patient_Health_Management_System.Services.Interfaces
 
         Task<UserResponse> GetUserResponseById(string id, string access_token);
 
-        Task UpdateUserById(string id, string access_token, UserForm userForm);
+        Task UpdateUserById(string id, string access_token, AccountForm accountForm);
 
         bool IsExpired(string access_token);
     }

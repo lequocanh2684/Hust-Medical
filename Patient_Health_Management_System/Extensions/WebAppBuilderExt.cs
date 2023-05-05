@@ -17,7 +17,7 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IPatientRepo, PatientRepo>();
             builder.Services.AddScoped<IBillingRepo, BillingRepo>();
             builder.Services.AddScoped<IRoleRepo, RoleRepo>();
-            builder.Services.AddScoped<IUserExtraInfoRepo, UserExtraInfoRepo>();
+            builder.Services.AddScoped<IUserRepo, UserRepo>();
         }
 
         public static void AddServices(this WebApplicationBuilder builder)
@@ -30,7 +30,7 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IBillingService, BillingService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IUserExtraInfoService, UserExtraInfoService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<Medicine>>());
         }
 

@@ -2,26 +2,33 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ProtectedLocalStorage ProtectedLocalStorage
-@inject IAccountService AccountService
+@inject IUserService UserService
 @inject IDialogService DialogService
 @layout MainLayout
 
 
 
 <MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
-    <MudTextField Label="Name" Value="@userResponse.Name" ReadOnly="true"></MudTextField>
-    <MudTextField Label="Email" Value="@userResponse.Email" ReadOnly="true"></MudTextField>
-    <MudAvatar Size="Size.Medium" Rounded="true">
-        <MudImage Src="@userResponse.Picture"/>
-    </MudAvatar>
+    <MudTextField Label="Name" Value="@user.Name" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Email" Value="@user.Email" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Phone" Value="@user.PhoneNumber" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Address" Value="@user.Address" ReadOnly="true"></MudTextField>
+    @* <MudAvatar Size="Size.Medium" Rounded="true">
+        <MudImage Src=""/>
+    </MudAvatar> *@
+    <MudField>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa</MudButton>
+    </MudField>    
 </MudPaper>
 
 @code{
     private string userId = new string("");
 
-    private UserResponse userResponse = new UserResponse();
+    private User user = new User();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    //private UserResponse userResponse = new UserResponse();
+
+    @* protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
@@ -39,6 +46,20 @@
             }
             StateHasChanged();
         }
+    } *@
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+        user = await UserService.GetUserByUserId(userId);
+    }
+
+    private async Task ShowUpdate(User user)
+    {
+        var parameter = new DialogParameters { ["User"] = user };
+        var dialog = await DialogService.ShowAsync<AccountUpdatePopUp>("Chỉnh sửa thông tin tài khoản", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task GetUserId()

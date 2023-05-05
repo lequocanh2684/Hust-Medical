@@ -1,0 +1,73 @@
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMedicalExaminationService MedicalExaminationService
+@inject IDialogService DialogService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            Thêm thông tin đơn thuốc
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@medicalExaminationForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.DiseaseId" Label="Mã bệnh" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.BloodPressure" Label="Huyết áp" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.VascularIndex" Label="Mạch" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.BodyTemperature" Label="Thân nhiệt" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.BreathingRate" Label="Nhịp thở" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.Note" Label="Ghi chú" ReadOnly="false" />
+        <MudButton Variant="Variant.Outlined" OnClick="@(_ => ShowDisease())">Thêm bệnh</MudButton>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code{
+
+    private MedicalExaminationForm medicalExaminationForm = new MedicalExaminationForm();
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private string userId = new string("");
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task ShowDisease()
+    {
+        await DialogService.Show<Patient_Health_Management_System.Pages.Disease.Disease>("Thêm bệnh").Result;
+    }
+
+    private async Task Submit()
+    {
+        await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
+    }
+
+}

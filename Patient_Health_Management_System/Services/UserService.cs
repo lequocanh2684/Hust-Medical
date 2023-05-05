@@ -1,19 +1,19 @@
 ﻿namespace Patient_Health_Management_System.Services
 {
-    public class UserExtraInfoService : IUserExtraInfoService
+    public class UserService : IUserService
     {
-        private readonly IUserExtraInfoRepo _userExtraInfoRepo;
+        private readonly IUserRepo _userRepo;
 
-        public UserExtraInfoService(IUserExtraInfoRepo userExtraInfoRepo)
+        public UserService(IUserRepo userRepo)
         {
-            _userExtraInfoRepo = userExtraInfoRepo;
+            _userRepo = userRepo;
         }
 
-        public async Task<UserExtraInfo> GetExtraInfoByUserId(string userId)
+        public async Task<User> GetUserByUserId(string userId)
         {
             try
             {
-                return await _userExtraInfoRepo.GetExtraInfoByUserId(userId);
+                return await _userRepo.GetUserByUserId(userId);
             }
             catch (Exception e)
             {
@@ -21,16 +21,18 @@
             }
         }
 
-        public async Task<UserExtraInfo> CreateExtraInfo(UserExtraInfoForm userExtraInfoForm, string userId)
+        public async Task<User> CreateUser(UserForm userForm, string userId)
         {
             try
             {
-                var uei = new UserExtraInfo()
+                var uei = new User()
                 {
                     UserId = userId,
-                    Address = userExtraInfoForm.Address,
-                    PhoneNumber = userExtraInfoForm.PhoneNumber,
-                    RoleId = userExtraInfoForm.RoleId,
+                    Name = userForm.Name,
+                    Email = userForm.Email,
+                    Address = userForm.Address,
+                    PhoneNumber = userForm.PhoneNumber,
+                    RoleId = userForm.RoleId,
                     CreatedBy = userId,
                     CreatedAt = DateTime.Now,
                     UpdatedBy = null,
@@ -39,7 +41,7 @@
                     DeletedBy = null,
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt)
                 };
-                return await _userExtraInfoRepo.CreateExtraInfo(uei);
+                return await _userRepo.CreateUser(uei);
             }
             catch (Exception ex)
             {
@@ -47,23 +49,25 @@
             }
         }
 
-        public async Task UpdateExtraInfoByUserId(UserExtraInfoForm userExtraInfoForm, string userId)
+        public async Task UpdateUserByUserId(UserForm userForm, string userId)
         {
             try
             {
-                var uei = await _userExtraInfoRepo.GetExtraInfoByUserId(userId);
+                var uei = await _userRepo.GetUserByUserId(userId);
                 if (uei == null)
                 {
                     throw new Exception("Extra info not found");
                 }
                 else
                 {
-                    uei.Address = userExtraInfoForm.Address;
-                    uei.PhoneNumber = userExtraInfoForm.PhoneNumber;
-                    uei.RoleId = userExtraInfoForm.RoleId;
+                    uei.Name = userForm.Name;
+                    uei.Email = userForm.Email;
+                    uei.Address = userForm.Address;
+                    uei.PhoneNumber = userForm.PhoneNumber;
+                    uei.RoleId = userForm.RoleId;
                     uei.UpdatedBy = userId;
                     uei.UpdatedAt = DateTime.Now;
-                    await _userExtraInfoRepo.ModifyExtraInfoById(uei);
+                    await _userRepo.ModifyUserByUserId(uei);
                 }
             }
             catch (Exception ex)
@@ -72,11 +76,11 @@
             }
         }
 
-        public async Task DeleteExtraInfoByUserId(string userId)
+        public async Task DeleteUserByUserId(string userId)
         {
             try
             {
-                var uei = await _userExtraInfoRepo.GetExtraInfoByUserId(userId);
+                var uei = await _userRepo.GetUserByUserId(userId);
                 if (uei == null)
                 {
                     throw new Exception("Extra info not found");
@@ -86,7 +90,7 @@
                     uei.IsDeleted = true;
                     uei.DeletedBy = userId;
                     uei.DeletedAt = DateTime.Now;
-                    await _userExtraInfoRepo.ModifyExtraInfoById(uei);
+                    await _userRepo.ModifyUserByUserId(uei);
                 }
             }
             catch (Exception ex)

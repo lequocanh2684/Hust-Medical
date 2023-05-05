@@ -1,12 +1,18 @@
 ﻿namespace Patient_Health_Management_System.Domain.Models
 {
-    public class UserExtraInfo
+    public class User
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 
         [BsonElement("user_id")]
         public string UserId { get; set; }
+
+        [BsonElement("name")]
+        public string Name { get; set; }
+
+        [BsonElement("email")]
+        public string Email { get; set; }
 
         [BsonElement("address")]
         public string Address { get; set; }
