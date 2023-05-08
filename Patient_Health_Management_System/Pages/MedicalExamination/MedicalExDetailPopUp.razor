@@ -1,0 +1,63 @@
+﻿@inject IMedicalExaminationService MedicalExaminationService
+@inject IDiseaseService DiseaseService
+@inject IPatientService PatientService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3 mb-n1" />
+            Thông tin chi tiết khám
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@medicalExamination.MedicalExaminationId" Label="Mã đơn khám" ReadOnly="true" />
+        <MudTextField @bind-Value="@patientId" Label="Mã bệnh nhân" ReadOnly="true" />
+        <MudTextField @bind-Value="@patientName" Label="Tên bệnh nhân" ReadOnly="true" />
+        <MudTextField @bind-Value="@diseaseName" Label="Triệu chứng" ReadOnly="true" />
+        <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExamination.Height" Label="Chiều cao (cm)" ReadOnly="true" />
+        <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExamination.Weight" Label="Cân nặng (kg)" ReadOnly="true" />
+        <MudTextField @bind-Value="@medicalExamination.BloodPressure" Label="Huyết áp (mmHg)" ReadOnly="true" />
+        <MudTextField @bind-Value="@medicalExamination.VascularIndex" Label="Mạch (lần/ph)" ReadOnly="true" />
+        <MudTextField @bind-Value="@medicalExamination.BodyTemperature" Label="Thân nhiệt (độ C)" ReadOnly="true" />
+        <MudTextField @bind-Value="@medicalExamination.BreathingRate" Label="Nhịp thở (lần/ph)" ReadOnly="true" />
+        <MudTextField @bind-Value="@medicalExamination.Note" Label="Ghi chú" ReadOnly="true" />
+    </DialogContent>
+</MudDialog>
+
+
+@code{
+
+    private Domain.Models.MedicalExamination medicalExamination = new Domain.Models.MedicalExamination();
+
+    private string patientName = new string("");
+
+    private string patientId = new string("");
+
+    private string diseaseName = new string("");
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        medicalExamination = await MedicalExaminationService.GetMedicalExaminationById(Id);
+        await GetPatientNameAndId();
+        await GetDiseaseName();
+    }
+
+    private async Task GetPatientNameAndId()
+    {
+        var patient = await PatientService.GetPatientById(medicalExamination.PatientId);
+        patientName = patient.Name;
+        patientId = patient.PatientId;
+    }
+
+    private async Task GetDiseaseName()
+    {
+        var disease = await DiseaseService.GetDiseaseById(medicalExamination.DiseaseId);
+        diseaseName = disease.Name;
+    }
+
+}

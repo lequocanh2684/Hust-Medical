@@ -9,7 +9,7 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
+        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px; margin-top:60px">
             <MudTable Items="@medicalExaminations" Hover="true" Bordered="true" Striped="true"
                       Filter="new Func<Domain.Models.MedicalExamination, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
@@ -33,7 +33,7 @@
                     <MudTh>Chức năng</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    <MudTd DataLabel="Mã đơn thuốc">@context.MedicalExaminationId</MudTd>
+                    <MudTd DataLabel="Mã đơn khám">@context.MedicalExaminationId</MudTd>
                     @*<MudTd DataLabel="Tên bệnh nhân">@context.Name</MudTd>*@
                     <MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"

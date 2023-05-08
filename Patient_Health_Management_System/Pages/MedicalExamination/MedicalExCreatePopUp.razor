@@ -1,25 +1,28 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicalExaminationService MedicalExaminationService
-@inject IDialogService DialogService
+@inject IDiseaseService DiseaseService
+@inject IPatientService PatientService
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
-            Thêm thông tin đơn thuốc
+            Thêm thông tin đơn khám
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@medicalExaminationForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.DiseaseId" Label="Mã bệnh" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.BloodPressure" Label="Huyết áp" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.VascularIndex" Label="Mạch" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.BodyTemperature" Label="Thân nhiệt" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.BreathingRate" Label="Nhịp thở" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.MedicalExaminationId" Label="Mã đơn khám" ReadOnly="false" />
+        <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
+                         SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
+        <MudAutocomplete T="string" Label="Triệu chứng" @bind-Value="searchDisease"
+                         SearchFunc="@OnSearchDisease" ResetValueOnEmptyText="true" MaxItems="null" />
+        <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao (cm)" ReadOnly="false" />
+        <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng (kg)" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.BloodPressure" Label="Huyết áp (mmHg)" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.VascularIndex" Label="Mạch (lần/ph)" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.BodyTemperature" Label="Thân nhiệt (độ C)" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicalExaminationForm.BreathingRate" Label="Nhịp thở (lần/ph)" ReadOnly="false" />
         <MudTextField @bind-Value="@medicalExaminationForm.Note" Label="Ghi chú" ReadOnly="false" />
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => ShowDisease())">Thêm bệnh</MudButton>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
@@ -31,12 +34,22 @@
 
     private MedicalExaminationForm medicalExaminationForm = new MedicalExaminationForm();
 
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    private List<Domain.Models.Disease> diseases = new List<Domain.Models.Disease>();
+
+    private List<Domain.Models.Patient> patients = new List<Domain.Models.Patient>();
+
+    private string searchDisease = new string("");
+
+    private string searchPatient = new string("");
 
     private string userId = new string("");
+    
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        diseases = await DiseaseService.GetDiseases();
+        patients = await PatientService.GetPatients();
         await GetUserId();
     }
 
@@ -45,17 +58,35 @@
         MudDialog.Cancel();
     }
 
-    private async Task ShowDisease()
-    {
-        await DialogService.Show<Patient_Health_Management_System.Pages.Disease.Disease>("Thêm bệnh").Result;
-    }
-
     private async Task Submit()
     {
+        medicalExaminationForm.DiseaseId = diseases.Where(d => d.Name == searchDisease).FirstOrDefault().Id;
+        medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
         await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
         MudDialog.Close(DialogResult.Ok(true));
     }
 
+    private async Task<IEnumerable<string>> OnSearchPatient(string searchPatient)
+    {
+        if (string.IsNullOrEmpty(searchPatient))
+        {
+            return patients.Select(d => d.Name);
+        }
+        return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
+                                   d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
+                       .Select(d => d.Name);
+    }
+
+    private async Task<IEnumerable<string>> OnSearchDisease(string searchDisease)
+    {   
+        if (string.IsNullOrEmpty(searchDisease))
+        {
+            return diseases.Select(d => d.Name);
+        }
+        return diseases.Where(d => d.Name.Contains(searchDisease, StringComparison.InvariantCultureIgnoreCase) ||
+                                   d.DiseaseId.Contains(searchDisease, StringComparison.InvariantCultureIgnoreCase))
+                       .Select(d => d.Name);
+    }
 
     private async Task GetUserId()
     {

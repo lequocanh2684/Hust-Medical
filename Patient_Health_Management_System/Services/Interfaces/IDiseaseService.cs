@@ -9,6 +9,5 @@ namespace Patient_Health_Management_System.Services.Interfaces
         Task<Disease> CreateDisease(DiseaseForm diseaseForm, string userId);
         Task UpdateDiseaseById(string id, DiseaseForm diseaseForm, string userId);
         Task DeleteDiseaseById(string id, string userId);
-
     }
 }
