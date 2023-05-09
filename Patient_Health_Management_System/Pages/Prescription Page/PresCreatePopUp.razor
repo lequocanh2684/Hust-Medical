@@ -1,7 +1,9 @@
 @page "/prescription/create"
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IPrescriptionService prescriptionService
 @inject IMedicineService MedicineService
+@inject IPatientService PatientService
 
 <MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
     <MudText Typo="Typo.h6">
@@ -10,13 +12,14 @@
     </MudText>
 
     <MudTextField @bind-Value="@prescriptionForm.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="false" />
-    <MudTextField @bind-Value="@prescriptionForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
+    <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
+               SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
     <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
 
-    <MudTable @ref="mudTable" Items="@medicines" MultiSelection="true" 
-    Hover="true" Bordered="true" Striped="true" 
-    Filter="new Func<Domain.Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" 
-    @bind-SelectOnRowClick="true" OnRowClick="@SelectOnRowClicked">
+    <MudTable @ref="mudTable" T="Medicine" Items="@medicines" MultiSelection="true" 
+              Hover="true" Bordered="true" Striped="true"
+              Filter="new Func<Domain.Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By"
+              @bind-SelectOnRowClick="@selectOnRowClick" @bind-SelectedItems="selectedMedicines">
         <ToolBarContent>
             <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search" Adornment="Adornment.Start"
                 AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -75,31 +78,45 @@
     private PrescriptionForm prescriptionForm = new Domain.Forms.PrescriptionForm();
     private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
     private IEnumerable<Medicine> medicines = new List<Medicine>();
-    private IEnumerable<Medicine> selectedMedicines = new List<Medicine>();
+    private IEnumerable<Patient> patients = new List<Patient>();
+    private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
     private MudTable<Medicine> mudTable;
     private string userId = new string("");
     private string searchS = new string("");
+    private string searchPatient = new string("");
+    private bool selectOnRowClick = true;
 
     protected override async Task OnInitializedAsync()
     {
+        medicines = await MedicineService.GetMedicines();
+        patients = await PatientService.GetPatients();
         medicineGroups = await MedicineService.GetMedicineGroups();
         await GetUserId();
     }
 
     private async Task Submit()
     {
+        prescriptionForm.MedicineIds = selectedMedicines.Select(m => m.Id).ToList();
+        prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
         await prescriptionService.CreatePrescription(prescriptionForm, userId);
+        NavigationManager.NavigateTo("/prescription");
     }
+
+    private async Task<IEnumerable<string>> OnSearchPatient(string searchPatient)
+    {
+        if (string.IsNullOrEmpty(searchPatient))
+        {
+            return patients.Select(d => d.Name);
+        }
+        return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
+                                   d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
+                       .Select(d => d.Name);
+    }
+
     private async Task FilterByMedicineGroupName(string? medicineGroupName)
     {
         if (string.IsNullOrWhiteSpace(medicineGroupName)) medicines = await MedicineService.GetMedicines();
         else medicines = await MedicineService.GetMedicineByGroupName(medicineGroupName);
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task SelectOnRowClicked()
-    {
-        selectedMedicines = mudTable.SelectedItems.ToList();
         await InvokeAsync(StateHasChanged);
     }
 

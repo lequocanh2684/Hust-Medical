@@ -13,7 +13,7 @@
         {
             try
             {
-                return await _prescriptions.Find(prescription => true).ToListAsync();
+                return await _prescriptions.Find(prescription => !prescription.IsDeleted).ToListAsync();
             }
             catch (Exception e)
             {
