@@ -2,6 +2,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IPrescriptionService prescriptionService
 @inject IDialogService DialogService
+@inject NavigationManager NavigationManager
 @layout MainLayout
 
 <AuthorizeView Context="contextAuthorize">
@@ -9,7 +10,7 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
+        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px; margin-top:60px">
             <MudTable Items="@prescriptions" Hover="true" Bordered="true" Striped="true"
                       Filter="new Func<Domain.Models.Prescription, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
@@ -83,9 +84,7 @@
 
     private async Task ShowAdd()
     {
-        var dialog = DialogService.Show<PresCreatePopUp>("Thêm đơn thuốc");
-        var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        NavigationManager.NavigateTo("/prescription/create");
     }
 
     private async Task ShowUpdate(string id)

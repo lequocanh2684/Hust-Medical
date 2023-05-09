@@ -1,0 +1,131 @@
+@page "/prescription/create"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IPrescriptionService prescriptionService
+@inject IMedicineService MedicineService
+
+<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
+    <MudText Typo="Typo.h6">
+        <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+        Thêm thông tin đơn thuốc
+    </MudText>
+
+    <MudTextField @bind-Value="@prescriptionForm.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="false" />
+    <MudTextField @bind-Value="@prescriptionForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
+    <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
+
+    <MudTable @ref="mudTable" Items="@medicines" MultiSelection="true" 
+    Hover="true" Bordered="true" Striped="true" 
+    Filter="new Func<Domain.Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" 
+    @bind-SelectOnRowClick="true" OnRowClick="@SelectOnRowClicked">
+        <ToolBarContent>
+            <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search" Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
+            <MudTh>Đơn vị</MudTh>
+            <MudTh>Cách dùng</MudTh>
+        </HeaderContent>
+        <RowTemplate >
+            <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
+            <MudTd DataLabel="Tên">@context.Name</MudTd>
+            <MudTd DataLabel="Đơn vị">@context.Unit</MudTd>
+            <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+        <NoRecordsContent>
+            <MudText>Không tìm thấy dữ liệu</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>Loading...</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+    <MudDataGrid Items="@selectedMedicines">
+        <Columns>
+        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc"/>
+        <PropertyColumn Property="m => m.Name" Title="Tên thuốc"/>
+        </Columns>
+    </MudDataGrid>
+
+    <MudExpansionPanel IsExpanded="true" HideIcon="true">
+        <TitleContent>
+            <MudText>Nhóm thuốc</MudText>
+        </TitleContent>
+        <ChildContent>
+            <MudList Clickable="true">
+                <MudListItem Text="Tất cả" OnClick="(e) => FilterByMedicineGroupName(null)" />
+                @foreach (var item in medicineGroups)
+                {
+                    <MudListItem Text=@item.Name OnClick="(e) => FilterByMedicineGroupName(item.Name)" />
+                }
+            </MudList>
+        </ChildContent>
+    </MudExpansionPanel>
+    <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+</MudPaper>
+
+@code {
+    private PrescriptionForm prescriptionForm = new Domain.Forms.PrescriptionForm();
+    private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
+    private IEnumerable<Medicine> medicines = new List<Medicine>();
+    private IEnumerable<Medicine> selectedMedicines = new List<Medicine>();
+    private MudTable<Medicine> mudTable;
+    private string userId = new string("");
+    private string searchS = new string("");
+
+    protected override async Task OnInitializedAsync()
+    {
+        medicineGroups = await MedicineService.GetMedicineGroups();
+        await GetUserId();
+    }
+
+    private async Task Submit()
+    {
+        await prescriptionService.CreatePrescription(prescriptionForm, userId);
+    }
+    private async Task FilterByMedicineGroupName(string? medicineGroupName)
+    {
+        if (string.IsNullOrWhiteSpace(medicineGroupName)) medicines = await MedicineService.GetMedicines();
+        else medicines = await MedicineService.GetMedicineByGroupName(medicineGroupName);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SelectOnRowClicked()
+    {
+        selectedMedicines = mudTable.SelectedItems.ToList();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private bool FilterS(Domain.Models.Medicine medicine) => FilterSearch(medicine, searchS);
+
+    private bool FilterSearch(Domain.Models.Medicine medicine, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (medicine.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.MedicineId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.HowToUse?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.Unit?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.SellingPrice.ToString().Equals(searchString) == true) return true;
+        return false;
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaim = authState.User.Claims;
+        foreach (var item in userClaim)
+        {
+            if (item.Type == ClaimTypes.NameIdentifier)
+            {
+                userId = item.Value;
+            }
+        }
+    }
+}
