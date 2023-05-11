@@ -1,7 +1,7 @@
 @page "/prescription/create"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
-@inject IPrescriptionService prescriptionService
+@inject IPrescriptionService PrescriptionService
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
 
@@ -16,39 +16,23 @@
                SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
     <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
 
-    <MudTable @ref="mudTable" T="Medicine" Items="@medicines" MultiSelection="true" 
-              Hover="true" Bordered="true" Striped="true"
-              Filter="new Func<Domain.Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By"
-              @bind-SelectOnRowClick="@selectOnRowClick" @bind-SelectedItems="selectedMedicines">
-        <ToolBarContent>
-            <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search" Adornment="Adornment.Start"
-                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.Name)">Tên</MudTableSortLabel></MudTh>
-            <MudTh>Đơn vị</MudTh>
-            <MudTh>Cách dùng</MudTh>
-        </HeaderContent>
-        <RowTemplate >
-            <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
-            <MudTd DataLabel="Tên">@context.Name</MudTd>
-            <MudTd DataLabel="Đơn vị">@context.Unit</MudTd>
-            <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-        <NoRecordsContent>
-            <MudText>Không tìm thấy dữ liệu</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>Loading...</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
+    <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS"
+    Hideable="true" @bind-SelectedItems="@selectedMedicines">
+    <ToolBarContent>
+        <MudTextField @bind-Value="searchS" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <SelectColumn T="Medicine" />
+        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" Sortable="false" Filterable="false" />
+        <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
+        <PropertyColumn Property="m => m.Unit" Title="Đơn vị"/>
+        <PropertyColumn Property="m => m.HowToUse" Title="Cách dùng"/>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="Medicine" />
+    </PagerContent>
+    </MudDataGrid>
 
     <MudDataGrid Items="@selectedMedicines">
         <Columns>
@@ -84,7 +68,6 @@
     private string userId = new string("");
     private string searchS = new string("");
     private string searchPatient = new string("");
-    private bool selectOnRowClick = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -98,7 +81,7 @@
     {
         prescriptionForm.MedicineIds = selectedMedicines.Select(m => m.Id).ToList();
         prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
-        await prescriptionService.CreatePrescription(prescriptionForm, userId);
+        await PrescriptionService.CreatePrescription(prescriptionForm, userId);
         NavigationManager.NavigateTo("/prescription");
     }
 
@@ -129,7 +112,6 @@
         if (medicine.MedicineId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         if (medicine.HowToUse?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         if (medicine.Unit?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (medicine.SellingPrice.ToString().Equals(searchString) == true) return true;
         return false;
     }
 

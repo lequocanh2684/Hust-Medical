@@ -1,5 +1,5 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IPrescriptionService prescriptionService
+@inject IPrescriptionService PrescriptionService
 
 <MudDialog>
     <DialogContent>
@@ -37,7 +37,7 @@
 
     private async Task Submit()
     {
-        await prescriptionService.DeletePrescriptionById(Id, userId);
+        await PrescriptionService.DeletePrescriptionById(Id, userId);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

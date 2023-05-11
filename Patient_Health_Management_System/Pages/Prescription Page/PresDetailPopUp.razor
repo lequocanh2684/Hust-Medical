@@ -1,4 +1,4 @@
-@inject IPrescriptionService prescriptionService
+@inject IPrescriptionService PrescriptionService
 
 <MudDialog>
     <TitleContent>
@@ -24,7 +24,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        prescription = await prescriptionService.GetPrescriptionById(Id);
+        prescription = await PrescriptionService.GetPrescriptionById(Id);
     }
 
     private void Cancel()

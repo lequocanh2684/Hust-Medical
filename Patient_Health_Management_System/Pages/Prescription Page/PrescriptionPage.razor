@@ -1,6 +1,6 @@
 ﻿@page "/prescription"
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IPrescriptionService prescriptionService
+@inject IPrescriptionService PrescriptionService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @layout MainLayout
@@ -15,7 +15,7 @@
                       Filter="new Func<Domain.Models.Prescription, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
                 <ToolBarContent>
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => CreateNewPresciption()">Thêm</MudButton>
                     <MudSpacer />
                     <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
                                   Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
@@ -38,7 +38,7 @@
                     @*<MudTd DataLabel="Tên bệnh nhân">@context.Name</MudTd>*@
                     <MudTd>
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                       OnClick="(e) => ShowUpdate(context.Id)" />
+                                       OnClick="(e) => UpdatePresciption(context.Id)" />
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                        OnClick="(e) => ShowDelete(context.Id)" />
                         <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium" OnClick="(e) => ShowDetail(context.Id)" />
@@ -72,7 +72,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        prescriptions = await prescriptionService.GetPrescriptions();
+        prescriptions = await PrescriptionService.GetPrescriptions();
     }
 
     private async Task ShowDetail(string Id)
@@ -82,17 +82,14 @@
         var result = await dialog.Result;
     }
 
-    private async Task ShowAdd()
+    private async Task CreateNewPresciption()
     {
         NavigationManager.NavigateTo("/prescription/create");
     }
 
-    private async Task ShowUpdate(string id)
+    private async Task UpdatePresciption(string id)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
-        var dialog = DialogService.Show<PresUpdatePopUp>("Sửa thông tin đơn thuốc", parameter);
-        var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        NavigationManager.NavigateTo("/prescription/update/" + id);
     }
 
     private async Task ShowDelete(string id)
