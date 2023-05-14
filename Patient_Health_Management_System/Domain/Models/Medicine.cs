@@ -52,5 +52,8 @@
 
         [BsonElement("deleted_by")]
         public string? DeletedBy { get; set; }
+
+        [BsonIgnore]
+        public int BuyingQuantity { get; set; }
     }
 }

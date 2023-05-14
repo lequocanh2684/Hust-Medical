@@ -44,7 +44,6 @@
                     BillId = billingForm.BillId,
                     PatientId = billingForm.PatientId,
                     PrescriptionId = billingForm.PrescriptionId,
-                    MedicinePrescribed = billingForm.MedicinePrescribed,
                     TotalPrice = billingForm.TotalPrice,
                     PaymentMethod = new string(""),
                     IsPaid = false,
@@ -77,7 +76,6 @@
                 }
                 else
                 {
-                    bill.MedicinePrescribed = billingForm.MedicinePrescribed;
                     bill.TotalPrice = billingForm.TotalPrice;
                     bill.UpdatedAt = DateTime.Now;
                     bill.UpdatedBy = userId;

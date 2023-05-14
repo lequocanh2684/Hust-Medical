@@ -86,7 +86,7 @@
                         PrescriptionId = prescriptionForm.PrescriptionId,
                         PatientId = prescriptionForm.PatientId,
                         Note = prescriptionForm.Note,
-                        MedicineIds = prescriptionForm.MedicineIds,
+                        MedicinePrescribed = prescriptionForm.MedicinePrescribed,
                         CreatedAt = DateTime.Now,
                         CreatedBy = userId,
                         UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
@@ -117,7 +117,7 @@
                 else
                 {
                     prescription.Note = prescriptionForm.Note;
-                    prescription.MedicineIds = prescriptionForm.MedicineIds;
+                    prescription.MedicinePrescribed = prescriptionForm.MedicinePrescribed;
                     prescription.UpdatedAt = DateTime.Now;
                     prescription.UpdatedBy = userId;
                     await _presriptionRepo.ModifyPrescriptionById(prescription);

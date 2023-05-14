@@ -37,8 +37,10 @@
 
     <MudDataGrid Items="@selectedMedicines">
         <Columns>
-        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc"/>
-        <PropertyColumn Property="m => m.Name" Title="Tên thuốc"/>
+            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" />
+            <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
+            <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
+            <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="true" />
         </Columns>
     </MudDataGrid>
 
@@ -69,14 +71,13 @@
     private IEnumerable<Medicine> medicines = new List<Medicine>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
-    private MudTable<Medicine> mudTable;
     private string userId = new string("");
     private string searchS = new string("");
     private string searchPatient = new string("");
 
     protected override async Task OnInitializedAsync()
     {
-        prescription = await PrescriptionService.GetPrescriptionById(id);
+        prescription = await PrescriptionService.GetPrescriptionById(Id);
         mapper = new MapperConfiguration(cfg => cfg.CreateMap<Prescription, PrescriptionForm>()).CreateMapper();
         prescriptionForm = mapper.Map<PrescriptionForm>(prescription);
         medicines = await MedicineService.GetMedicines();
@@ -89,7 +90,8 @@
 
     private async Task Submit()
     {
-        prescriptionForm.MedicineIds = selectedMedicines.Select(m => m.Id).ToList();
+        prescriptionForm.MedicinePrescribed = new MapperConfiguration(cfg => cfg.CreateMap<Medicine, MedicinePrescribed>()).CreateMapper()
+                                                                                                                           .Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
         prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
         await PrescriptionService.UpdatePrescriptionById(Id, prescriptionForm, userId);
         NavigationManager.NavigateTo("/prescription");
@@ -113,7 +115,7 @@
 
     private void GetSelectedMedicines()
     {
-        selectedMedicines = medicines.Where(m => prescriptionForm.MedicineIds.Contains(m.Id)).ToHashSet();
+        selectedMedicines = medicines.Where(m => prescriptionForm.MedicinePrescribed.Select(mp => mp.MedicineId).Contains(m.Id)).ToHashSet();
     }
 
     private async Task FilterByMedicineGroupName(string? medicineGroupName)

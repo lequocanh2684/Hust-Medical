@@ -8,8 +8,6 @@
 
         public string PrescriptionId { get; set; }
 
-        public List<MedicinePrescribed> MedicinePrescribed { get; set; }
-
         public int TotalPrice { get; set; }
     }
 }

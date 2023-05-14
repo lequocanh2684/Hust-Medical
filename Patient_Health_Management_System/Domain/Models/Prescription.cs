@@ -35,7 +35,7 @@
         [BsonElement("deleted_by")]
         public string? DeletedBy { get; set; }
 
-        [BsonElement("medicine_ids")]
-        public List<string> MedicineIds { get; set; }
+        [BsonElement("medicine_prescribed")]
+        public List<MedicinePrescribed> MedicinePrescribed { get; set; }
     }
 }

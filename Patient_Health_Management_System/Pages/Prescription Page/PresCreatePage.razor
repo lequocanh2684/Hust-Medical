@@ -23,7 +23,7 @@
             AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="Medicine" />
+        <SelectColumn T="Medicine"/>
         <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" Sortable="false" Filterable="false" />
         <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
         <PropertyColumn Property="m => m.Unit" Title="Đơn vị"/>
@@ -34,10 +34,12 @@
     </PagerContent>
     </MudDataGrid>
 
-    <MudDataGrid Items="@selectedMedicines">
+    <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell">
         <Columns>
-        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc"/>
-        <PropertyColumn Property="m => m.Name" Title="Tên thuốc"/>
+            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
+            <PropertyColumn Property="m => m.Name" Title="Tên thuốc" IsEditable="false" />
+            <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" IsEditable="true" />
+            <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false"/>
         </Columns>
     </MudDataGrid>
 
@@ -64,7 +66,6 @@
     private IEnumerable<Medicine> medicines = new List<Medicine>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
-    private MudTable<Medicine> mudTable;
     private string userId = new string("");
     private string searchS = new string("");
     private string searchPatient = new string("");
@@ -79,7 +80,7 @@
 
     private async Task Submit()
     {
-        prescriptionForm.MedicineIds = selectedMedicines.Select(m => m.Id).ToList();
+        //prescriptionForm.MedicinePrescribed
         prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
         await PrescriptionService.CreatePrescription(prescriptionForm, userId);
         NavigationManager.NavigateTo("/prescription");

@@ -22,7 +22,7 @@
 
         public async Task<List<Billing>> GetBillings()
         {
-            return await _billing.Find(b => true).ToListAsync();
+            return await _billing.Find(b => !b.IsDeleted).ToListAsync();
         }
 
         public async Task ModifyBillingById(Billing billing)
