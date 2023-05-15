@@ -5,7 +5,7 @@ namespace Patient_Health_Management_System.Domain.Models
         [BsonElement("medicine_id")]
         public string MedicineId { get; set; }
 
-        [BsonElement("quantity")]
+        [BsonElement("buying_quantity")]
         public int BuyingQuantity { get; set; }
 
         [BsonElement("selling_price")]

@@ -1,4 +1,5 @@
 @inject IPrescriptionService PrescriptionService
+@inject IPatientService PatientService
 
 <MudDialog>
     <TitleContent>
@@ -9,13 +10,16 @@
     </TitleContent>
     <DialogContent>
         <MudTextField Value="@prescription.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="true" />
+        <MudTextField Value="@prescription.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
         <MudTextField Value="@prescription.Note" Label="Ghi chú" ReadOnly="true" />
+        <MudTextField Value="@prescription.CreatedAt" Label="Ngày tạo" ReadOnly="true" />
     </DialogContent>
 </MudDialog>
 
 
 @code {
     private Domain.Models.Prescription prescription = new Domain.Models.Prescription();
+    private Patient patient = new Patient();
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -25,6 +29,7 @@
     protected override async Task OnInitializedAsync()
     {
         prescription = await PrescriptionService.GetPrescriptionById(Id);
+        patient = await PatientService.GetPatientById(prescription.PatientId);
     }
 
     private void Cancel()

@@ -13,34 +13,34 @@
     </MudText>
 
     <MudTextField @bind-Value="@prescriptionForm.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="false" />
-    <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
-               SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
+    <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient" SearchFunc="@OnSearchPatient"
+        ResetValueOnEmptyText="true" MaxItems="null" />
     <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
 
-    <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS"
-    Hideable="true" @bind-SelectedItems="@selectedMedicines">
-    <ToolBarContent>
-        <MudTextField @bind-Value="searchS" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <Columns>
-        <SelectColumn T="Medicine" />
-        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" Sortable="false" Filterable="false" />
-        <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
-        <PropertyColumn Property="m => m.Unit" Title="Đơn vị"/>
-        <PropertyColumn Property="m => m.HowToUse" Title="Cách dùng"/>
-    </Columns>
-    <PagerContent>
-        <MudDataGridPager T="Medicine" />
-    </PagerContent>
+    <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true"
+        QuickFilter="@FilterS" Hideable="true" @bind-SelectedItems="@selectedMedicines">
+        <ToolBarContent>
+            <MudTextField @bind-Value="searchS" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <Columns>
+            <SelectColumn T="Medicine" />
+            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" Sortable="false" Filterable="false" />
+            <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
+            <PropertyColumn Property="m => m.Unit" Title="Đơn vị" />
+            <PropertyColumn Property="m => m.HowToUse" Title="Cách dùng" />
+        </Columns>
+        <PagerContent>
+            <MudDataGridPager T="Medicine" />
+        </PagerContent>
     </MudDataGrid>
 
-    <MudDataGrid Items="@selectedMedicines">
+    <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell">
         <Columns>
-            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" />
-            <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
-            <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
-            <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="true" />
+            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
+            <PropertyColumn Property="m => m.Name" Title="Tên thuốc" IsEditable="false" />
+            <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" IsEditable="true" />
+            <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false"/>
         </Columns>
     </MudDataGrid>
 
@@ -90,8 +90,10 @@
 
     private async Task Submit()
     {
-        prescriptionForm.MedicinePrescribed = new MapperConfiguration(cfg => cfg.CreateMap<Medicine, MedicinePrescribed>()).CreateMapper()
-                                                                                                                           .Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
+        var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Medicine, MedicinePrescribed>()
+            .ForMember(mp => mp.MedicineId, opt => opt.MapFrom(m => m.Id)))
+            .CreateMapper();
+        prescriptionForm.MedicinePrescribed = mapper.Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
         prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
         await PrescriptionService.UpdatePrescriptionById(Id, prescriptionForm, userId);
         NavigationManager.NavigateTo("/prescription");
@@ -104,8 +106,8 @@
             return patients.Select(d => d.Name);
         }
         return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
-                                   d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
-                       .Select(d => d.Name);
+        d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
+        .Select(d => d.Name);
     }
 
     private void GetPatientName()
@@ -116,6 +118,11 @@
     private void GetSelectedMedicines()
     {
         selectedMedicines = medicines.Where(m => prescriptionForm.MedicinePrescribed.Select(mp => mp.MedicineId).Contains(m.Id)).ToHashSet();
+        foreach (var item in selectedMedicines)
+        {
+            item.BuyingQuantity = prescriptionForm.MedicinePrescribed.Where(mp => mp.MedicineId == item.Id).FirstOrDefault().BuyingQuantity;
+            item.SellingPrice = prescriptionForm.MedicinePrescribed.Where(mp => mp.MedicineId == item.Id).FirstOrDefault().SellingPrice;
+        }
     }
 
     private async Task FilterByMedicineGroupName(string? medicineGroupName)

@@ -4,6 +4,7 @@
 @inject IPrescriptionService PrescriptionService
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
+@inject IMapper mapper
 
 <MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
     <MudText Typo="Typo.h6">
@@ -80,7 +81,10 @@
 
     private async Task Submit()
     {
-        //prescriptionForm.MedicinePrescribed
+        var mapper = new MapperConfiguration(cfg => cfg.CreateMap<Medicine, MedicinePrescribed>()
+            .ForMember(mp => mp.MedicineId, opt => opt.MapFrom(m => m.Id)))
+            .CreateMapper();
+        prescriptionForm.MedicinePrescribed = mapper.Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
         prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
         await PrescriptionService.CreatePrescription(prescriptionForm, userId);
         NavigationManager.NavigateTo("/prescription");
