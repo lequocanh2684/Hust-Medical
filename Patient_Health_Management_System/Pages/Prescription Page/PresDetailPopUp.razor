@@ -1,4 +1,5 @@
 @inject IPrescriptionService PrescriptionService
+@inject IMedicineService MedicineService
 @inject IPatientService PatientService
 
 <MudDialog>
@@ -10,9 +11,18 @@
     </TitleContent>
     <DialogContent>
         <MudTextField Value="@prescription.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="true" />
-        <MudTextField Value="@prescription.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@patient.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@patient.Name" Label="Họ tên bệnh nhân" ReadOnly="true" />
         <MudTextField Value="@prescription.Note" Label="Ghi chú" ReadOnly="true" />
-        <MudTextField Value="@prescription.CreatedAt" Label="Ngày tạo" ReadOnly="true" />
+        <MudTextField Value="@prescription.CreatedAt.ToLocalTime()" Label="Ngày tạo" ReadOnly="true" />
+
+        <MudDataGrid Items="@prescription.MedicinePrescribed">
+            <Columns>
+                <PropertyColumn Property="m => m.Name" Title="Tên thuốc"/>
+                <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng"/>
+                <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán"/>
+            </Columns>
+        </MudDataGrid>
     </DialogContent>
 </MudDialog>
 
