@@ -111,6 +111,29 @@
             }
         }
 
+        public async Task UpdateIsPaidById(string id, bool isPaid, string userId)
+        {
+            try
+            {
+                var bill = await _billingRepo.GetBillingById(id);
+                if (bill == null)
+                {
+                    throw new Exception("Billing not found");
+                }
+                else
+                {
+                    bill.IsPaid = isPaid;
+                    bill.PaidAt = DateTime.Now;
+                    bill.PaidBy = userId;
+                    await _billingRepo.ModifyBillingById(bill);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private void ValidateBillingForm(BillingForm billingForm)
         {
             var regex = new Regex(@"^HD[0-9]{8}$");

@@ -7,5 +7,7 @@
         Task<Billing> CreateBilling(BillingForm billingForm, string userId);
         Task UpdateBillingById(string id, BillingForm billingForm, string userId);
         Task DeleteBillingById(string id, string userId);
+
+        Task UpdateIsPaidById(string id, bool isPaid, string userId);
     }
 }

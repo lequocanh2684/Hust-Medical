@@ -14,5 +14,6 @@ global using Patient_Health_Management_System.Repositories;
 global using Patient_Health_Management_System.Repositories.Interfaces;
 global using Patient_Health_Management_System.Services;
 global using Patient_Health_Management_System.Services.Interfaces;
+//global using Patient_Health_Management_System.Services.BackgroundServices;
 global using System.Security.Claims;
 global using AutoMapper;
