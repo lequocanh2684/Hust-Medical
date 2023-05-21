@@ -1,0 +1,102 @@
+﻿@inject IBillingService BillingService
+@inject IPatientService PatientService
+@inject IPrescriptionService PrescriptionService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            Cập nhật hóa đơn
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@Bill.BillId" Label="Mã hóa đơn" ReadOnly="true" />
+        <MudTextField Value="@patient.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@patient.Name" Label="Tên bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@prescription.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="true" />
+        <MudDataGrid Items="@prescription.MedicinePrescribed" ReadOnly="true" >
+            <Columns>
+                <PropertyColumn Property="m => m.Name" Title="Tên thuốc"/>
+                <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
+                <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán"/>
+            </Columns>
+        </MudDataGrid>
+        <MudTextField Value="@totalBillCost" Label="Tổng tiền (đơn vị: đồng)" ReadOnly="true" />
+        <MudSelect T="string" Label="Trạng thái thanh toán" AnchorOrigin="Origin.BottomCenter" @bind-Value="@isPaid">
+            <MudSelectItem Value="@("Chưa thanh toán")" />
+            <MudSelectItem Value="@("Đã thanh toán")" />
+        </MudSelect>
+        @if (isPaid == "Đã thanh toán")
+        {
+            <MudSelect T="string" Label="Phương thức thanh toán" AnchorOrigin="Origin.BottomCenter" @bind-Value="Bill.PaymentMethod">
+                <MudSelectItem Value="@("Tiền mặt")" />
+            <MudSelectItem Value="@("Chuyển khoản ngân hàng")" />
+        </MudSelect>
+        }
+        @if(Bill.IsPaid)
+        {
+            <MudTextField Value="@Bill.PaidAt.ToLocalTime().ToString("dd/MM/yyyy hh:mm tt")" Label="Ngày thanh toán" ReadOnly="true" />
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+    </DialogActions>
+</MudDialog>
+
+    @code {
+    [Parameter]
+    public Billing Bill { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private Patient patient = new Patient();
+
+    private Prescription prescription = new Prescription();
+
+    private int totalBillCost = 0;
+
+    private string isPaid = new string("");
+
+    protected override async Task OnInitializedAsync()
+    {
+        patient = await PatientService.GetPatientById(Bill.PatientId);
+        prescription = await PrescriptionService.GetPrescriptionById(Bill.PrescriptionId);
+        GetTotalBillCost();
+        GetBillIsPaidStatus();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+
+    }
+
+    private void GetTotalBillCost()
+    {
+        foreach (var item in prescription.MedicinePrescribed)
+        {
+            totalBillCost += item.SellingPrice * item.BuyingQuantity;
+        }
+    }
+
+    private void GetBillIsPaidStatus()
+    {
+        if(Bill.IsPaid)
+        {
+            isPaid = "Đã thanh toán";
+        }
+        else
+        {
+            isPaid = "Chưa thanh toán";
+        }
+    }
+}

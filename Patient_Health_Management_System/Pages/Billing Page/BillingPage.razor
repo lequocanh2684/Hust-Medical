@@ -36,15 +36,15 @@
                 <MudChip Color="context.IsPaid ? Color.Success : Color.Error">@(context.IsPaid ? "Đã thanh toán" : "Chưa thanh toán")</MudChip>
             </MudTd>
             <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Paid" Color="Color.Error" Size="Size.Medium"
-                                       OnClick="(e) => UpdateIsPaid(context.Id)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                       OnClick="(e) => ShowUpdate(context)" />
             </MudTd>
         </RowTemplate>
     </MudTable>
 </MudPaper>
 
-@code {
-private IEnumerable<Billing> billings = new List<Billing>();
+    @code {
+    private IEnumerable<Billing> billings = new List<Billing>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = new string("");
     private string userId = new string("");
@@ -63,9 +63,12 @@ private IEnumerable<Billing> billings = new List<Billing>();
         }, null, 0, 1000);
     }
 
-    private async Task UpdateIsPaid(string id)
+    private async Task ShowUpdate(Billing billing)
     {
-        await BillingService.UpdateIsPaidById(id, true, userId);
+        var parameter = new DialogParameters { ["Bill"] = billing, ["UserId"] = userId };
+        var dialog = DialogService.Show<BillingUpdatePopUp>("Cập nhật hoá đơn", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
     }
 
     private bool FilterS(Billing billing) => FilterSearch(billing, searchS);
