@@ -14,9 +14,6 @@ namespace Patient_Health_Management_System.Domain.Models
         [BsonElement("prescription_id")]
         public string PrescriptionId { get; set; }
 
-        [BsonElement("total_price")]
-        public int TotalPrice { get; set; }
-
         [BsonElement("payment_method")]
         public string? PaymentMethod { get; set; }
 

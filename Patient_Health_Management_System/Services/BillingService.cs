@@ -44,7 +44,6 @@
                     BillId = billingForm.BillId,
                     PatientId = billingForm.PatientId,
                     PrescriptionId = billingForm.PrescriptionId,
-                    TotalPrice = billingForm.TotalPrice,
                     PaymentMethod = new string(""),
                     IsPaid = false,
                     PaidAt = DateTime.Parse(DefaultVariable.PaidAt),
@@ -76,7 +75,6 @@
                 }
                 else
                 {
-                    bill.TotalPrice = billingForm.TotalPrice;
                     bill.UpdatedAt = DateTime.Now;
                     bill.UpdatedBy = userId;
                     await _billingRepo.ModifyBillingById(bill);
@@ -111,7 +109,7 @@
             }
         }
 
-        public async Task UpdateIsPaidById(string id, bool isPaid, string userId)
+        public async Task UpdatePayingStatusById(string id, BillingForm billingForm, string userId)
         {
             try
             {
@@ -122,7 +120,8 @@
                 }
                 else
                 {
-                    bill.IsPaid = isPaid;
+                    bill.IsPaid = billingForm.IsPaid;
+                    bill.PaymentMethod = billingForm.PaymentMethod;
                     bill.PaidAt = DateTime.Now;
                     bill.PaidBy = userId;
                     await _billingRepo.ModifyBillingById(bill);

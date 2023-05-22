@@ -62,7 +62,8 @@ namespace Patient_Health_Management_System.Extensions
      options.SaveTokens = true;
      options.TokenValidationParameters = new TokenValidationParameters
      {
-         NameClaimType = "name",
+        NameClaimType = "name",
+        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
      };
 
      options.Events = new OpenIdConnectEvents

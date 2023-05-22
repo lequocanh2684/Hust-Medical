@@ -77,7 +77,13 @@
 
     private async Task Submit()
     {
-
+        var billingForm = new BillingForm()
+        {
+            IsPaid = (isPaid == "Đã thanh toán") ? true : false,
+            PaymentMethod = Bill.PaymentMethod,
+        };
+        await BillingService.UpdatePayingStatusById(Bill.Id, billingForm, UserId);
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     private void GetTotalBillCost()

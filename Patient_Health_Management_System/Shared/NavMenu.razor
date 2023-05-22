@@ -11,7 +11,7 @@
             <Authorized>
                 <MudIconButton Href="" Color="Color.Inherit" Icon="@Icons.Material.Filled.Person">
                 </MudIconButton>
-                <form method="post" action="Account/LogOut">
+                <form method="post" action="Account/Logout">
                     <MudIconButton ButtonType="ButtonType.Submit" Color="Color.Inherit"
                         Icon="@Icons.Material.Filled.Logout"></MudIconButton>
                 </form>
@@ -24,6 +24,7 @@
         </MudDrawerHeader>
         <MudNavMenu>
             <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store">Trang chủ</MudNavLink>
+            <AuthorizeView Roles="Doctor">
             <MudNavLink Href="medicine" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks">Quản lý
                 thuốc</MudNavLink>
             <MudNavLink Href="disease" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dangerous">Quản lý bệnh tật
@@ -37,6 +38,11 @@
             <MudNavLink Href="prescription" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Sick">
                 Quản lý đơn thuốc
             </MudNavLink>
+            </AuthorizeView>
+            <AuthorizeView Roles="Cashier">
+                <MudNavLink Href="billing" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Paid">Quản lý
+                hoá đơn</MudNavLink>
+            </AuthorizeView>
         </MudNavMenu>
     </MudDrawer>
 </MudLayout>

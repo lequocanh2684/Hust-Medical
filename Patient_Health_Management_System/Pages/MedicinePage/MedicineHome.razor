@@ -1,4 +1,5 @@
 ﻿@page "/medicine"
+@attribute [Authorize(Roles = "Doctor")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicineService MedicineService
 @inject IDialogService DialogService

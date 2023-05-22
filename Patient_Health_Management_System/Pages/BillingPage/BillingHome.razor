@@ -1,4 +1,5 @@
 ﻿@page "/billing"
+@attribute [Authorize(Roles = "Cashier")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IBillingService BillingService
 @inject IPatientService PatientService
@@ -43,7 +44,7 @@
     </MudTable>
 </MudPaper>
 
-    @code {
+@code {
     private IEnumerable<Billing> billings = new List<Billing>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = new string("");
@@ -60,7 +61,7 @@
                 patients = await PatientService.GetPatients();
                 StateHasChanged();
             });
-        }, null, 0, 1000);
+        }, null, 0, 10000);
     }
 
     private async Task ShowUpdate(Billing billing)
