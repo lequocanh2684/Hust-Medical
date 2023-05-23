@@ -6,16 +6,21 @@
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 
-<MudPaper Style="overflow:hidden; position:relative; margin-left:56px; margin-top:60px">
-    <MudTable Items="billings" Hover="true" Bordered="true" Striped="true" Filter="new Func<Billing, bool>(FilterS)"
-        Breakpoint="Breakpoint.Sm" SortLabel="SortBy">
-        <ToolBarContent>
-            <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px; margin-top:60px">
+            <MudTable Items="billings" Hover="true" Bordered="true" Striped="true" Filter="new Func<Billing, bool>(FilterS)"
+            Breakpoint="Breakpoint.Sm" SortLabel="SortBy">
+            <ToolBarContent>
+                <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
                 Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                 Class="mt-0"></MudTextField>
-        </ToolBarContent>
+            </ToolBarContent>
 
-        <HeaderContent>
+            <HeaderContent>
             <MudTh>Mã hoá đơn</MudTh>
             <MudTh>Mã bệnh nhân</MudTh>
             <MudTh>Tên bệnh nhân</MudTh>
@@ -26,8 +31,8 @@
             </MudTh>
             <MudTh>Tình trạng thanh toán</MudTh>
             <MudTh>Chức năng</MudTh>
-        </HeaderContent>
-        <RowTemplate>
+            </HeaderContent>
+            <RowTemplate>
             <MudTd DataLabel="Mã hoá đơn">@context.BillId</MudTd>
             <MudTd DataLabel="Mã bệnh nhân">@patients.Where(p => p.Id.Equals(context.PatientId)).First().PatientId
             </MudTd>
@@ -37,12 +42,14 @@
                 <MudChip Color="context.IsPaid ? Color.Success : Color.Error">@(context.IsPaid ? "Đã thanh toán" : "Chưa thanh toán")</MudChip>
             </MudTd>
             <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                       OnClick="(e) => ShowUpdate(context)" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                               OnClick="(e) => ShowUpdate(context)" />
             </MudTd>
-        </RowTemplate>
-    </MudTable>
-</MudPaper>
+            </RowTemplate>
+            </MudTable>
+        </MudPaper>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private IEnumerable<Billing> billings = new List<Billing>();

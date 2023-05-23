@@ -16,7 +16,6 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IMedicalExaminationRepo, MedicalExaminationRepo>();
             builder.Services.AddScoped<IPatientRepo, PatientRepo>();
             builder.Services.AddScoped<IBillingRepo, BillingRepo>();
-            builder.Services.AddScoped<IRoleRepo, RoleRepo>();
             builder.Services.AddScoped<IUserRepo, UserRepo>();
         }
 
@@ -29,7 +28,6 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<IBillingService, BillingService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<Medicine>>());
         }
