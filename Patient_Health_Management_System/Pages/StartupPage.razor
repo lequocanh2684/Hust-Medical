@@ -1,0 +1,18 @@
+﻿@page "/"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@layout LoginLayout
+
+
+@code {
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (authState.User.Identity.IsAuthenticated)
+		{
+			NavigationManager.NavigateTo("/Home");
+		}
+		else NavigationManager.NavigateTo("/auth/login");
+	}
+}

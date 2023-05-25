@@ -1,5 +1,4 @@
-﻿global using Microsoft.AspNetCore.Http;
-global using Microsoft.EntityFrameworkCore;
+﻿global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc;
 global using System.ComponentModel.DataAnnotations;
 global using System.Text.RegularExpressions;
@@ -14,6 +13,5 @@ global using Patient_Health_Management_System.Repositories;
 global using Patient_Health_Management_System.Repositories.Interfaces;
 global using Patient_Health_Management_System.Services;
 global using Patient_Health_Management_System.Services.Interfaces;
-//global using Patient_Health_Management_System.Services.BackgroundServices;
 global using System.Security.Claims;
 global using AutoMapper;

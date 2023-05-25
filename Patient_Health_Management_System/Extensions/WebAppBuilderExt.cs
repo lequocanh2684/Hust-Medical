@@ -40,7 +40,10 @@ namespace Patient_Health_Management_System.Extensions
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 }
-).AddCookie()
+).AddCookie(option =>
+{
+    option.LoginPath = "/auth/login";
+})
  .AddOpenIdConnect("Auth0", options =>
  {
      options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";

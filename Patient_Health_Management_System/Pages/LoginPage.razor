@@ -1,0 +1,37 @@
+﻿@page "/auth/login"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@layout LoginLayout
+
+<div class="d-flex justify-center align-center flex-column" style="height:100vh; --tw-bg-opacity:1; background-color:rgba(247,247,248,var(--tw-bg-opacity))">
+	<div class="d-flex flex-column align-center justify-center" style="flex: 1 1 auto; width:24rem">
+		<div style="margin-bottom:1.25rem">
+			<MudImage src="./assets/imgs/hospital.png" Style="width:81px; height:81px;" viewbox="0 0 41 41" fill="none"/>
+		</div>
+		<MudText Class="text-center" Style="margin-bottom:0.5rem; color:#000000; font-size:26px">Chăm sóc sức khỏe người bệnh</MudText>
+		<MudText Class="text-center" Style="margin-bottom:1rem; color:#000000">Đăng nhập bằng tài khoản của bạn để tiếp tục</MudText>
+		<div class="d-flex flex-row" style="gap:0.75rem">
+			<form method="get" action="/Account/Login">
+				<MudButton Style="position:relative; background-color:#10A37F; color:#ffffff;" DisableElevation="true" ButtonType="ButtonType.Submit" Variant="Variant.Filled">Đăng nhập</MudButton>
+			</form>
+			<MudButton Style="position:relative; background-color:#10A37F; color:#ffffff;" DisableElevation="true" Variant="Variant.Filled">Liên hệ</MudButton>
+		</div>
+	</div>
+	<div style="font-size:0.75rem; line-height:1rem; padding-bottom:0.75rem; padding-top:0.75rem">
+		<a href="https://auth0.com/web-terms" style="margin-left:0.75rem; margin-right:0.75rem; --tw-text-opacity: 1; color: rgba(142,142,160,var(--tw-text-opacity))">Terms of use</a>
+		<span style="--tw-text-opacity: 1; color: rgba(86,88,105,var(--tw-text-opacity))">|</span>
+		<a href="https://www.okta.com/privacy-policy/" style="margin-left:0.75rem; margin-right:0.75rem; --tw-text-opacity: 1; color: rgba(142,142,160,var(--tw-text-opacity))">Privacy policy</a>
+	</div>
+</div>
+
+@code {
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if(authState.User.Identity.IsAuthenticated)
+		{
+			NavigationManager.NavigateTo("/Home");
+		}
+	}
+}

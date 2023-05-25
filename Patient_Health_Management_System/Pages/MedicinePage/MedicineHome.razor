@@ -10,9 +10,10 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-<MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
 
-    <MudTable Items="@medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Domain.Models.Medicine, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+
+    <MudTable Elevation="2" Items="@medicines" Hover="true" Bordered="true" Striped="true" Filter="new Func<Domain.Models.Medicine, bool>(FilterS)"
+              RowsPerPage="5" Breakpoint="Breakpoint.Sm" SortLabel="Sort By" Style="overflow:hidden; position:relative; margin-left:50px; margin-right:650px">
 
         <ToolBarContent>
             <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
@@ -59,7 +60,7 @@
         </PagerContent>
     </MudTable>
 
-    <MudExpansionPanel @bind-IsExpanded="isOpen" HideIcon="true">
+    <MudExpansionPanel Style="" @bind-IsExpanded="isOpen" HideIcon="true">
         <TitleContent>
             <MudText>Nhóm</MudText>
         </TitleContent>
@@ -73,7 +74,7 @@
             </MudList>
         </ChildContent>
     </MudExpansionPanel>
-</MudPaper>
+
     </Authorized>
 </AuthorizeView>
 
