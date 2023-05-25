@@ -5,7 +5,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>aspnet-Patient_Health_Management_System-599b8ea7-cc4e-48ec-ae13-0ca0a20e4078</UserSecretsId>
-		<UseRazorSourceGenerator>false</UseRazorSourceGenerator>
+		<UseRazorSourceGenerator>true</UseRazorSourceGenerator>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

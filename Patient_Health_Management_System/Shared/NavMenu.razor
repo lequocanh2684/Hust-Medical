@@ -1,7 +1,7 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MudPaper>
-    <MudDrawerContainer Class="mud-height-full">
+
+   
         <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Persistent" Color="Color.Transparent">
             <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%">
                 <div>
@@ -27,8 +27,8 @@
                 </div>
             </div>
         </MudDrawer>
-    </MudDrawerContainer>
-</MudPaper>
+
+
 
 
 @code {
@@ -64,7 +64,7 @@
                 ItemContent = "Trang chủ",
                 NavLinkItem = new MudNavLink()
                 {
-                    Href = "",
+                    Href = "/Home",
                     Icon = MudBlazor.Icons.Material.Filled.Store,
                 }
             });
