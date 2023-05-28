@@ -1,21 +1,14 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:27200",
-      "sslPort": 44331
-    }
-  },
   "profiles": {
     "Patient_Health_Management_System": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:44987",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "dotnetRunMessages": true
+      "applicationUrl": "https://localhost:44987",
+      "dotnetRunMessages": true,
+      "nativeDebugging": false
     },
     "IIS Express": {
       "commandName": "IISExpress",
@@ -23,6 +16,14 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:27200",
+      "sslPort": 44331
     }
   }
 }

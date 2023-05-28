@@ -1,35 +1,31 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 
-
-   
-        <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Persistent" Color="Color.Transparent">
-            <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%">
-                <div>
-                    <MudDrawerHeader>
-                        <MudText Typo="Typo.h6">My App</MudText>
-                    </MudDrawerHeader>
-                    <MudNavMenu Class="pl-5 pr-3">
-                        <AuthorizeView Roles="@role">
-                            @foreach (var item in NavItem)
-                            {
-                                <MudNavLink ActiveClass="mud-dark-text" style="@($"color:#9E9E9E; font-size:18px")" Class="rounded-xl ml-3 mt-3 mb-3"
-                                Href="@item.NavLinkItem.Href" Match="NavLinkMatch.All" Icon="@item.NavLinkItem.Icon">
-                                    @item.ItemContent</MudNavLink>
-                            }
-                        </AuthorizeView>
-                    </MudNavMenu>
-                </div>
-                <div style="padding-left:46px; padding-right:12px; margin-bottom:20px"> 
-                    <form method="post" action="Account/Logout">
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text" Color="Color.Secondary" Style="text-transform:none;"
-                            StartIcon="@Icons.Material.Filled.Logout">Đăng xuất</MudButton>
-                    </form>
-                </div>
-            </div>
-        </MudDrawer>
-
-
-
+<MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Persistent" Color="Color.Transparent">
+    <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%">
+        <div>
+            <MudDrawerHeader>
+                <MudText Typo="Typo.h6">My App</MudText>
+            </MudDrawerHeader>
+            <MudNavMenu Class="pl-5 pr-3">
+                <AuthorizeView Roles="@role">
+                    @foreach (var item in NavItem)
+                    {
+                        <MudNavLink ActiveClass="mud-dark-text" style="@($"color:#9E9E9E; font-size:18px")"
+                            Class="rounded-xl ml-3 mt-3 mb-3" Href="@item.NavLinkItem.Href" Match="NavLinkMatch.All"
+                            Icon="@item.NavLinkItem.Icon">
+                            @item.ItemContent</MudNavLink>
+                    }
+                </AuthorizeView>
+            </MudNavMenu>
+        </div>
+        <div style="padding-left:46px; padding-right:12px; margin-bottom:20px">
+            <form method="post" action="Account/Logout">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text" Color="Color.Secondary"
+                    Style="text-transform:none;" StartIcon="@Icons.Material.Filled.Logout">Đăng xuất</MudButton>
+            </form>
+        </div>
+    </div>
+</MudDrawer>
 
 @code {
     bool open = false;
