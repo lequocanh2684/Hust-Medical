@@ -32,8 +32,6 @@
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter]
-    public string Id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,13 +52,8 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.Role))
+        .SingleOrDefault().Value;
     }
 }

@@ -1,12 +1,12 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Persistent" Color="Color.Transparent">
-    <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%">
-        <div>
+    <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; margin-top:10px">
+        <div class="pl-5 pr-3">
             <MudDrawerHeader>
-                <MudText Typo="Typo.h6">My App</MudText>
+                <MudText Typo="Typo.h4">HustHosp</MudText>
             </MudDrawerHeader>
-            <MudNavMenu Class="pl-5 pr-3">
+            <MudNavMenu>
                 <AuthorizeView Roles="@role">
                     @foreach (var item in NavItem)
                     {

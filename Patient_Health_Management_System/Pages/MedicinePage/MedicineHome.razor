@@ -13,77 +13,17 @@
     </NotAuthorized>
     <Authorized>
         <div class="d-flex" style="flex:1">
-        <div class="d-flex" style="margin-top:80px; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
             <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px; flex:1">
             <MudText Typo="Typo.h6" Style="padding-bottom:10px">Các loại thuốc</MudText>
-            @*<MudTable Elevation="2" Items="@medicines" Hover="true" Bordered="true" Striped="true"
-                Filter="new Func<Medicine, bool>(FilterS)" FixedHeader="true" Breakpoint="Breakpoint.Sm"
-                SortLabel="Sort By"
-                Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
-                <ToolBarContent>
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
-                    <MudSpacer />
-                    <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Tìm kiếm"
-                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                        Class="mt-0"></MudTextField>
-                </ToolBarContent>
-                <HeaderContent>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.MedicineId)">Mã thuốc
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.Name)">Tên
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>Đơn vị</MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Medicine, object>(x=>x.SellingPrice)">Giá bán
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>Cách dùng</MudTh>
-                    <MudTh>Chức năng</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Mã thuốc">@context.MedicineId</MudTd>
-                    <MudTd DataLabel="Tên">@context.Name</MudTd>
-                    <MudTd DataLabel="Đơn vị">@context.Unit</MudTd>
-                    <MudTd DataLabel="Giá bán">@context.SellingPrice</MudTd>
-                    <MudTd DataLabel="Cách dùng">@context.HowToUse</MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                            OnClick="(e) => ShowUpdate(context.Id)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                            OnClick="(e) => ShowDelete(context.Id)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                            OnClick="(e) => ShowDetail(context.Id)" />
-                    </MudTd>
-                </RowTemplate>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-
-                <NoRecordsContent>
-                    <MudText>Không tìm thấy dữ liệu</MudText>
-                </NoRecordsContent>
-
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-            </MudTable>*@
 
                     <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                                  FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
-                                 Hideable="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                                 Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                         <ToolBarContent>
-                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm thuốc mới</MudButton>
+                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowMedicineCreate()">Thêm thuốc mới</MudButton>
                             <MudSpacer />
-                            <MudTextField @bind-Value="searchS" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                            <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm thuốc..." Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </ToolBarContent>
                         <Columns>
@@ -98,11 +38,11 @@
                                 <CellTemplate>
                                     <MudStack Row>
                                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                                   OnClick="(e) => ShowUpdate(context.Item.Id)" />
+                                                   OnClick="(e) => ShowMedicineUpdate(context.Item.Id)" />
                                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDelete(context.Item.Id)" />
+                                                   OnClick="(e) => ShowMedicineDelete(context.Item.Id)" />
                                         <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                                                       OnClick="(e) => ShowDetail(context.Item.Id)" />
+                                                       OnClick="(e) => ShowMedicineDetail(context.Item.Id)" />
                                     </MudStack>
                                 </CellTemplate>
                             </TemplateColumn>
@@ -121,37 +61,15 @@
             </div>
         </div>
 
-        <div class="d-flex" style="margin-top:80px; height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px">
             <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px">
             <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm thuốc</MudText>
 
-                @*<MudList Clickable="true" Style="border-radius:20px; overflow:auto; position:relative">
-                    <MudListItem Text="Tất cả" OnClick="(e) => FilterByMedicineGroupName(null)" />
-                    <MudDivider DividerType="DividerType.Middle" />
-                    @foreach (var item in medicineGroups)
-                    {
-                        <MudListItem Text=@item.Name OnClick="(e) => FilterByMedicineGroupName(item.Name)" />
-                        <MudDivider DividerType="DividerType.Middle" />
-                    }
-                </MudList>*@
-
-                <style>
-                    .selected {
-                        background-color: #1E88E5 !important;
-                    }
-                        .selected > td {
-                            color: white !important;
-                        }
-                            .selected > td .mud-input {
-                                color: white !important;
-                            }
-                </style>
-
-                <MudTable Elevation="2" T="MedicineGroup" Items="@medicineGroups" Hover="true" Bordered="true" Striped="true" FixedHeader="true"
+                <MudTable Elevation="2" T="MedicineGroup" Items="@medicineGroups" Bordered="true" Striped="true" FixedHeader="true"
                           SortLabel="Sort By" @ref="medicineGroupTable"
                           Style="overflow:auto; position:relative; border-radius:20px;" Height="650px">
                     <ToolBarContent>
-                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowMedicineGroupCreate()">Thêm</MudButton>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>Tên nhóm</MudTh>
@@ -161,9 +79,9 @@
                         <MudTd DataLabel="Tên nhóm">@context.Name</MudTd>
                         <MudTd>
                             <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                           OnClick="(e) => ShowUpdate(context.Id)" />
+                                               OnClick="(e) => ShowMedicineGroupUpdate(context.Id, context.Name)" />
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                           OnClick="(e) => ShowDelete(context.Id)" />
+                                           OnClick="(e) => ShowMedicineGroupDelete(context.Id, context.Name)" />
                         </MudTd>
                     </RowTemplate>
 
@@ -189,11 +107,7 @@
 
     private MudTable<MedicineGroup> medicineGroupTable;
 
-    private bool isOpen = true;
-
     private string searchS = new string("");
-
-    private int selectedRowMedicineGroupNumber = -1;
 
     protected override async Task OnInitializedAsync()
     {
@@ -201,21 +115,22 @@
         medicineGroups = await MedicineService.GetMedicineGroups();
     }
 
-    private async Task ShowDetail(string Id)
+    #region Medicine Pop Up
+    private async Task ShowMedicineDetail(string Id)
     {
         var parameter = new DialogParameters { ["Id"] = Id };
         var dialog = await DialogService.ShowAsync<MedicineDetailPopUp>("Thông tin thuốc", parameter);
         var result = await dialog.Result;
     }
 
-    private async Task ShowAdd()
+    private async Task ShowMedicineCreate()
     {
         var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm thông tin thuốc");
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowUpdate(string id)
+    private async Task ShowMedicineUpdate(string id)
     {
         var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicineUpdatePopUp>("Chỉnh sửa thông tin thuốc", parameter);
@@ -223,15 +138,57 @@
         await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowDelete(string id)
+    private async Task ShowMedicineDelete(string id)
     {
         var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicineDeletePopUp>("Xóa thông tin thuốc", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
     }
+    #endregion
 
-    /*Deprecated Function*/
+    #region Medicine Group Pop Up
+    private async Task ShowMedicineGroupCreate()
+    {
+        var dialog = await DialogService.ShowAsync<MedicineGroupPage.MedicineGroupCreatePopUp>("Thêm nhóm thuốc");
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowMedicineGroupUpdate(string id, string medicineGroupName)
+    {
+        var parameter = new DialogParameters { ["Id"] = id, ["MedicineGroupName"] = medicineGroupName };
+        var dialog = await DialogService.ShowAsync<MedicineGroupPage.MedicineGroupUpdatePopUp>("Chỉnh sửa tên nhóm thuốc", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowMedicineGroupDelete(string id, string medicineGroupName)
+    {
+        var parameter = new DialogParameters { ["Id"] = id, ["MedicineGroupName"] = medicineGroupName };
+        var dialog = await DialogService.ShowAsync<MedicineGroupPage.MedicineGroupDeletePopUp>("Xóa nhóm thuốc", parameter);
+        var result = await dialog.Result;
+        await InvokeAsync(OnInitializedAsync);
+    }
+    #endregion
+
+    #region Filter
+    private bool FilterS(Domain.Models.Medicine medicine) => FilterSearch(medicine, searchS);
+
+    private bool FilterSearch(Domain.Models.Medicine medicine, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (medicine.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.MedicineId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.HowToUse?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.Unit?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicine.SellingPrice.ToString().Equals(searchString) == true) return true;
+        if (medicine.GroupName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        return false;
+    }
+    #endregion
+
+    #region Deprecated Function
 
     //private void FilterByMedicineGroupName(string? medicineGroupName)
     //{
@@ -257,19 +214,6 @@
     //    }
     //    else return string.Empty;
     //}
-
-    private bool FilterS(Domain.Models.Medicine medicine) => FilterSearch(medicine, searchS);
-
-    private bool FilterSearch(Domain.Models.Medicine medicine, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (medicine.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (medicine.MedicineId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (medicine.HowToUse?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (medicine.Unit?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (medicine.SellingPrice.ToString().Equals(searchString) == true) return true;
-        if (medicine.GroupName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        return false;
-    }
+    #endregion
 }
 

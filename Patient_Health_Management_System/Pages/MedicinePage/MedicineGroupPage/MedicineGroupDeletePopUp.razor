@@ -1,0 +1,48 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMedicineService MedicineService
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Bạn có chắc muốn xoá nhóm thuốc: @MedicineGroupName này không?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Huỷ</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Submit">Xoá</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private string userId = new string("");
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string MedicineGroupName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUserId();
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await MedicineService.DeleteMedicineGroupById(Id, userId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.Role))
+        .SingleOrDefault().Value;
+    }
+}
