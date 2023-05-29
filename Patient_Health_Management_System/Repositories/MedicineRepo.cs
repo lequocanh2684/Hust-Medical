@@ -1,6 +1,6 @@
 ﻿namespace Patient_Health_Management_System.Repositories
 {
-    public class MedicineRepo : IMedicineRepo
+    public class MedicineRepo : IMedicineRepo, IMedicineGroupRepo
     {
         private readonly IMongoCollection<Medicine> _medicines;
         private readonly IMongoCollection<MedicineGroup> _medicineGroups;

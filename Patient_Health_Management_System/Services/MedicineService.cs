@@ -3,10 +3,12 @@
     public class MedicineService : IMedicineService
     {
         private readonly IMedicineRepo _medicineRepo;
+        private readonly IMedicineGroupRepo _medicineGroupRepo;
 
-        public MedicineService(IMedicineRepo medicineRepo)
+        public MedicineService(IMedicineRepo medicineRepo, IMedicineGroupRepo medicineGroupRepo)
         {
             _medicineRepo = medicineRepo;
+            _medicineGroupRepo = medicineGroupRepo;
         }
 
         #region medicine
@@ -189,7 +191,7 @@
         {
             try
             {
-                return await _medicineRepo.GetMedicineGroups();
+                return await _medicineGroupRepo.GetMedicineGroups();
             }
             catch (Exception e)
             {
@@ -201,7 +203,7 @@
         {
             try
             {
-                var checkMedicineGroupIsExisted = await _medicineRepo.GetMedicineGroupByName(medicineGroupForm.Name);
+                var checkMedicineGroupIsExisted = await _medicineGroupRepo.GetMedicineGroupByName(medicineGroupForm.Name);
                 if (checkMedicineGroupIsExisted.Any())
                 {
                     throw new Exception("Medicine group name already exists");
@@ -217,7 +219,7 @@
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
                     DeletedBy = null
                 };
-                return await _medicineRepo.CreateMedicineGroup(medicineGroup);
+                return await _medicineGroupRepo.CreateMedicineGroup(medicineGroup);
             }
             catch (Exception e)
             {
@@ -228,7 +230,7 @@
 
         public async Task DeleteMedicineGroupById(string id, string userId)
         {
-            var medicineGroup = await _medicineRepo.GetMedicineGroupById(id);
+            var medicineGroup = await _medicineGroupRepo.GetMedicineGroupById(id);
             if (medicineGroup == null)
             {
                 throw new Exception("Medicine group not found");
@@ -238,13 +240,13 @@
                 medicineGroup.IsDeleted = true;
                 medicineGroup.DeletedAt = DateTime.Now;
                 medicineGroup.DeletedBy = userId;
-                await _medicineRepo.ModifyMedicineGroupById(medicineGroup);
+                await _medicineGroupRepo.ModifyMedicineGroupById(medicineGroup);
             }
         }
 
         public async Task UpdateMedicineGroupById(string id, MedicineGroupForm medicineGroupForm, string userId)
         {
-            var medicineGroup = await _medicineRepo.GetMedicineGroupById(id);
+            var medicineGroup = await _medicineGroupRepo.GetMedicineGroupById(id);
             var medicines = await _medicineRepo.GetMedicineByGroupName(medicineGroup.Name);
             if (medicineGroup == null)
             {
@@ -264,7 +266,7 @@
                     medicine.GroupName = medicineGroupForm.Name;
                     await _medicineRepo.ModifyMedicineById(medicine);
                 }
-                await _medicineRepo.ModifyMedicineGroupById(medicineGroup);
+                await _medicineGroupRepo.ModifyMedicineGroupById(medicineGroup);
             }
         }
         #endregion

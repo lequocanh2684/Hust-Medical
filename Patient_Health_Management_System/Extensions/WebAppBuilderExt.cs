@@ -11,7 +11,9 @@ namespace Patient_Health_Management_System.Extensions
         {
             builder.Services.AddSingleton<MongoDbSetup>();
             builder.Services.AddScoped<IMedicineRepo, MedicineRepo>();
+            builder.Services.AddScoped<IMedicineGroupRepo, MedicineRepo>();
             builder.Services.AddScoped<IDiseaseRepo, DiseaseRepo>();
+            builder.Services.AddScoped<IDiseaseGroupRepo, DiseaseRepo>();
             builder.Services.AddScoped<IPrescriptionRepo, PrescriptionRepo>();
             builder.Services.AddScoped<IMedicalExaminationRepo, MedicalExaminationRepo>();
             builder.Services.AddScoped<IPatientRepo, PatientRepo>();
@@ -63,8 +65,8 @@ namespace Patient_Health_Management_System.Extensions
      options.SaveTokens = true;
      options.TokenValidationParameters = new TokenValidationParameters
      {
-        NameClaimType = "name",
-        RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+         NameClaimType = "name",
+         RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
      };
 
      options.Events = new OpenIdConnectEvents
