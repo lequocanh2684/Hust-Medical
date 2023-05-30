@@ -10,60 +10,8 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        @*<MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
-            <MudTable Items="@patients" Hover="true" Bordered="true" Striped="true"
-                      Filter="new Func<Domain.Models.Patient, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
-                <ToolBarContent>
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
-                    <MudSpacer />
-                    <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
-                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                                  Class="mt-0"></MudTextField>
-                </ToolBarContent>
-
-                <HeaderContent>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Patient, object>(x=>x.PatientId)">
-                            Mã bệnh nhân
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Patient, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>Chức năng</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Mã bệnh nhân">@context.PatientId</MudTd>
-                    <MudTd DataLabel="Tên bệnh nhân">@context.Name</MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                       OnClick="(e) => ShowUpdate(context.Id)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                       OnClick="(e) => ShowDelete(context.Id, context.Name)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium" OnClick="(e) => ShowDetail(context.Id)" />
-                    </MudTd>
-                </RowTemplate>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-
-                <NoRecordsContent>
-                    <MudText>Không tìm thấy dữ liệu</MudText>
-                </NoRecordsContent>
-
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-            </MudTable>
-        </MudPaper>*@
-
-        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
             <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px; flex:1">
                 <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
 
@@ -82,7 +30,7 @@
                         <PropertyColumn Property="m => m.Name" Title="Tên bệnh nhân" />
                         <PropertyColumn Property="m => m.Gender" Title="Giới tính" />
                         <PropertyColumn Property="m => m.Age" Title="Tuổi" />
-                        <PropertyColumn Property="m => m.DateOfBirth.Value.ToLocalTime().ToShortDateString()" Title="Ngày tháng năm sinh" />
+                        <PropertyColumn Property="m => m.DateOfBirth.GetValueOrDefault().ToLocalTime().ToString(dateTimeFormat)" Title="Ngày tháng năm sinh" />
                         <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                             <CellTemplate>
                                 <MudStack Row>
@@ -104,7 +52,7 @@
                         <MudText>Loading...</MudText>
                     </LoadingContent>
                     <PagerContent>
-                        <MudDataGridPager T="Medicine" />
+                        <MudDataGridPager T="Patient" />
                     </PagerContent>
                 </MudDataGrid>
             </div>
@@ -116,6 +64,7 @@
 @code {
     private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = "";
+    private string dateTimeFormat = "dd/MM/yyyy";
 
     protected override async Task OnInitializedAsync()
     {
