@@ -1,14 +1,19 @@
-﻿namespace Patient_Health_Management_System.Services
+﻿using Patient_Health_Management_System.Repositories.Interfaces;
+
+namespace Patient_Health_Management_System.Services
 {
     public class DiseaseService : IDiseaseService
     {
         private readonly IDiseaseRepo _diseaseRepo;
+        private readonly IDiseaseGroupRepo _diseaseGroupRepo;
 
-        public DiseaseService(IDiseaseRepo diseaseRepo)
+        public DiseaseService(IDiseaseRepo diseaseRepo, IDiseaseGroupRepo diseaseGroupRepo)
         {
             _diseaseRepo = diseaseRepo;
+            _diseaseGroupRepo = diseaseGroupRepo;
         }
 
+        #region Disease
         public async Task<List<Disease>> GetDiseases()
         {
             try
@@ -146,5 +151,91 @@
                 throw new Exception("DiseaseId format is invalid");
             }
         }
+        #endregion
+
+        #region Disease_group
+        public async Task<List<DiseaseGroup>> GetDiseaseGroups()
+        {
+            try
+            {
+                return await _diseaseGroupRepo.GetDiseaseGroups();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<DiseaseGroup> CreateDiseaseGroup(DiseaseGroupForm diseaseGroupForm, string userId)
+        {
+            try
+            {
+                var checkDiseaseGroupIsExisted = await _diseaseGroupRepo.GetDiseaseGroupByName(diseaseGroupForm.Name);
+                if (checkDiseaseGroupIsExisted.Any())
+                {
+                    throw new Exception("Disease group name already exists");
+                }
+                var diseaseGroup = new DiseaseGroup
+                {
+                    Name = diseaseGroupForm.Name,
+                    IsDeleted = false,
+                    CreatedAt = DateTime.Now,
+                    CreatedBy = userId,
+                    UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
+                    UpdatedBy = null,
+                    DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
+                    DeletedBy = null
+                };
+                return await _diseaseGroupRepo.CreateDiseaseGroup(diseaseGroup);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+        }
+
+        public async Task DeleteDiseaseGroupById(string id, string userId)
+        {
+            var DiseaseGroup = await _diseaseGroupRepo.GetDiseaseGroupById(id);
+            if (DiseaseGroup == null)
+            {
+                throw new Exception("Disease group not found");
+            }
+            else
+            {
+                DiseaseGroup.IsDeleted = true;
+                DiseaseGroup.DeletedAt = DateTime.Now;
+                DiseaseGroup.DeletedBy = userId;
+                await _diseaseGroupRepo.ModifyDiseaseGroupById(DiseaseGroup);
+            }
+        }
+
+        public async Task UpdateDiseaseGroupById(string id, DiseaseGroupForm DiseaseGroupForm, string userId)
+        {
+            var DiseaseGroup = await _diseaseGroupRepo.GetDiseaseGroupById(id);
+            var Diseases = await _diseaseRepo.GetDiseasesByGroupName(DiseaseGroup.Name);
+            if (DiseaseGroup == null)
+            {
+                throw new Exception("Disease group not found");
+            }
+            else if (!Diseases.Any())
+            {
+                throw new Exception("List of Diseases not found");
+            }
+            else
+            {
+                DiseaseGroup.Name = DiseaseGroupForm.Name;
+                DiseaseGroup.UpdatedAt = DateTime.Now;
+                DiseaseGroup.UpdatedBy = userId;
+                foreach (var Disease in Diseases)
+                {
+                    Disease.GroupName = DiseaseGroupForm.Name;
+                    await _diseaseRepo.ModifyDiseaseById(Disease);
+                }
+                await _diseaseGroupRepo.ModifyDiseaseGroupById(DiseaseGroup);
+            }
+        }
+        #endregion
     }
 }

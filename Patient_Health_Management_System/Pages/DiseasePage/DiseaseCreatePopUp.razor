@@ -14,7 +14,7 @@
         <MudTextField @bind-Value="@diseaseForm.GroupName" Label="Nhóm bệnh" ReadOnly="false" />
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
         <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
@@ -29,10 +29,8 @@
     [Parameter]
     public string Id { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await GetUserId();
-    }
+    [Parameter]
+    public string UserId { get; set; }
 
     private void Cancel()
     {
@@ -41,20 +39,7 @@
 
     private async Task Submit()
     {
-        await DiseaseService.CreateDisease(diseaseForm, userId);
+        await DiseaseService.CreateDisease(diseaseForm, UserId);
         MudDialog.Close(DialogResult.Ok(true));
-    }
-
-    private async Task GetUserId()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId  = item.Value;
-            }
-        }
     }
 }

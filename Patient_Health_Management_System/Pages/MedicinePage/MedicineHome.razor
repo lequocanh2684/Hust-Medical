@@ -12,10 +12,10 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-    <div class="d-flex" style="flex:1">
+    <div class="d-flex">
         <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
             <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px; flex:1">
-            <MudText Typo="Typo.h6" Style="padding-bottom:10px">Các loại thuốc</MudText>
+            <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
 
                     <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                                  FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px; width:21%">
             <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px">
             <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm thuốc</MudText>
 
@@ -127,7 +127,7 @@
     {
         var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm thông tin thuốc");
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowMedicineUpdate(string id)
@@ -135,7 +135,7 @@
         var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicineUpdatePopUp>("Chỉnh sửa thông tin thuốc", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowMedicineDelete(string id)
@@ -143,7 +143,7 @@
         var parameter = new DialogParameters { ["Id"] = id };
         var dialog = await DialogService.ShowAsync<MedicineDeletePopUp>("Xóa thông tin thuốc", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
     #endregion
 
@@ -152,7 +152,7 @@
     {
         var dialog = await DialogService.ShowAsync<MedicineGroupPage.MedicineGroupCreatePopUp>("Thêm nhóm thuốc");
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowMedicineGroupUpdate(string id, string medicineGroupName)
@@ -160,7 +160,7 @@
         var parameter = new DialogParameters { ["Id"] = id, ["MedicineGroupName"] = medicineGroupName };
         var dialog = await DialogService.ShowAsync<MedicineGroupPage.MedicineGroupUpdatePopUp>("Chỉnh sửa tên nhóm thuốc", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowMedicineGroupDelete(string id, string medicineGroupName)
@@ -168,7 +168,7 @@
         var parameter = new DialogParameters { ["Id"] = id, ["MedicineGroupName"] = medicineGroupName };
         var dialog = await DialogService.ShowAsync<MedicineGroupPage.MedicineGroupDeletePopUp>("Xóa nhóm thuốc", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
     #endregion
 

@@ -35,6 +35,10 @@ namespace Patient_Health_Management_System.Repositories
             var filter = Builders<Disease>.Filter.Text(name, new TextSearchOptions { CaseSensitive = false });
             return await _diseases.Find(filter).ToListAsync();
         }
+        public async Task<List<Disease>> GetDiseasesByGroupName(string groupName)
+        {
+            return await _diseases.Find(disease => disease.GroupName == groupName).ToListAsync();
+        }
         public async Task<Disease> CreateDisease(Disease disease)
         {
             await _diseases.InsertOneAsync(disease);

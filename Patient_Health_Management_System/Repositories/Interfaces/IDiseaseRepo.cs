@@ -7,6 +7,7 @@
         Task<Disease> GetDiseaseById(string id);
         Task<Disease> GetDiseaseByDiseaseId(string diseaseId);
         Task<List<Disease>> GetDiseasesByName(string name);
+        Task<List<Disease>> GetDiseasesByGroupName(string name);
         Task<Disease> CreateDisease(Disease disease);
         Task ModifyDiseaseById(Disease disease);
     }

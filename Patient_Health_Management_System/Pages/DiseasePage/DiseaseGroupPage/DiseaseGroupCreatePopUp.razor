@@ -1,0 +1,40 @@
+﻿@inject IDiseaseService DiseaseService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            Thêm nhóm bệnh mới
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="@diseaseGroupForm.Name" Label="Tên nhóm bệnh" ReadOnly="false" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(_ => Submit())">Lưu</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    private DiseaseGroupForm diseaseGroupForm = new DiseaseGroupForm();
+
+    [Parameter]
+    public string UserId { get; set; } 
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        await DiseaseService.CreateDiseaseGroup(diseaseGroupForm, UserId);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    
+}

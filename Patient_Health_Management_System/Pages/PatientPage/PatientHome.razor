@@ -10,7 +10,7 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
+        @*<MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
             <MudTable Items="@patients" Hover="true" Bordered="true" Striped="true"
                       Filter="new Func<Domain.Models.Patient, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
 
@@ -61,13 +61,60 @@
                     <MudTablePager />
                 </PagerContent>
             </MudTable>
-        </MudPaper>
+        </MudPaper>*@
+
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+            <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px; flex:1">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
+
+                <MudDataGrid T="Patient" MultiSelection="true" Items="@patients" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                    <ToolBarContent>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm bệnh nhân mới</MudButton>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm bệnh nhân" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <SelectColumn T="Patient" />
+                        <PropertyColumn Property="m => m.PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="m => m.Name" Title="Tên bệnh nhân" />
+                        <PropertyColumn Property="m => m.Gender" Title="Giới tính" />
+                        <PropertyColumn Property="m => m.Age" Title="Tuổi" />
+                        <PropertyColumn Property="m => m.DateOfBirth.Value.ToLocalTime().ToShortDateString()" Title="Ngày tháng năm sinh" />
+                        <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
+                            <CellTemplate>
+                                <MudStack Row>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                                   OnClick="(e) => ShowUpdate(context.Item.Id)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                                   OnClick="(e) => ShowDelete(context.Item.Id, context.Item.Name)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
+                                                   OnClick="(e) => ShowDetail(context.Item.Id)" />
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
+
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudDataGridPager T="Medicine" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
 
 
 @code {
-    private IEnumerable<Domain.Models.Patient> patients = new List<Domain.Models.Patient>();
+    private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = "";
 
     protected override async Task OnInitializedAsync()

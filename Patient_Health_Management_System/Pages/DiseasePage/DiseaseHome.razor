@@ -10,96 +10,152 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px">
+    <div class="d-flex">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width: 66.5%">
+            <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px; flex:1">
+                    <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách bệnh</MudText>
+        <MudDataGrid T="Disease" MultiSelection="true" Items="@diseases" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                     FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                     Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+            <ToolBarContent>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowDiseaseCreate()">Thêm bệnh mới</MudButton>
+                <MudSpacer />
+                <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Tìm kiếm"
+                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                              Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <Columns>
+                <SelectColumn T="Disease" />
+                <PropertyColumn Property="d => d.DiseaseId" Title="Mã bệnh" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="d => d.Name" Title="Tên bệnh" Sortable="true" Filterable="true" />
+                <PropertyColumn Property="d => d.GroupName" Title="Tên nhóm bệnh" Sortable="true" Filterable="true" />
+                <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
+                    <CellTemplate>
+                        <MudStack Row>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                           OnClick="(e) => ShowDiseaseUpdate(context.Item.Id, context.Item)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                           OnClick="(e) => ShowDiseaseDelete(context.Item.Id, context.Item.Name)" />
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+            <NoRecordsContent>
+                <MudText>Không tìm thấy dữ liệu</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Loading...</MudText>
+            </LoadingContent>
+            <PagerContent>
+                <MudDataGridPager T="Disease" />
+            </PagerContent>
+        </MudDataGrid>
+        </div>
+    </div>
 
-            <MudTable Items="@diseases" Hover="true" Bordered="true" Striped="true"
-                Filter="new Func<Domain.Models.Disease, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px; width:27.5%">
+            <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm bệnh</MudText>
 
-                <ToolBarContent>
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm</MudButton>
-                    <MudSpacer />
-                    <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
-                        Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                        Class="mt-0"></MudTextField>
-                </ToolBarContent>
+                <MudTable Elevation="2" T="DiseaseGroup" Items="@diseaseGroups" Bordered="true" Striped="true" FixedHeader="true"
+                          SortLabel="Sort By" @ref="diseaseGroupTable"
+                          Style="overflow:auto; position:relative; border-radius:20px;" Height="650px">
+                    <ToolBarContent>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowDiseaseGroupCreate()">Thêm</MudButton>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Tên nhóm</MudTh>
+                        <MudTh>Chức năng</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Tên nhóm">@context.Name</MudTd>
+                        <MudTd>
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                           OnClick="(e) => ShowDiseaseGroupUpdate(context.Id, context.Name)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                           OnClick="(e) => ShowDiseaseGroupDelete(context.Id, context.Name)" />
+                        </MudTd>
+                    </RowTemplate>
 
-                <HeaderContent>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Disease, object>(x=>x.DiseaseId)">Mã bệnh
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Disease, object>(x=>x.Name)">Tên bệnh</MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Disease, object>(x=>x.GroupName)">Tên nhóm bệnh
-                        </MudTableSortLabel>
-                    </MudTh>
-                    <MudTh>Chức năng</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Mã bệnh">@context.DiseaseId</MudTd>
-                    <MudTd DataLabel="Tên bệnh">@context.Name</MudTd>
-                    <MudTd DataLabel="Tên nhóm bệnh">@context.GroupName</MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                            OnClick="(e) => ShowUpdate(context.Id)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                            OnClick="(e) => ShowDelete(context.Id)" />
-                    </MudTd>
-                </RowTemplate>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
 
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-
-                <NoRecordsContent>
-                    <MudText>Không tìm thấy dữ liệu</MudText>
-                </NoRecordsContent>
-
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-            </MudTable>
-        </MudPaper>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                </MudTable>
+            </div>
+        </div>
+    </div>
     </Authorized>
 </AuthorizeView>
 
 @code{
-    private IEnumerable<Domain.Models.Disease> diseases = new List<Domain.Models.Disease>();
-    private string searchS = "";
+    private IEnumerable<Disease> diseases = new List<Disease>();
+    private IEnumerable<DiseaseGroup> diseaseGroups = new List<DiseaseGroup>();
+    private MudTable<DiseaseGroup> diseaseGroupTable;
+    private string searchS = new string("");
+    private string userId = new string("");
 
     protected override async Task OnInitializedAsync()
     {
         diseases = await DiseaseService.GetDiseases();
+        diseaseGroups = await DiseaseService.GetDiseaseGroups();
     }
 
-    private async Task ShowAdd()
+    #region Disease
+    private async Task ShowDiseaseCreate()
     {
+        var parameter = new DialogParameters { ["UserId"] = userId };
         var dialog = DialogService.Show<DiseaseCreatePopUp>("Thêm thông tin bệnh");
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowUpdate(string id)
+    private async Task ShowDiseaseUpdate(string id, Disease disease)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
+        var parameter = new DialogParameters { ["Id"] = id, ["UserId"] = userId, ["Disease"] = disease };
         var dialog = DialogService.Show<DiseaseUpdatePopUp>("Sửa thông tin bệnh", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowDelete(string id)
+    private async Task ShowDiseaseDelete(string id, string diseaseName)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
+        var parameter = new DialogParameters { ["Id"] = id, ["UserId"] = userId, ["DiseaseName"] = diseaseName };
         var dialog = DialogService.Show<DiseaseDeletePopUp>("Xóa thông tin bệnh", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
+    #endregion
+
+    #region Disease Group
+    private async Task ShowDiseaseGroupCreate()
+    {
+        var parameter = new DialogParameters { ["UserId"] = userId };
+        var dialog = await DialogService.ShowAsync<DiseaseGroupPage.DiseaseGroupCreatePopUp>("Thêm nhóm bệnh", parameter);
+        var result = await dialog.Result;
+        if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
+        
+    }
+
+    private async Task ShowDiseaseGroupUpdate(string id, string diseaseGroupName)
+    {
+        var parameter = new DialogParameters { ["Id"] = id, ["DiseaseGroupName"] = diseaseGroupName, ["UserId"] = userId };
+        var dialog = await DialogService.ShowAsync<DiseaseGroupPage.DiseaseGroupUpdatePopUp>("Chỉnh sửa tên nhóm thuốc", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowDiseaseGroupDelete(string id, string diseaseGroupName)
+    {
+        var parameter = new DialogParameters { ["Id"] = id, ["DiseaseGroupName"] = diseaseGroupName, ["UserId"] = userId };
+        var dialog = await DialogService.ShowAsync<DiseaseGroupPage.DiseaseGroupDeletePopUp>("Xóa nhóm thuốc", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+    #endregion
 
     private bool FilterS(Domain.Models.Disease disease) => FilterSearch(disease, searchS);
 
@@ -110,5 +166,13 @@
         if (disease.DiseaseId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         if (disease.GroupName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.Role))
+        .SingleOrDefault().Value;
     }
 }

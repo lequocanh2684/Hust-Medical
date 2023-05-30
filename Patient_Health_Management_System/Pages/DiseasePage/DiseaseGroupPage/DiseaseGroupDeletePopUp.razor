@@ -1,8 +1,9 @@
-@inject IDiseaseService DiseaseService
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMedicineService MedicineService
 
 <MudDialog>
     <DialogContent>
-        <MudText>Bạn có chắc muốn xoá bệnh: @DiseaseName này không?</MudText>
+        <MudText>Bạn có chắc muốn xoá nhóm bệnh: @DiseaseGroupName này không?</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Huỷ</MudButton>
@@ -10,18 +11,18 @@
     </DialogActions>
 </MudDialog>
 
-@code{
+@code {
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-
-    [Parameter]
-    public string Id { get; set; }
 
     [Parameter]
     public string UserId { get; set; }
 
     [Parameter]
-    public string DiseaseName { get; set; }
+    public string Id { get; set; }
+
+    [Parameter]
+    public string DiseaseGroupName { get; set; }
 
     private void Cancel()
     {
@@ -30,7 +31,7 @@
 
     private async Task Submit()
     {
-        await DiseaseService.DeleteDiseaseById(Id, UserId);
+        await MedicineService.DeleteMedicineGroupById(Id, UserId);
         MudDialog.Close(DialogResult.Ok(true));
     }
 }
