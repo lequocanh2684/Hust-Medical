@@ -1,6 +1,7 @@
 ﻿@page "/prescription"
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IPrescriptionService PrescriptionService
+@inject IPatientService PatientService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @layout MainLayout
@@ -10,84 +11,81 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px; margin-top:60px">
-            <MudTable Items="@prescriptions" Hover="true" Bordered="true" Striped="true"
-                      Filter="new Func<Domain.Models.Prescription, bool>(FilterS)" Breakpoint="Breakpoint.Sm" SortLabel="Sort By">
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
 
-                <ToolBarContent>
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => CreateNewPresciption()">Thêm</MudButton>
-                    <MudSpacer />
-                    <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
-                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                                  Class="mt-0"></MudTextField>
-                </ToolBarContent>
+                <MudDataGrid T="Prescription" MultiSelection="true" Items="@prescriptions" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                    <ToolBarContent>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => CreateNewPrescription()">Thêm đơn thuốc mới</MudButton>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm đơn khám" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <SelectColumn T="Prescription" />
+                        <PropertyColumn Property="pr => pr.PrescriptionId" Title="Mã đơn khám" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="pr => patients.Where(p => p.Id.Equals(pr.PatientId)).SingleOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="pr => patients.Where(p => p.Id.Equals(pr.PatientId)).SingleOrDefault().Name" Title="Tên bệnh nhân" />
+                        <PropertyColumn Property="pr => pr.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
+                        <PropertyColumn Property="pr => pr.Note" Title="Ghi chú" />
+                        <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
+                            <CellTemplate>
+                                <MudStack Row>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                                   OnClick="(e) => UpdatePrescription(context.Item.Id)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                                   OnClick="(e) => ShowDelete(context.Item.Id)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
+                                                   OnClick="(e) => ShowDetail(context.Item.Id)" />
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
 
-                <HeaderContent>
-                    <MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Prescription, object>(x=>x.PrescriptionId)">
-                            Mã đơn thuốc
-                        </MudTableSortLabel>
-                    </MudTh>
-                    @*<MudTh>
-                        <MudTableSortLabel SortBy="new Func<Domain.Models.Prescription, object>(x=>x.Name)">Tên bệnh nhân</MudTableSortLabel>
-                    </MudTh>*@
-                    <MudTh>Chức năng</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Mã đơn thuốc">@context.PrescriptionId</MudTd>
-                    @*<MudTd DataLabel="Tên bệnh nhân">@context.Name</MudTd>*@
-                    <MudTd>
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                       OnClick="(e) => UpdatePresciption(context.Id)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                       OnClick="(e) => ShowDelete(context.Id)" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium" OnClick="(e) => ShowDetail(context.Id)" />
-                    </MudTd>
-                </RowTemplate>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-
-                <NoRecordsContent>
-                    <MudText>Không tìm thấy dữ liệu</MudText>
-                </NoRecordsContent>
-
-                <LoadingContent>
-                    <MudText>Loading...</MudText>
-                </LoadingContent>
-
-                <PagerContent>
-                    <MudTablePager />
-                </PagerContent>
-            </MudTable>
-        </MudPaper>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudDataGridPager T="Prescription" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
 
 
 @code {
-    private IEnumerable<Domain.Models.Prescription> prescriptions = new List<Domain.Models.Prescription>();
+    private IEnumerable<Prescription> prescriptions = new List<Prescription>();
+    private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = "";
+    private string dateTimeFormat = "dd/MM/yyyy";
 
     protected override async Task OnInitializedAsync()
     {
         prescriptions = await PrescriptionService.GetPrescriptions();
+        patients = await PatientService.GetPatients();
     }
 
     private async Task ShowDetail(string Id)
     {
         var parameter = new DialogParameters { ["Id"] = Id };
         var dialog = await DialogService.ShowAsync<PresDetailPopUp>("Thông tin đơn thuốc", parameter);
-        var result = await dialog.Result;
+        //var result = await dialog.Result;
     }
 
-    private async Task CreateNewPresciption()
+    private void CreateNewPrescription()
     {
         NavigationManager.NavigateTo("/prescription/create");
     }
 
-    private async Task UpdatePresciption(string id)
+    private void UpdatePrescription(string id)
     {
         NavigationManager.NavigateTo("/prescription/update/" + id);
     }

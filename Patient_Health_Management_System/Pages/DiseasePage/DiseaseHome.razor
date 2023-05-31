@@ -11,8 +11,8 @@
     </NotAuthorized>
     <Authorized>
     <div class="d-flex">
-        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width: 66.5%">
-            <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px; flex:1">
+        <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width: 66.5%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:66.5%">
                     <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách bệnh</MudText>
         <MudDataGrid T="Disease" MultiSelection="true" Items="@diseases" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                      FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
@@ -20,7 +20,7 @@
             <ToolBarContent>
                 <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowDiseaseCreate()">Thêm bệnh mới</MudButton>
                 <MudSpacer />
-                <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Tìm kiếm"
+                <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Tìm kiếm bệnh"
                               Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                               Class="mt-0"></MudTextField>
             </ToolBarContent>
@@ -53,8 +53,8 @@
         </div>
     </div>
 
-        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px; width:27.5%">
-            <div class="d-flex" style="flex-direction:column; padding-top:1rem; margin:0px 20px">
+        <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px; width:27.5%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:27.5%">
                 <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm bệnh</MudText>
 
                 <MudTable Elevation="2" T="DiseaseGroup" Items="@diseaseGroups" Bordered="true" Striped="true" FixedHeader="true"

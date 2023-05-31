@@ -10,7 +10,7 @@
                 <AuthorizeView Roles="@role">
                     @foreach (var item in NavItem)
                     {
-                        <MudNavLink ActiveClass="mud-dark-text" style="@($"color:#9E9E9E; font-size:18px")"
+                        <MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:18px")"
                             Class="rounded-xl ml-3 mt-3 mb-3" Href="@item.NavLinkItem.Href" Match="NavLinkMatch.All"
                             Icon="@item.NavLinkItem.Icon">
                             @item.ItemContent</MudNavLink>

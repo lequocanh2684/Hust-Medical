@@ -11,43 +11,57 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <MudPaper Style="overflow:hidden; position:relative; margin-left:56px; margin-top:60px">
-            <MudTable Items="billings" Hover="true" Bordered="true" Striped="true" Filter="new Func<Billing, bool>(FilterS)"
-            Breakpoint="Breakpoint.Sm" SortLabel="SortBy">
-            <ToolBarContent>
-                <MudTextField Immediate="true" @bind-Value="searchS" T="string" Placeholder="Search"
-                Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                Class="mt-0"></MudTextField>
-            </ToolBarContent>
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách hoá đơn</MudText>
 
-            <HeaderContent>
-            <MudTh>Mã hoá đơn</MudTh>
-            <MudTh>Mã bệnh nhân</MudTh>
-            <MudTh>Tên bệnh nhân</MudTh>
-            <MudTh>
-                <MudTableSortLabel SortBy="new Func<Billing, object>(b => b.CreatedAt)">
-                    Thời gian tạo
-                </MudTableSortLabel>
-            </MudTh>
-            <MudTh>Tình trạng thanh toán</MudTh>
-            <MudTh>Chức năng</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-            <MudTd DataLabel="Mã hoá đơn">@context.BillId</MudTd>
-            <MudTd DataLabel="Mã bệnh nhân">@patients.Where(p => p.Id.Equals(context.PatientId)).First().PatientId
-            </MudTd>
-            <MudTd DataLabel="Tên bệnh nhân">@patients.Where(p => p.Id.Equals(context.PatientId)).First().Name</MudTd>
-            <MudTd DataLabel="Thời gian tạo">@context.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy hh:mm tt")</MudTd>
-            <MudTd DataLabel="Tình trạng thanh toán">
-                <MudChip Color="context.IsPaid ? Color.Success : Color.Error">@(context.IsPaid ? "Đã thanh toán" : "Chưa thanh toán")</MudChip>
-            </MudTd>
-            <MudTd>
-                <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                               OnClick="(e) => ShowUpdate(context)" />
-            </MudTd>
-            </RowTemplate>
-            </MudTable>
-        </MudPaper>
+                <MudDataGrid T="Billing" MultiSelection="true" Items="@billings" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                    <ToolBarContent>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm hoá đơn" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <SelectColumn T="Billing" />
+                        <PropertyColumn Property="b=> b.BillId" Title="Mã đơn khám" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="b=> patients.Where(p => p.Id.Equals(b.PatientId)).FirstOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="b=> patients.Where(p => p.Id.Equals(b.PatientId)).FirstOrDefault().Name" Title="Tên bệnh nhân" />
+                        <PropertyColumn Property="b=> b.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
+                        <TemplateColumn Sortable="false" Filterable="false" Title="Tình trạng thanh toán">
+                            <CellTemplate>
+                                <MudChip Variant="Variant.Filled" Color="context.Item.IsPaid ? Color.Success : Color.Error">
+                                    @(context.Item.IsPaid ? "Đã thanh toán" : "Chưa thanh toán")
+                                </MudChip>
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
+                            <CellTemplate>
+                                <MudStack Row>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                                   OnClick="(e) => ShowUpdate(context.Item)" />
+                                    @* <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                                   OnClick="(e) => ShowDelete(context.Item.Id)" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
+                                                   OnClick="(e) => ShowDetail(context.Item.Id)" /> *@
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
+
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudDataGridPager T="Billing" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
     </Authorized>
 </AuthorizeView>
 
@@ -56,6 +70,7 @@
     private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = new string("");
     private string userId = new string("");
+    private string dateTimeFormat = "dd/MM/yyyy";
 
     protected override async Task OnInitializedAsync()
     {
