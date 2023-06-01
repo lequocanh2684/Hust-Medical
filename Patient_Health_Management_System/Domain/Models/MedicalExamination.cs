@@ -11,8 +11,8 @@ namespace Patient_Health_Management_System.Domain.Models
         [BsonElement("patient_id")]
         public string PatientId { get; set; }
 
-        [BsonElement("disease_id")]
-        public string DiseaseId { get; set; }
+        [BsonElement("disease_name")]
+        public List<string> DiseaseName { get; set; }
 
         [BsonElement("height")]
         public int Height { get; set; }

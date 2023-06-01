@@ -44,7 +44,7 @@
     {
         medicalExamination = await MedicalExaminationService.GetMedicalExaminationById(Id);
         await GetPatientNameAndId();
-        await GetDiseaseName();
+        //await GetDiseaseName();
     }
 
     private async Task GetPatientNameAndId()
@@ -54,10 +54,10 @@
         patientId = patient.PatientId;
     }
 
-    private async Task GetDiseaseName()
-    {
-        var disease = await DiseaseService.GetDiseaseById(medicalExamination.DiseaseId);
-        diseaseName = disease.Name;
-    }
+    //private async Task GetDiseaseName()
+    //{
+    //    var disease = await DiseaseService.GetDiseaseById(medicalExamination.DiseaseId);
+    //    diseaseName = disease.Name;
+    //}
 
 }

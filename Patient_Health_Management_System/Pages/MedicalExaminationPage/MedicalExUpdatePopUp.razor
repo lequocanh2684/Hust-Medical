@@ -59,7 +59,7 @@
         patients = await PatientService.GetPatients();
         await GetUserId();
         GetPatientName();
-        GetDiseaseName();
+        //GetDiseaseName();
     }
 
     private void Cancel()
@@ -69,7 +69,7 @@
 
     private async Task Submit()
     {
-        medicalExaminationForm.DiseaseId = diseases.Where(d => d.Name == searchDisease).FirstOrDefault().Id;
+        //medicalExaminationForm.DiseaseId = diseases.Where(d => d.Name == searchDisease).FirstOrDefault().Id;
         medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
         await MedicalExaminationService.UpdateMedicalExaminationById(Id, medicalExaminationForm, userId);
         MudDialog.Close(DialogResult.Ok(true));
@@ -102,10 +102,10 @@
         searchPatient = patients.Where(p => p.Id == medicalExaminationForm.PatientId).FirstOrDefault().Name;
     }
 
-    private void GetDiseaseName()
-    {
-        searchDisease = diseases.Where(d => d.Id == medicalExaminationForm.DiseaseId).FirstOrDefault().Name;
-    }
+    //private void GetDiseaseName()
+    //{
+    //    searchDisease = diseases.Where(d => d.Id == medicalExaminationForm.DiseaseId).FirstOrDefault().Name;
+    //}
 
     private async Task GetUserId()
     {

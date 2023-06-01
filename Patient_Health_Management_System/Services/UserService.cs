@@ -32,7 +32,6 @@
                     Email = userForm.Email,
                     Address = userForm.Address,
                     PhoneNumber = userForm.PhoneNumber,
-                    RoleId = userForm.RoleId,
                     CreatedBy = userId,
                     CreatedAt = DateTime.Now,
                     UpdatedBy = null,
@@ -64,7 +63,6 @@
                     uei.Email = userForm.Email;
                     uei.Address = userForm.Address;
                     uei.PhoneNumber = userForm.PhoneNumber;
-                    uei.RoleId = userForm.RoleId;
                     uei.UpdatedBy = userId;
                     uei.UpdatedAt = DateTime.Now;
                     await _userRepo.ModifyUserByUserId(uei);

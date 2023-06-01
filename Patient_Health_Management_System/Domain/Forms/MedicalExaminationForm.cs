@@ -8,8 +8,7 @@
         [Required]
         public string PatientId { get; set; }
 
-        [Required]
-        public string DiseaseId { get; set; }
+        public List<string> DiseaseName { get; set; }
 
         public int Height { get; set; }
 

@@ -38,7 +38,7 @@ namespace Patient_Health_Management_System.Services
                 {
                     MedicalExaminationId = medicalExaminationForm.MedicalExaminationId,
                     PatientId = medicalExaminationForm.PatientId,
-                    DiseaseId = medicalExaminationForm.DiseaseId,
+                    DiseaseName = medicalExaminationForm.DiseaseName,
                     Height = medicalExaminationForm.Height,
                     Weight = medicalExaminationForm.Weight,
                     BloodPressure = medicalExaminationForm.BloodPressure,
@@ -75,7 +75,7 @@ namespace Patient_Health_Management_System.Services
                     ValidateMedicalExamForm(medicalExaminationForm);
                     medicalExamination.MedicalExaminationId = medicalExaminationForm.MedicalExaminationId;
                     medicalExamination.PatientId = medicalExaminationForm.PatientId;
-                    medicalExamination.DiseaseId = medicalExaminationForm.DiseaseId;
+                    medicalExamination.DiseaseName = medicalExaminationForm.DiseaseName;
                     medicalExamination.Height = medicalExaminationForm.Height;
                     medicalExamination.Weight = medicalExaminationForm.Weight;
                     medicalExamination.BloodPressure = medicalExaminationForm.BloodPressure;

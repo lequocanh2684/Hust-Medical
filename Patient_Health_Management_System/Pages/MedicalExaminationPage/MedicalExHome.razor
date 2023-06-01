@@ -31,7 +31,7 @@
                         <PropertyColumn Property="m => m.MedicalExaminationId" Title="Mã đơn khám" Sortable="false" Filterable="false" />
                         <PropertyColumn Property="m => patients.Where(p => p.Id.Equals(m.PatientId)).SingleOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
                         <PropertyColumn Property="m => patients.Where(p => p.Id.Equals(m.PatientId)).SingleOrDefault().Name" Title="Tên bệnh nhân" />
-                        <PropertyColumn Property="m => diseases.Where(d => d.Id.Equals(m.DiseaseId)).SingleOrDefault().Name" Title="Tên bệnh" />
+                        <PropertyColumn Property="m => m.DiseaseName" Title="Tên bệnh" />
                         <PropertyColumn Property="m => m.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
                         <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                             <CellTemplate>
@@ -74,7 +74,6 @@
     {
         medicalExaminations = await medicalExamService.GetMedicalExaminations();
         patients = await patientService.GetPatients();
-        diseases = await diseaseService.GetDiseases();
     }
 
     private async Task ShowDetail(string id)

@@ -60,7 +60,7 @@
 
     private async Task Submit()
     {
-        medicalExaminationForm.DiseaseId = diseases.Where(d => d.Name == searchDisease).FirstOrDefault().Id;
+        //medicalExaminationForm.DiseaseId = diseases.Where(d => d.Name == searchDisease).FirstOrDefault().Id;
         medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
         await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
         MudDialog.Close(DialogResult.Ok(true));
