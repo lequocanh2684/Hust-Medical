@@ -31,20 +31,7 @@
                         <PropertyColumn Property="m => m.MedicalExaminationId" Title="Mã đơn khám" Sortable="false" Filterable="false" />
                         <PropertyColumn Property="m => patients.Where(p => p.Id.Equals(m.PatientId)).SingleOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
                         <PropertyColumn Property="m => patients.Where(p => p.Id.Equals(m.PatientId)).SingleOrDefault().Name" Title="Tên bệnh nhân" />
-                        <TemplateColumn Sortable="false" Filterable="false" Title="Triệu chứng">
-                            <CellTemplate>
-                                <MudStack Row Spacing="1">
-                                @foreach (var item in context.Item.DiseaseName)
-                                {
-                                    <MudText Typo="Typo.body2">@item</MudText>
-                                    @if(item != context.Item.DiseaseName.Last())
-                                    {
-                                        <MudText Typo="Typo.body2">,</MudText>
-                                    }
-                                }
-                                </MudStack>
-                            </CellTemplate>
-                        </TemplateColumn>
+                        <PropertyColumn Property="m => m.DiseaseName" Title="Chẩn đoán" />
                         <PropertyColumn Property="m => m.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
                         <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                             <CellTemplate>
@@ -54,7 +41,7 @@
                                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                                    OnClick="(e) => ShowDelete(context.Item.Id)" />
                                     <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDetail(context.Item.Id)" />
+                                                   OnClick="(e) => ShowDetail(context.Item.Id, context.Item)" />
                                 </MudStack>
                             </CellTemplate>
                         </TemplateColumn>
@@ -89,9 +76,9 @@
         patients = await patientService.GetPatients();
     }
 
-    private async Task ShowDetail(string id)
+    private async Task ShowDetail(string id, MedicalExamination medicalExamination)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
+        var parameter = new DialogParameters { ["Id"] = id, ["MedicalEx"] = medicalExamination };
         var dialog = await DialogService.ShowAsync<MedicalExDetailPopUp>("Thông tin đơn khám", parameter);
         var result = await dialog.Result;
     }

@@ -14,8 +14,7 @@
         <MudTextField @bind-Value="@medicalExaminationForm.MedicalExaminationId" Label="Mã đơn khám" ReadOnly="false" />
         <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
                          SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
-        <MudAutocomplete T="string" Label="Triệu chứng" @bind-Value="searchDisease"
-                         SearchFunc="@OnSearchDisease" ResetValueOnEmptyText="true" MaxItems="null" />
+        <MudTextField @bind-Value="@medicalExaminationForm.DiseaseName" Label="Chẩn đoán" ReadOnly="false" />
         <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao (cm)" ReadOnly="false" />
         <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng (kg)" ReadOnly="false" />
         <MudTextField @bind-Value="@medicalExaminationForm.BloodPressure" Label="Huyết áp (mmHg)" ReadOnly="false" />
@@ -43,7 +42,11 @@
     private string searchPatient = new string("");
 
     private string userId = new string("");
-    
+
+    private string value = new string("");
+
+    private IEnumerable<string> options { get; set; } = new HashSet<string>();
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -60,7 +63,6 @@
 
     private async Task Submit()
     {
-        //medicalExaminationForm.DiseaseId = diseases.Where(d => d.Name == searchDisease).FirstOrDefault().Id;
         medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
         await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
         MudDialog.Close(DialogResult.Ok(true));

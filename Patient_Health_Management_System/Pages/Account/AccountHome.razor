@@ -8,18 +8,16 @@
 
 
 
-<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
+<div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
     <MudTextField Label="Name" Value="@user.Name" ReadOnly="true"></MudTextField>
     <MudTextField Label="Email" Value="@user.Email" ReadOnly="true"></MudTextField>
     <MudTextField Label="Phone" Value="@user.PhoneNumber" ReadOnly="true"></MudTextField>
     <MudTextField Label="Address" Value="@user.Address" ReadOnly="true"></MudTextField>
-    @* <MudAvatar Size="Size.Medium" Rounded="true">
-        <MudImage Src=""/>
-    </MudAvatar> *@
-    <MudField>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa</MudButton>
-    </MudField>    
-</MudPaper>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa</MudButton>  
+</div>
+</div>
 
 @code{
     private string userId = new string("");

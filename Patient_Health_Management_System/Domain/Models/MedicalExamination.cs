@@ -12,7 +12,7 @@ namespace Patient_Health_Management_System.Domain.Models
         public string PatientId { get; set; }
 
         [BsonElement("disease_name")]
-        public List<string> DiseaseName { get; set; }
+        public string DiseaseName { get; set; }
 
         [BsonElement("height")]
         public int Height { get; set; }
