@@ -4,7 +4,6 @@
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject IAccountService AccountService
 @inject IUserService UserService
-@inject IMapper Mapper
 
 <MudDialog>
     <TitleContent>
@@ -39,8 +38,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper();
-        userForm = Mapper.Map<UserForm>(user);
+        userForm = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper().Map<UserForm>(user);
         await GetUserId();
     }
 
@@ -51,8 +49,7 @@
 
     private async Task Submit()
     {
-        Mapper = new MapperConfiguration(cfg => cfg.CreateMap<UserForm, AccountForm>()).CreateMapper();
-        accountForm = Mapper.Map<AccountForm>(userForm);
+        accountForm = new MapperConfiguration(cfg => cfg.CreateMap<UserForm, AccountForm>()).CreateMapper().Map<AccountForm>(userForm);
         await UserService.UpdateUserByUserId(userForm, userId);
         var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
         if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
@@ -68,14 +65,9 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.Role))
+        .SingleOrDefault().Value;
     }
 
 }

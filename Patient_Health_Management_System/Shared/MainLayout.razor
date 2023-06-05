@@ -1,13 +1,26 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUserService UserService
 
 <MudThemeProvider/>
 <MudDialogProvider />
 <NavMenu />
 
 <div style="margin-left:280px;">
-	<TopBar />
+	<TopBar UserName="@userName"/>
 	@Body
 </div>
 
 @code {
+
+	private string userName = new string("");
+
+	protected override async Task OnInitializedAsync()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var userId = authState.User.Claims
+		.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+		.SingleOrDefault().Value;
+		userName = await UserService.GetUserNameByUserId(userId);
+	}
 }

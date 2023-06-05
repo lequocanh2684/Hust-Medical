@@ -74,6 +74,23 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
+        public async Task SendVerificationEmail(string id, string access_token)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/jobs/verification-email");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody($"{{\"user_id\":\"{id}\",\"client_id\":\"{client_id}\"}}");
+                await client.PostAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public bool IsExpired(string access_token)
         {
             try

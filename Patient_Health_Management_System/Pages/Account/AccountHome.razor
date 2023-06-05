@@ -8,14 +8,14 @@
 
 
 
-<div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
-            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
-                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Quản lí tài khoản</MudText>
-    <MudTextField Label="Name" Value="@user.Name" ReadOnly="true"></MudTextField>
+<div style="height:30rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
+            <div style="padding-top:1rem; margin:0px 20px; width:96.7%">
+    <MudText Typo="Typo.h6" Style="padding-bottom:10px">Quản lí tài khoản</MudText>
+    <MudTextField Label="Họ và Tên" Value="@user.Name" ReadOnly="true"></MudTextField>
     <MudTextField Label="Email" Value="@user.Email" ReadOnly="true"></MudTextField>
-    <MudTextField Label="Phone" Value="@user.PhoneNumber" ReadOnly="true"></MudTextField>
-    <MudTextField Label="Address" Value="@user.Address" ReadOnly="true"></MudTextField>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa</MudButton>  
+    <MudTextField Label="Số điện thoại" Value="@user.PhoneNumber" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Địa chỉ" Value="@user.Address" ReadOnly="true"></MudTextField>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa</MudButton>  
 </div>
 </div>
 
@@ -41,13 +41,8 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
     }
 }

@@ -21,6 +21,18 @@
             }
         }
 
+        public async Task<string> GetUserNameByUserId(string userId)
+        {
+            try
+            {
+                return await _userRepo.GetUserNameByUserId(userId);
+            }
+            catch (Exception e)
+            {
+				throw new Exception(e.Message);
+			}
+        }
+
         public async Task<User> CreateUser(UserForm userForm, string userId)
         {
             try

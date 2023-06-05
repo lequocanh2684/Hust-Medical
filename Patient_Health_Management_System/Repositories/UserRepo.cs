@@ -14,6 +14,11 @@
             return await _user.Find(u => u.UserId == userId).FirstOrDefaultAsync();
         }
 
+        public async Task<string> GetUserNameByUserId(string userId)
+        {
+            return await _user.Find(u => u.UserId == userId).Project(u => u.Name).FirstOrDefaultAsync();
+        }
+
         public async Task<User> CreateUser(User User)
         {
             await _user.InsertOneAsync(User);

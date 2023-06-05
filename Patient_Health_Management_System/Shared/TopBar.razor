@@ -6,9 +6,12 @@
 	<MudSpacer />
 	<MudAvatar Class="hovicon effect-9 sub-b" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
 	onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>
-	<MudText Style="display:flex; align-items:center; padding-left: 20px" Typo="Typo.body1">Nguyễn Văn A</MudText>
+	<MudText Style="display:flex; align-items:center; padding-left: 20px" Typo="Typo.body1">@UserName</MudText>
 </div>
 
 @code {
 	private string search = new string("");
+
+	[Parameter]
+	public string UserName { get; set; }
 }

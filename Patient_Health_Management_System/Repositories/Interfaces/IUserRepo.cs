@@ -4,7 +4,10 @@
     {
         Task<User> GetUserByUserId(string userId);
 
-        Task<User> CreateUser(User user);
+		Task<string> GetUserNameByUserId(string userId);
+
+
+		Task<User> CreateUser(User user);
 
         Task ModifyUserByUserId(User user);
     }
