@@ -2,6 +2,7 @@ using JWT;
 using JWT.Algorithms;
 using JWT.Exceptions;
 using JWT.Serializers;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using RestSharp;
 using System.Security.Cryptography.X509Certificates;
 
@@ -66,6 +67,23 @@ namespace Patient_Health_Management_System.Services
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
                 request.AddJsonBody(accountForm);
+                await client.PatchAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task BlockUserById(string id, string access_token)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody($"{{\"blocked\":true}}");
                 await client.PatchAsync(request);
             }
             catch (Exception ex)

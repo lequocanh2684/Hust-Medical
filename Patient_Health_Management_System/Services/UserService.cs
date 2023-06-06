@@ -41,8 +41,8 @@
             }
             catch (Exception e)
             {
-				throw new Exception(e.Message);
-			}
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<User> CreateUser(UserForm userForm, string userId)
@@ -79,7 +79,7 @@
                 var uei = await _userRepo.GetUserByUserId(userId);
                 if (uei == null)
                 {
-                    throw new Exception("Extra info not found");
+                    throw new Exception("user not found");
                 }
                 else
                 {
@@ -98,19 +98,19 @@
             }
         }
 
-        public async Task DeleteUserByUserId(string userId)
+        public async Task DeleteUserByUserId(string userId, string adminId)
         {
             try
             {
                 var uei = await _userRepo.GetUserByUserId(userId);
                 if (uei == null)
                 {
-                    throw new Exception("Extra info not found");
+                    throw new Exception("user not found");
                 }
                 else
                 {
                     uei.IsDeleted = true;
-                    uei.DeletedBy = userId;
+                    uei.DeletedBy = adminId;
                     uei.DeletedAt = DateTime.Now;
                     await _userRepo.ModifyUserByUserId(uei);
                 }

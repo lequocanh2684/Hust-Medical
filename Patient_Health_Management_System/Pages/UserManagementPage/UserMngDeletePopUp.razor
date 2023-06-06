@@ -1,4 +1,7 @@
-﻿@inject IUserService UserService
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage ProtectedLocalStorage
+@inject IUserService UserService
+@inject IAccountService AccountService
 
 <MudDialog>
     <DialogContent>
@@ -21,7 +24,7 @@
     public string UserName { get; set; }
 
     [Parameter]
-    public string UserId { get; set; }
+    public string AdminId { get; set; }
 
     private void Cancel()
     {
@@ -30,7 +33,15 @@
 
     private async Task Submit()
     {
-        await UserService.DeleteUserByUserId(Id);
+        await UserService.DeleteUserByUserId(Id, AdminId);
+        var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+        if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
+        {
+            var newToken = await AccountService.TokenGenerator();
+            await ProtectedLocalStorage.SetAsync("access_token", newToken.access_token);
+            access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+        }
+        await AccountService.BlockUserById(Id, access_token.Value);
         MudDialog.Close(DialogResult.Ok(true));
     }
 }

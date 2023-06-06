@@ -8,10 +8,10 @@
 
         Task<string> GetUserNameByUserId(string userId);
 
-		Task<User> CreateUser(UserForm userExtraInfoForm, string userId);
+        Task<User> CreateUser(UserForm userExtraInfoForm, string userId);
 
         Task UpdateUserByUserId(UserForm userExtraInfoForm, string userId);
 
-        Task DeleteUserByUserId(string userId);
+        Task DeleteUserByUserId(string userId, string adminId);
     }
 }

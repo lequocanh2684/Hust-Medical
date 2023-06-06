@@ -26,9 +26,9 @@
                     <CellTemplate>
                         <MudStack Row>
                             <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                           OnClick="(e) => ShowUserUpdate(context.Item.Id)" />
+                                           OnClick="(e) => ShowUserUpdate(context.Item)" />
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                           OnClick="(e) => ShowUserDelete(context.Item.Id)" />
+                                           OnClick="(e) => ShowUserDelete(context.Item.Id, adminId, context.Item.Name)" />
                             <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
                                            OnClick="(e) => ShowUserDetail(context.Item)" />
                         </MudStack>
@@ -52,11 +52,14 @@
 @code {
     private IEnumerable<User> users = new List<User>();
 
+    private string adminId = new string("");
+
     private string searchS = new string("");
 
     protected override async Task OnInitializedAsync()
     {
         users = await UserService.GetUsers();
+        await GetAdminId();
     }
 
     private async Task ShowUserDetail(User user)
@@ -72,17 +75,17 @@
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowUserUpdate(string id)
+    private async Task ShowUserUpdate(User user)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
+        var parameter = new DialogParameters { ["User"] = user };
         var dialog = await DialogService.ShowAsync<UserMngUpdatePopUp>("Chỉnh sửa thông tin người dùng", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowUserDelete(string id)
+    private async Task ShowUserDelete(string id, string adminId, string userName)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
+        var parameter = new DialogParameters { ["Id"] = id, ["AdminId"] = adminId, ["UserName"] = userName };
         var dialog = await DialogService.ShowAsync<UserMngDeletePopUp>("Xóa thông tin người dùng", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
@@ -98,4 +101,12 @@
         return false;
     }
     #endregion
+
+    private async Task GetAdminId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        adminId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
+    }
 }
