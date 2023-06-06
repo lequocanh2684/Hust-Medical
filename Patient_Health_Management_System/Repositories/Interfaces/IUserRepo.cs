@@ -2,10 +2,11 @@
 {
     public interface IUserRepo
     {
+        Task<IEnumerable<User>> GetUsers();
+
         Task<User> GetUserByUserId(string userId);
 
 		Task<string> GetUserNameByUserId(string userId);
-
 
 		Task<User> CreateUser(User user);
 

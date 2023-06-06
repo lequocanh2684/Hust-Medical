@@ -11,6 +11,9 @@
         [BsonElement("name")]
         public string Name { get; set; }
 
+        [BsonElement("specialist")]
+        public string Specialist { get; set; }
+
         [BsonElement("email")]
         public string Email { get; set; }
 

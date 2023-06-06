@@ -1,0 +1,24 @@
+﻿<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3 mb-n1" />
+            Thông tin chi tiết
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField Value="@User.UserId" Label="Mã bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@User.Name" Label="Tên bệnh nhân" ReadOnly="true" />
+        <MudTextField Value="@User.Email" Label="Tuổi" ReadOnly="true" />
+        <MudTextField Value="@User.Address" Label="Giới tính" ReadOnly="true" />
+        <MudTextField Value="@User.PhoneNumber" Label="Số điện thoại" ReadOnly="true" />
+        <MudTextField Value="@User.Specialist" Label="Dân tộc" ReadOnly="true" />
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Domain.Models.User User { get; set; }
+}

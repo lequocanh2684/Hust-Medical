@@ -9,6 +9,11 @@
             _user = mongoDbSetup.GetDatabase().GetCollection<User>("user_extra_info");
         }
 
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            return await _user.Find(u => !u.IsDeleted).ToListAsync();
+        }
+
         public async Task<User> GetUserByUserId(string userId)
         {
             return await _user.Find(u => u.UserId == userId).FirstOrDefaultAsync();

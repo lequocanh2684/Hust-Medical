@@ -9,6 +9,18 @@
             _userRepo = userRepo;
         }
 
+        public async Task<IEnumerable<User>> GetUsers()
+        {
+            try
+            {
+                return await _userRepo.GetUsers();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         public async Task<User> GetUserByUserId(string userId)
         {
             try
