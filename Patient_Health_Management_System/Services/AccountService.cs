@@ -2,9 +2,9 @@ using JWT;
 using JWT.Algorithms;
 using JWT.Exceptions;
 using JWT.Serializers;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using RestSharp;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 
 namespace Patient_Health_Management_System.Services
 {
@@ -41,7 +41,7 @@ namespace Patient_Health_Management_System.Services
             return response;
         }
 
-        public async Task<UserResponse> GetUserResponseById(string id, string access_token)
+        public async Task<UserResponse> GetUserById(string id, string access_token)
         {
             try
             {
@@ -51,6 +51,41 @@ namespace Patient_Health_Management_System.Services
                 request.AddHeader("authorization", $"Bearer {access_token}");
                 var response = await client.GetAsync<UserResponse>(request);
                 return response;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<IEnumerable<Role>> GetRoles(string access_token)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/roles");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                var response = await client.GetAsync(request);
+                var roles = JsonSerializer.Deserialize<IEnumerable<Role>>(response.Content);
+                return roles;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task CreateUser(string access_token, AccountForm accountForm)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody(accountForm);
+                await client.PostAsync(request);
             }
             catch (Exception ex)
             {
@@ -85,6 +120,23 @@ namespace Patient_Health_Management_System.Services
                 request.AddHeader("authorization", $"Bearer {access_token}");
                 request.AddJsonBody($"{{\"blocked\":true}}");
                 await client.PatchAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task AssignRolesToUserByUserId(string id, string access_token, List<string> roleIds)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users/{id}/roles");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody(roleIds);
+                await client.PostAsync(request);
             }
             catch (Exception ex)
             {

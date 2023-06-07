@@ -1,46 +1,62 @@
-﻿@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject IPatientService PatientService
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage ProtectedLocalStorage
+@inject IUserService UserService
+@inject IAccountService AccountService
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
-            Thêm thông tin bệnh nhân
+            Thêm người dùng mới
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@patientForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Name" Label="Tên bệnh nhân" ReadOnly="false" />
-        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@patientForm.Gender">
+        <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" />
+        <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" />
+        <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" />
+        <MudTextField @bind-Value="@accountForm.ConfirmPassword" Label="Xác nhận mật khẩu" ReadOnly="false" />
+        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
             <MudSelectItem Value="@("Nam")" />
             <MudSelectItem Value="@("Nữ")" />
         </MudSelect>
-        <MudTextField @bind-Value="@patientForm.Ethnic" Label="Dân tộc" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="false" />
-        <MudDatePicker @bind-Date="@patientForm.DateOfBirth" Editable="true" Label="Ngày tháng năm sinh" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Address" Label="Địa chỉ" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Email" Label="Email" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
+        <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" MultiSelection="true" @bind-SelectedValues="roleIds">
+            @foreach (var role in roles)
+            {
+                <MudSelectItem T="string" Value="@role.Id">@role.Name</MudSelectItem> 
+            }
+        </MudSelect>
+        <MudTextField @bind-Value="@userForm.Specialist" Label="Chuyên khoa" ReadOnly="false" />
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
         <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
-    private PatientForm patientForm = new Domain.Forms.PatientForm();
-    private string userId = new string("");
+
+    private AccountForm accountForm = new AccountForm();
+
+    private UserForm userForm = new UserForm();
+
+    private IEnumerable<Role> roles = new List<Role>();
+
+    private IEnumerable<string> roleIds = new HashSet<string>();
+
+    private string accessToken = new string("");
+
+    [Parameter]
+    public string AdminId {get; set;}
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    [Parameter]
-    public string Id { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        await GetUserId();
+        //accessToken = await GetAccessToken();
+        //roles = await AccountService.GetRoles(accessToken);
     }
 
     private void Cancel()
@@ -50,20 +66,23 @@
 
     private async Task Submit()
     {
-        await PatientService.CreatePatient(patientForm, userId);
+        accountForm.Name = userForm.Name;
+        accountForm.Email = userForm.Email;
+        accountForm.Connection = "Username-Password-Authentication";
+        await UserService.CreateUser(userForm, AdminId);
+        await AccountService.CreateUser(accessToken, accountForm);
         MudDialog.Close(DialogResult.Ok(true));
     }
 
-    private async Task GetUserId()
+    private async Task<string> GetAccessToken()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
+        var existToken = await ProtectedLocalStorage.GetAsync<string>("access_token");
+        if (String.IsNullOrEmpty(existToken.Value) || AccountService.IsExpired(existToken.Value))
         {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
+            var newToken = await AccountService.TokenGenerator();
+            await ProtectedLocalStorage.SetAsync("access_token", newToken.access_token);
+            existToken = await ProtectedLocalStorage.GetAsync<string>("access_token");
         }
+        return existToken.Value;
     }
 }

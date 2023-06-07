@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Patient_Health_Management_System.Domain.DTOs
+﻿namespace Patient_Health_Management_System.Domain.DTOs
 {
     public class UserResponse
     {

@@ -33,7 +33,6 @@
 
     private async Task Submit()
     {
-        await UserService.DeleteUserByUserId(Id, AdminId);
         var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
         if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
         {
@@ -41,6 +40,7 @@
             await ProtectedLocalStorage.SetAsync("access_token", newToken.access_token);
             access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
         }
+        await UserService.DeleteUserByUserId(Id, AdminId);
         await AccountService.BlockUserById(Id, access_token.Value);
         MudDialog.Close(DialogResult.Ok(true));
     }

@@ -4,7 +4,13 @@ namespace Patient_Health_Management_System.Services.Interfaces
     {
         Task<Auth0Token> TokenGenerator();
 
-        Task<UserResponse> GetUserResponseById(string id, string access_token);
+        Task<UserResponse> GetUserById(string id, string access_token);
+
+        Task<IEnumerable<Role>> GetRoles(string access_token);
+
+        Task AssignRolesToUserByUserId(string id, string access_token, List<string> roleIds);
+
+        Task CreateUser(string access_token, AccountForm accountForm);
 
         Task UpdateUserById(string id, string access_token, AccountForm accountForm);
 
