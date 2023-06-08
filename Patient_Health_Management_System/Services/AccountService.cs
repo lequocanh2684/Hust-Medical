@@ -66,7 +66,7 @@ namespace Patient_Health_Management_System.Services
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {accessToken}");
-                request.AddJsonBody($"{{\"email\":\"{email}\"}}");
+                request.AddQueryParameter("email", email);
                 var response = await client.GetAsync(request);
                 var users = JsonSerializer.Deserialize<IEnumerable<UserResponse>>(response.Content);
                 return users;
@@ -110,6 +110,7 @@ namespace Patient_Health_Management_System.Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+
             }
         }
 

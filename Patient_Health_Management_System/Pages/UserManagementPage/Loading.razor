@@ -1,4 +1,5 @@
 ﻿@inject IAccountService AccountService
+@inject IUserService UserService
 
 <MudDialog>
 	<DialogContent>
@@ -17,13 +18,16 @@
 	public string AccessToken { get; set; }
 
 	[Parameter]
-	public string Email { get; set; }
+	public UserForm UserForm { get; set; }
+	
+	[Parameter]
+	public string AdminId { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
-		var newUser = await AccountService.GetUserByEmail(AccessToken, Email);
-		await AccountService.AssignRolesToUserByUserId(newUser.FirstOrDefault().UserId, AccessToken, RoleIds);
-		Task.Delay(10000);
+		await UserService.CreateUser(UserForm, AdminId);
+		await AccountService.AssignRolesToUserByUserId(UserForm.UserId, AccessToken, RoleIds);
+		await Task.Delay(1000);
 		MudDialog.Close(DialogResult.Ok(true));
 	}
 }

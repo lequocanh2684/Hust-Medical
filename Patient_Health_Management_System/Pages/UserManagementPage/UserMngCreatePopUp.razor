@@ -15,7 +15,7 @@
         <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" />
         <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" />
         <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" />
-6        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
+        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
             <MudSelectItem Value="@("Nam")" />
             <MudSelectItem Value="@("Nữ")" />
         </MudSelect>
@@ -69,12 +69,13 @@
 
     private async Task Submit()
     {
-        accountForm.Name = userForm.Name;
-        accountForm.Email = userForm.Email;
+        userForm.Name = accountForm.Name;
+        userForm.Email = accountForm.Email;
         accountForm.Connection = "Username-Password-Authentication";
-        await UserService.CreateUser(userForm, AdminId);
         await AccountService.CreateUser(accessToken, accountForm);
-        await AssignRoleToNewUser(accountForm.Email);
+        var newUser = await AccountService.GetUserByEmail(accessToken, accountForm.Email);
+        userForm.UserId = newUser.ToList().FirstOrDefault().UserId;
+        await AssignRoleToNewUser();
     }
 
     private async Task<string> GetAccessToken()
@@ -89,11 +90,15 @@
         return existToken.Value;
     }
 
-    private async Task AssignRoleToNewUser(string email)
+    private async Task AssignRoleToNewUser()
     {
-        var parameter = new DialogParameters { ["RoleIds"] = roleIds, ["AccessToken"] = accessToken, ["Email"] = email };
+        var parameter = new DialogParameters { ["RoleIds"] = roleIds, ["AccessToken"] = accessToken, ["UserForm"] = userForm, ["AdminId"] = AdminId };
         var dialog = await DialogService.ShowAsync<Loading>("Loading", parameter);
         var result = await dialog.Result;
-        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled)
+        {
+            await InvokeAsync(OnInitializedAsync);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
     }
 }
