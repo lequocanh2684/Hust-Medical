@@ -58,6 +58,25 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
+        public async Task<IEnumerable<UserResponse>> GetUserByEmail(string accessToken, string email)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users-by-email");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {accessToken}");
+                request.AddJsonBody($"{{\"email\":\"{email}\"}}");
+                var response = await client.GetAsync(request);
+                var users = JsonSerializer.Deserialize<IEnumerable<UserResponse>>(response.Content);
+                return users;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<Role>> GetRoles(string access_token)
         {
             try
@@ -84,7 +103,8 @@ namespace Patient_Health_Management_System.Services
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
-                request.AddJsonBody(accountForm);
+                var body = JsonSerializer.Serialize(accountForm);
+                request.AddJsonBody(body);
                 await client.PostAsync(request);
             }
             catch (Exception ex)
@@ -127,7 +147,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task AssignRolesToUserByUserId(string id, string access_token, List<string> roleIds)
+        public async Task AssignRolesToUserByUserId(string id, string access_token, IEnumerable<string> roleIds)
         {
             try
             {
@@ -135,7 +155,7 @@ namespace Patient_Health_Management_System.Services
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
-                request.AddJsonBody(roleIds);
+                request.AddJsonBody($"{{\"roles\":{JsonSerializer.Serialize(roleIds)}}}");
                 await client.PostAsync(request);
             }
             catch (Exception ex)

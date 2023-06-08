@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject IDialogService DialogService
 @inject IUserService UserService
 @inject IAccountService AccountService
 
@@ -14,20 +15,22 @@
         <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" />
         <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" />
         <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" />
-        <MudTextField @bind-Value="@accountForm.ConfirmPassword" Label="Xác nhận mật khẩu" ReadOnly="false" />
-        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
+6        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
             <MudSelectItem Value="@("Nam")" />
             <MudSelectItem Value="@("Nữ")" />
         </MudSelect>
         <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" />
         <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
-        <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" MultiSelection="true" @bind-SelectedValues="roleIds">
+        <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" @bind-SelectedValues="roleIds">
             @foreach (var role in roles)
             {
-                <MudSelectItem T="string" Value="@role.Id">@role.Name</MudSelectItem> 
+                <MudSelectItem T="string" Value="@role.Id">@role.Description</MudSelectItem> 
             }
         </MudSelect>
-        <MudTextField @bind-Value="@userForm.Specialist" Label="Chuyên khoa" ReadOnly="false" />
+        @if(roleIds.Contains(roles.Where(r => r.Name.Equals("Doctor")).Select(r => r.Id).FirstOrDefault()))
+		{
+			<MudTextField @bind-Value="@userForm.Specialist" Label="Chuyên khoa" ReadOnly="false" />
+		}
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
@@ -55,8 +58,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        //accessToken = await GetAccessToken();
-        //roles = await AccountService.GetRoles(accessToken);
+        accessToken = await GetAccessToken();
+        roles = await AccountService.GetRoles(accessToken);
     }
 
     private void Cancel()
@@ -71,7 +74,7 @@
         accountForm.Connection = "Username-Password-Authentication";
         await UserService.CreateUser(userForm, AdminId);
         await AccountService.CreateUser(accessToken, accountForm);
-        MudDialog.Close(DialogResult.Ok(true));
+        await AssignRoleToNewUser(accountForm.Email);
     }
 
     private async Task<string> GetAccessToken()
@@ -84,5 +87,13 @@
             existToken = await ProtectedLocalStorage.GetAsync<string>("access_token");
         }
         return existToken.Value;
+    }
+
+    private async Task AssignRoleToNewUser(string email)
+    {
+        var parameter = new DialogParameters { ["RoleIds"] = roleIds, ["AccessToken"] = accessToken, ["Email"] = email };
+        var dialog = await DialogService.ShowAsync<Loading>("Loading", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 }

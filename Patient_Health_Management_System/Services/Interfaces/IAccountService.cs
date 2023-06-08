@@ -6,9 +6,11 @@ namespace Patient_Health_Management_System.Services.Interfaces
 
         Task<UserResponse> GetUserById(string id, string access_token);
 
-        Task<IEnumerable<Role>> GetRoles(string access_token);
+        Task<IEnumerable<UserResponse>> GetUserByEmail(string accessToken, string email);
 
-        Task AssignRolesToUserByUserId(string id, string access_token, List<string> roleIds);
+		Task<IEnumerable<Role>> GetRoles(string access_token);
+
+        Task AssignRolesToUserByUserId(string id, string access_token, IEnumerable<string> roleIds);
 
         Task CreateUser(string access_token, AccountForm accountForm);
 

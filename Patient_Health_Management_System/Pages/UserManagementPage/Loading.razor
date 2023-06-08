@@ -1,0 +1,29 @@
+﻿@inject IAccountService AccountService
+
+<MudDialog>
+	<DialogContent>
+		<MudText Typo="Typo.h6">Đang tạo người dùng mới...</MudText>
+		<MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
+	</DialogContent>
+</MudDialog>
+
+@code {
+	[CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+	[Parameter]
+	public HashSet<string> RoleIds { get; set; }
+
+	[Parameter]
+	public string AccessToken { get; set; }
+
+	[Parameter]
+	public string Email { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		var newUser = await AccountService.GetUserByEmail(AccessToken, Email);
+		await AccountService.AssignRolesToUserByUserId(newUser.FirstOrDefault().UserId, AccessToken, RoleIds);
+		Task.Delay(10000);
+		MudDialog.Close(DialogResult.Ok(true));
+	}
+}
