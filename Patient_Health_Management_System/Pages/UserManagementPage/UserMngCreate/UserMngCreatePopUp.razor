@@ -93,7 +93,7 @@
     private async Task AssignRoleToNewUser()
     {
         var parameter = new DialogParameters { ["RoleIds"] = roleIds, ["AccessToken"] = accessToken, ["UserForm"] = userForm, ["AdminId"] = AdminId };
-        var dialog = await DialogService.ShowAsync<Loading>("Loading", parameter);
+        var dialog = await DialogService.ShowAsync<AssignRoleToNewUser>("Phân quyền cho user mới", parameter);
         var result = await dialog.Result;
         if (!result.Canceled)
         {

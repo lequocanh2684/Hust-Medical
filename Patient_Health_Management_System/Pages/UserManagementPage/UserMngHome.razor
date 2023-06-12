@@ -71,7 +71,7 @@
     private async Task ShowUserCreate(string adminId)
     {
         var parameter = new DialogParameters { ["AdminId"] = adminId };
-        var dialog = await DialogService.ShowAsync<UserMngCreatePopUp>("Thêm thông tin người dùng");
+        var dialog = await DialogService.ShowAsync<UserMngCreate.UserMngCreatePopUp>("Thêm thông tin người dùng");
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }

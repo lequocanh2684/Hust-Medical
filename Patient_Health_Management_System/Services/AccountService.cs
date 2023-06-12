@@ -122,7 +122,7 @@ namespace Patient_Health_Management_System.Services
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
-                request.AddJsonBody(accountForm);
+                request.AddJsonBody(accountForm.ToJson().Except("password"));
                 await client.PatchAsync(request);
             }
             catch (Exception ex)
