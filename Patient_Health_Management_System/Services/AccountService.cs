@@ -210,5 +210,22 @@ namespace Patient_Health_Management_System.Services
         {
             return new X509Certificate2(Convert.FromBase64String(_signingCert));
         }
+
+        public async Task ChangePassword(string id, string access_token, string password)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody($"{{\"password\":\"{password}\",\"connection\":\"Username-Password-Authentication\"}}");
+                await client.PatchAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

@@ -26,6 +26,9 @@
         [BsonElement("phone_number")]
         public string PhoneNumber { get; set; }
 
+        [BsonElement("role")]
+        public string Role { get; set; }
+
         [BsonElement("created_at")]
         public DateTime CreatedAt { get; set; }
 

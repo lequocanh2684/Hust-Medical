@@ -27,6 +27,8 @@
                         <MudStack Row>
                             <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
                                            OnClick="() => ShowUserUpdate(context.Item)" />
+                            <MudIconButton Icon="@Icons.Material.Filled.EditNote" Color="Color.Primary" Size="Size.Medium"
+                                           OnClick="() => ShowChangePassword(context.Item.UserId)" />
                             <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                            OnClick="() => ShowUserDelete(context.Item.Id, adminId, context.Item.Name)" />
                             <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
@@ -55,6 +57,8 @@
     private string adminId = new string("");
 
     private string searchS = new string("");
+
+    private string? accessToken = new string("");
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,6 +92,14 @@
     {
         var parameter = new DialogParameters { ["Id"] = id, ["AdminId"] = adminId, ["UserName"] = userName };
         var dialog = await DialogService.ShowAsync<UserMngDeletePopUp>("Xóa thông tin người dùng", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowChangePassword(string userId)
+    {
+        var parameter = new DialogParameters { ["UserId"] = userId};
+        var dialog = await DialogService.ShowAsync<ChangePassword>("Đổi mật khẩu", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }

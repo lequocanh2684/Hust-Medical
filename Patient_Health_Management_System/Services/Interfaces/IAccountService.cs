@@ -20,6 +20,8 @@ namespace Patient_Health_Management_System.Services.Interfaces
 
         Task SendVerificationEmail(string id, string access_token);
 
+        Task ChangePassword(string id, string access_token, string password);
+
         bool IsExpired(string access_token);
     }
 }
