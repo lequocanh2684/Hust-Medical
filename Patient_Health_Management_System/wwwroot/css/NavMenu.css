@@ -1,3 +1,7 @@
 .active-nav-link {
     background-color: #F3F3F3;
 }
+
+.mud-nav-link {
+    border-radius: 24px;
+}
