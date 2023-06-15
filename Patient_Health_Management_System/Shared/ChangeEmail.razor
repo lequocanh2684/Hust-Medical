@@ -1,20 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject IAccountService AccountService
+@inject IUserService UserService
 @inject ISnackbar Snackbar
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
             <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
-            Thay đổi mật khẩu
+            Thay đổi email
         </MudText>
     </TitleContent>
     <DialogContent>
         <MudForm @bind-IsValid="@success">
-            <MudTextField @bind-Value="@password" Label="Mật khẩu mới" InputType="InputType.Password" Required="true" RequiredError="Mật khẩu mới không hợp lệ" />
-			<MudTextField @bind-Value="@confirmPassword" Label="Nhập lại mật khẩu mới" InputType="InputType.Password" Validation="@(new Func<string, string?>(PasswordMatchValidator))" Required="true"/>
-		</MudForm>
+            <MudTextField @bind-Value="@email" Label="Email mới" InputType="InputType.Email" Required="true" RequiredError="Email không được bỏ trống" />
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
@@ -26,12 +26,13 @@
 
     [Parameter]
     public string UserId { get; set; }
+    
+    [Parameter]
+    public string AdminId { get; set; }
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private string password = new string("");
-
-    private string confirmPassword = new string("");
+    private string email = new string("");
 
     private string? accessToken = new string("");
 
@@ -49,19 +50,13 @@
 
     private async void Submit()
     {
-        await AccountService.ChangePassword(UserId, accessToken, password);
-        Snackbar.Add("Đổi mật khẩu thành công", Severity.Success);
+        await AccountService.ChangeEmail(UserId, accessToken, email);
+        await UserService.ChangeUserEmailByUserId(UserId, AdminId, email);
+        await Task.Delay(10);
+        await AccountService.SendVerificationEmail(UserId, accessToken);
+        Snackbar.Add("Đổi email thành công", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
-
-    private string? PasswordMatchValidator(string cfpw)
-	{
-		if (cfpw != password)
-		{
-			return "Mật khẩu không khớp";
-		}
-		return null;
-	}
 
     private async Task<string> GetAccessToken()
     {

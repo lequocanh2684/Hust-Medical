@@ -27,7 +27,7 @@
 	{
 		await UserService.CreateUser(UserForm, AdminId); //Thêm thông tin user vừa tạo trên Auth0 vào database
 		await AccountService.AssignRolesToUserByUserId(UserForm.UserId, AccessToken, RoleIds);
-		await Task.Delay(1000);
+		await Task.Delay(100);
 		MudDialog.Close(DialogResult.Ok(true));
 	}
 }

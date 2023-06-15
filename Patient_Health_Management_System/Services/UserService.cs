@@ -124,5 +124,28 @@
 				throw new Exception(ex.Message);
 			}
 		}
+
+		public async Task ChangeUserEmailByUserId(string userId, string adminId, string newEmail)
+		{
+            try
+			{
+                var uei = await _userRepo.GetUserByUserId(userId);
+                if (uei == null)
+				{
+                    throw new Exception("user not found");
+                }
+                else
+				{
+                    uei.Email = newEmail;
+                    uei.UpdatedBy = adminId;
+                    uei.UpdatedAt = DateTime.Now;
+                    await _userRepo.ModifyUserByUserId(uei);
+                }
+            }
+            catch (Exception ex)
+			{
+                throw new Exception(ex.Message);
+            }
+        }
 	}
 }

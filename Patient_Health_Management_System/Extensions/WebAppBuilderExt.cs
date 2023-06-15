@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using MudBlazor;
+using MudBlazor.Services;
 
 namespace Patient_Health_Management_System.Extensions
 {
@@ -94,6 +96,21 @@ namespace Patient_Health_Management_System.Extensions
      };
  });
 
+        }
+
+        public static void AddMudSnackBarConfiguration(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+                config.SnackbarConfiguration.PreventDuplicates = false;
+                config.SnackbarConfiguration.NewestOnTop = false;
+                config.SnackbarConfiguration.ShowCloseIcon = true;
+                config.SnackbarConfiguration.VisibleStateDuration = 100;
+                config.SnackbarConfiguration.HideTransitionDuration = 50;
+                config.SnackbarConfiguration.ShowTransitionDuration = 50;
+                config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+            });
         }
     }
 }

@@ -12,7 +12,7 @@
                      FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
                      Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
             <ToolBarContent>
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowUserCreate(adminId)">Thêm người dùng mới</MudButton>
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowUserCreate()">Thêm người dùng mới</MudButton>
                 <MudSpacer />
                 <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm người dùng" Adornment="Adornment.Start" Immediate="true"
                               AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -24,16 +24,24 @@
                 <PropertyColumn Property="m => m.Specialist" Title="Chuyên khoa" />
                 <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                     <CellTemplate>
-                        <MudStack Row>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                           OnClick="() => ShowUserUpdate(context.Item)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.EditNote" Color="Color.Primary" Size="Size.Medium"
-                                           OnClick="() => ShowChangePassword(context.Item.UserId)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                           OnClick="() => ShowUserDelete(context.Item.Id, adminId, context.Item.Name)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                                           OnClick="() => ShowUserDetail(context.Item)" />
-                        </MudStack>
+                        <MudMenu AnchorOrigin="Origin.BottomCenter" >
+                            <ActivatorContent>
+                                <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
+                            </ActivatorContent>
+							<ChildContent>
+								<MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+											 OnClick="() => ShowUserDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                             OnClick="() => ShowUserUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
+                                <MudDivider />
+                                <MudMenuItem OnClick="() => ShowChangePassword(context.Item.UserId)">Đổi mật khẩu</MudMenuItem>
+                                <MudMenuItem OnClick="() => ShowChangeEmail(context.Item.UserId)">Đổi email</MudMenuItem>
+                                <MudDivider />
+                                <MudMenuItem  Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                           OnClick="() => ShowUserDelete(context.Item.UserId, context.Item.Name)">Xóa người dùng</MudMenuItem>
+                                
+							</ChildContent>
+						</MudMenu>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
@@ -72,7 +80,7 @@
         await DialogService.ShowAsync<UserMngDetailPopUp>("Thông tin người dùng", parameter);
     }
 
-    private async Task ShowUserCreate(string adminId)
+    private async Task ShowUserCreate()
     {
         var parameter = new DialogParameters { ["AdminId"] = adminId };
         var dialog = await DialogService.ShowAsync<UserMngCreate.UserMngCreatePopUp>("Thêm thông tin người dùng");
@@ -88,9 +96,9 @@
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowUserDelete(string id, string adminId, string userName)
+    private async Task ShowUserDelete(string userId, string userName)
     {
-        var parameter = new DialogParameters { ["Id"] = id, ["AdminId"] = adminId, ["UserName"] = userName };
+        var parameter = new DialogParameters { ["UserId"] = userId, ["AdminId"] = adminId, ["UserName"] = userName };
         var dialog = await DialogService.ShowAsync<UserMngDeletePopUp>("Xóa thông tin người dùng", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
@@ -100,6 +108,14 @@
     {
         var parameter = new DialogParameters { ["UserId"] = userId};
         var dialog = await DialogService.ShowAsync<ChangePassword>("Đổi mật khẩu", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowChangeEmail(string userId)
+    {
+        var parameter = new DialogParameters { ["UserId"] = userId, ["AdminId"] = adminId };
+        var dialog = await DialogService.ShowAsync<ChangeEmail>("Đổi email", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }

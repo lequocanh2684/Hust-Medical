@@ -227,5 +227,22 @@ namespace Patient_Health_Management_System.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task ChangeEmail(string id, string accessToken, string email)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {accessToken}");
+                request.AddJsonBody($"{{\"email\":\"{email}\",\"connection\":\"Username-Password-Authentication\"}}");
+                await client.PostAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
