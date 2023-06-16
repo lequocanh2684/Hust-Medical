@@ -5,3 +5,7 @@
 .mud-nav-link {
     border-radius: 24px;
 }
+
+.mud-nav-group>.mud-nav-link>.mud-nav-link-text {
+    font-weight: 400;
+}

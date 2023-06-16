@@ -62,7 +62,7 @@
     {
         accessToken = await GetAccessToken();
         roles = await AccountService.GetRoles(accessToken);
-        roleIds = roles.Where(r => r.Name.Equals(User.Role)).Select(r => r.Id);
+        roleIds = roles.Where(r => r.Description.Equals(User.Role)).Select(r => r.Id);
         userForm = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper().Map<UserForm>(User);
     }
 

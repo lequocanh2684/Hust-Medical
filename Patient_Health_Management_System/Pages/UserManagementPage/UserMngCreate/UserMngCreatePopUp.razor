@@ -14,7 +14,7 @@
     <DialogContent>
         <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" />
         <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" />
-        <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" />
+        <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Required="true" />
         <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
             <MudSelectItem Value="@("Nam")" />
             <MudSelectItem Value="@("Nữ")" />
@@ -94,7 +94,7 @@
     private async Task AssignRoleToNewUser()
     {
         var parameter = new DialogParameters { ["RoleIds"] = roleIds, ["AccessToken"] = accessToken, ["UserForm"] = userForm, ["AdminId"] = AdminId };
-        var dialog = await DialogService.ShowAsync<AssignRoleToNewUser>("Phân quyền cho user mới", parameter);
+        var dialog = await DialogService.ShowAsync<AssignRoleToNewUser>("Đang tạo người dùng mới", parameter);
         var result = await dialog.Result;
         if (!result.Canceled)
         {
