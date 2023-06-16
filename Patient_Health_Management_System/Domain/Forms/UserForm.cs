@@ -14,5 +14,6 @@
         public string PhoneNumber { get; set; }
 
         public string Specialist { get; set; }
+        public string Role { get; set; }
     }
 }

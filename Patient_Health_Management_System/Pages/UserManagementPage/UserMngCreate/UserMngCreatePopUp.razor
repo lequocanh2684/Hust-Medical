@@ -71,6 +71,7 @@
     {
         userForm.Name = accountForm.Name;
         userForm.Email = accountForm.Email;
+        userForm.Role = roles.Where(r => r.Id.Equals(roleIds.FirstOrDefault())).Select(r => r.Description).FirstOrDefault();
         accountForm.Connection = "Username-Password-Authentication";
         await AccountService.CreateUser(accessToken, accountForm);
         var newUser = await AccountService.GetUserByEmail(accessToken, accountForm.Email);

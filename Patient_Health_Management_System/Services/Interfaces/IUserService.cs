@@ -10,7 +10,7 @@
 
         Task<User> CreateUser(UserForm userExtraInfoForm, string userId);
 
-        Task UpdateUserByUserId(UserForm userExtraInfoForm, string userId);
+        Task UpdateUserByUserId(UserForm userExtraInfoForm, string userId, string adminId);
 
         Task DeleteUserByUserId(string userId, string adminId);
 

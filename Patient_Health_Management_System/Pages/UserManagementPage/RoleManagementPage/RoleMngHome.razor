@@ -1,8 +1,9 @@
-﻿@page "/user_management"
+﻿@page "/user_management/role"
 @attribute [Authorize(Roles = "Admin, Doctor")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IDialogService DialogService
 @inject IUserService UserService
+
 
 <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
     <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
@@ -21,27 +22,27 @@
                 <SelectColumn T="Medicine" />
                 <PropertyColumn Property="m => m.UserId" Title="Mã người dùng" Sortable="false" Filterable="false" />
                 <PropertyColumn Property="m => m.Name" Title="Tên người dùng" />
-                <PropertyColumn Property="m => m.Role" Title="Chức vụ" />
+                <PropertyColumn Property="m => m.Specialist" Title="Chuyên khoa" />
                 <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                     <CellTemplate>
-                        <MudMenu AnchorOrigin="Origin.BottomCenter" >
+                        <MudMenu AnchorOrigin="Origin.BottomCenter">
                             <ActivatorContent>
                                 <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
                             </ActivatorContent>
-							<ChildContent>
-								<MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
-											 OnClick="() => ShowUserDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
+                            <ChildContent>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+                                             OnClick="() => ShowUserDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
                                 <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
                                              OnClick="() => ShowUserUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
                                 <MudDivider />
                                 <MudMenuItem OnClick="() => ShowChangePassword(context.Item.UserId)">Đổi mật khẩu</MudMenuItem>
                                 <MudMenuItem OnClick="() => ShowChangeEmail(context.Item.UserId)">Đổi email</MudMenuItem>
                                 <MudDivider />
-                                <MudMenuItem  Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
-                                           OnClick="() => ShowUserDelete(context.Item.UserId, context.Item.Name)">Xóa người dùng</MudMenuItem>
-                                
-							</ChildContent>
-						</MudMenu>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                             OnClick="() => ShowUserDelete(context.Item.UserId, context.Item.Name)">Xóa người dùng</MudMenuItem>
+
+                            </ChildContent>
+                        </MudMenu>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
@@ -90,7 +91,7 @@
 
     private async Task ShowUserUpdate(User user)
     {
-        var parameter = new DialogParameters { ["User"] = user, ["AdminId"] = adminId };
+        var parameter = new DialogParameters { ["User"] = user };
         var dialog = await DialogService.ShowAsync<UserMngUpdatePopUp>("Chỉnh sửa thông tin người dùng", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
@@ -106,7 +107,7 @@
 
     private async Task ShowChangePassword(string userId)
     {
-        var parameter = new DialogParameters { ["UserId"] = userId};
+        var parameter = new DialogParameters { ["UserId"] = userId };
         var dialog = await DialogService.ShowAsync<ChangePassword>("Đổi mật khẩu", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);

@@ -244,5 +244,39 @@ namespace Patient_Health_Management_System.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task UpdateUserNameById(string id, string access_token, string userName)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody($"{{\"name\":\"{userName}\"}}");
+                await client.PatchAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task RemoveRolesFromUserByUserId(string id, string access_token, IEnumerable<string> roleIds)
+        {
+            try
+            {
+                var client = new RestClient($"https://{domain}/api/v2/users/{id}/roles");
+                var request = new RestRequest();
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", $"Bearer {access_token}");
+                request.AddJsonBody($"{{\"roles\":{JsonSerializer.Serialize(roleIds)}}}");
+                await client.DeleteAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

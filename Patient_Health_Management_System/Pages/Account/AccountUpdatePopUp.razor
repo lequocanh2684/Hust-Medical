@@ -50,7 +50,7 @@
     private async Task Submit()
     {
         accountForm = new MapperConfiguration(cfg => cfg.CreateMap<UserForm, AccountForm>()).CreateMapper().Map<AccountForm>(userForm);
-        await UserService.UpdateUserByUserId(userForm, userId);
+        await UserService.UpdateUserByUserId(userForm, userId, "");
         var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
         if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
         {

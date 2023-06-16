@@ -12,7 +12,11 @@
         <MudTextField Value="@User.Email" Label="Email" ReadOnly="true" />
         <MudTextField Value="@User.Address" Label="Địa chỉ" ReadOnly="true" />
         <MudTextField Value="@User.PhoneNumber" Label="Số điện thoại" ReadOnly="true" />
-        <MudTextField Value="@User.Specialist" Label="Chuyên khoa" ReadOnly="true" />
+        <MudTextField Value="@User.Role" Label="Chức vụ" ReadOnly="true" />
+        @if (!String.IsNullOrEmpty(User.Specialist))
+        {
+            <MudTextField Value="@User.Specialist" Label="Chuyên khoa" ReadOnly="true" />
+        }
     </DialogContent>
 </MudDialog>
 

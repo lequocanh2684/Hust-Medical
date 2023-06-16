@@ -58,6 +58,7 @@
 					PhoneNumber = userForm.PhoneNumber,
 					Specialist = userForm.Specialist,
 					Gender = userForm.Gender,
+					Role = userForm.Role,
 					CreatedBy = adminId,
 					CreatedAt = DateTime.Now,
 					UpdatedBy = null,
@@ -74,7 +75,7 @@
 			}
 		}
 
-		public async Task UpdateUserByUserId(UserForm userForm, string userId)
+		public async Task UpdateUserByUserId(UserForm userForm, string userId, string adminId)
 		{
 			try
 			{
@@ -91,8 +92,13 @@
 					uei.PhoneNumber = userForm.PhoneNumber;
 					uei.Specialist = userForm.Specialist;
 					uei.Gender = userForm.Gender;
-					uei.UpdatedBy = userId;
-					uei.UpdatedAt = DateTime.Now;
+					uei.Role = userForm.Role;
+					if (adminId.Equals(""))
+					{
+						uei.UpdatedBy = userId;
+					}
+					else uei.UpdatedBy = adminId;
+                    uei.UpdatedAt = DateTime.Now;
 					await _userRepo.ModifyUserByUserId(uei);
 				}
 			}

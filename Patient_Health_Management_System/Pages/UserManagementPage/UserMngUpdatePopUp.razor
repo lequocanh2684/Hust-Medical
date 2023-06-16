@@ -3,17 +3,17 @@
 @inject IDialogService DialogService
 @inject IUserService UserService
 @inject IAccountService AccountService
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h6">
-            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
-            Thêm người dùng mới
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
+            Sửa thông tin người dùng
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" />
-        <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.Name" Label="Họ và tên" ReadOnly="false" />
         <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
             <MudSelectItem Value="@("Nam")" />
             <MudSelectItem Value="@("Nữ")" />
@@ -53,12 +53,17 @@
     [Parameter]
     public string AdminId { get; set; }
 
+    [Parameter]
+    public User User { get; set; }
+
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         accessToken = await GetAccessToken();
         roles = await AccountService.GetRoles(accessToken);
+        roleIds = roles.Where(r => r.Name.Equals(User.Role)).Select(r => r.Id);
+        userForm = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper().Map<UserForm>(User);
     }
 
     private void Cancel()
@@ -68,13 +73,14 @@
 
     private async Task Submit()
     {
-        userForm.Name = accountForm.Name;
-        userForm.Email = accountForm.Email;
+        accountForm.Name = userForm.Name;
         accountForm.Connection = "Username-Password-Authentication";
-        await AccountService.CreateUser(accessToken, accountForm);
-        var newUser = await AccountService.GetUserByEmail(accessToken, accountForm.Email);
-        userForm.UserId = newUser.ToList().FirstOrDefault().UserId;
-        await AssignRoleToNewUser();
+        userForm.Role = roles.Where(r => r.Id.Equals(roleIds.FirstOrDefault())).Select(r => r.Description).FirstOrDefault();
+        await AccountService.UpdateUserNameById(User.UserId, accessToken, accountForm.Name);
+        await UserService.UpdateUserByUserId(userForm, User.UserId, AdminId);
+        await UpdateUserRole();
+        Snackbar.Add("Đổi thông tin thành công", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
     }
 
     private async Task<string> GetAccessToken()
@@ -89,15 +95,14 @@
         return existToken.Value;
     }
 
-    private async Task AssignRoleToNewUser()
+    private async Task UpdateUserRole()
     {
-        var parameter = new DialogParameters { ["RoleIds"] = roleIds, ["AccessToken"] = accessToken, ["UserForm"] = userForm, ["AdminId"] = AdminId };
-        var dialog = await DialogService.ShowAsync<UserMngCreate.AssignRoleToNewUser>("Phân quyền cho user mới", parameter);
-        var result = await dialog.Result;
-        if (!result.Canceled)
+        if (roleIds.Contains(roles.Where(r => r.Name != "Doctor").Select(r => r.Id).FirstOrDefault()))
         {
-            await InvokeAsync(OnInitializedAsync);
-            MudDialog.Close(DialogResult.Ok(true));
+            userForm.Specialist = "";
         }
+        await AccountService.RemoveRolesFromUserByUserId(User.UserId, accessToken, roleIds);
+        await Task.Delay(100);
+        await AccountService.AssignRolesToUserByUserId(User.UserId, accessToken, roleIds);
     }
 }

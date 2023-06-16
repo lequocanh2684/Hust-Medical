@@ -24,6 +24,10 @@ namespace Patient_Health_Management_System.Services.Interfaces
 
         Task ChangeEmail(string id, string accessToken, string email);
 
+        Task UpdateUserNameById(string id, string access_token, string userName);
+
+        Task RemoveRolesFromUserByUserId(string id, string access_token, IEnumerable<string> roleIds);
+
         bool IsExpired(string access_token);
     }
 }
