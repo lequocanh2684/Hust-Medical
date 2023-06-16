@@ -15,13 +15,13 @@
                             Icon="@item.NavLinkItem.Icon">
                             @item.ItemContent</MudNavLink>
                     }
-                    <MudNavGroup Icon="@Icons.Material.Filled.ManageAccounts" Title="Quản lý người dùng" style="@($"color:#9E9E9E; font-size:18px")"
-                                 Class="rounded-xl ml-3 mt-3 mb-3">
-                        <MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:18px")"
-							Class="rounded-xl ml-3 mt-3 mb-3" Href="/user_management" Match="NavLinkMatch.All">
+                    <MudNavGroup Icon="@Icons.Material.Filled.ManageAccounts" Title="Quản lý người dùng" style="@($"color:#9E9E9E; font-size:18px;")"
+                                 Class="ml-3 mt-3 mb-3">
+                        <MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:16px; width:11.5rem")"
+							Class="rounded-xl mt-3 mb-3" Href="/user_management" Match="NavLinkMatch.All">
 							Người dùng</MudNavLink>
-						<MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:18px")"
-                                    Class="rounded-xl ml-3 mt-3 mb-3" Href="/user_management/role" Match="NavLinkMatch.All">
+                        <MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:16px; width:11.5rem")"
+                                    Class="rounded-xl mt-3 mb-3" Href="/user_management/role" Match="NavLinkMatch.All">
 							Quyền hạn</MudNavLink>
                     </MudNavGroup>
                 </AuthorizeView>
