@@ -1,13 +1,24 @@
 ﻿@page "/home"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IAccountService AccountService
+@inject IUserService UserService
 
-<div>
-
+<div style="display:flex; flex-direction:column">
+    <MudImage Src="./assets/imgs/Stethoscope.jpg" Fluid="true" ObjectPosition="ObjectPosition.Right" ObjectFit="ObjectFit.Fill" 
+        Style="height:50rem; background-color:#FAFAFA; border-radius:24px; width:60%; height:50%; position:absolute" />
+    <MudText Typo="Typo.h5" Style="position: relative; top: 80px; left: 50px; color: #FAF3FF;">Chào buổi @dayTime</MudText>
+    <MudText Typo="Typo.h2" Style="position: relative; top: 90px; left: 50px; color: #FAF3FF; font-weight:400">@userName</MudText>
+    <MudText Typo="Typo.h6" Style="position: relative; top: 210px; left: 50px; color: #FAF3FF;">Quote trong ngày</MudText>
+    <MudText Typo="Typo.body1" Style="position: relative; top: 220px; left: 50px; width: 45%; color: #FAF3FF;">One positive command he gave us: You shall love and honor your emperor. In every congregation a prayer must be said for the czar's health, or the chief of police would close the synagogue.</MudText>
 </div>
 
 @code{
+    private string dayTime = new string("");
+
+    private string userName = new string("");
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -19,7 +30,34 @@
                 await ProtectedLocalStorage.SetAsync("access_token", auth0Token.access_token);
                 await OnAfterRenderAsync(firstRender);
             }
+            SetDayTime();
+            await GetUserName();
             StateHasChanged();
         }
+    }
+
+    private void SetDayTime()
+    {
+        if(DateTime.Now.Hour >= 0 && DateTime.Now.Hour < 12)
+        {
+            dayTime = "sáng";
+        }
+        else if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 18)
+        {
+            dayTime = "chiều";
+        }
+        else
+        {
+            dayTime = "tối";
+        }
+    }
+
+    private async Task GetUserName()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
+        userName = await UserService.GetUserNameByUserId(userId);
     }
 }

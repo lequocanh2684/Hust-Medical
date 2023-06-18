@@ -15,15 +15,6 @@
                             Icon="@item.NavLinkItem.Icon">
                             @item.ItemContent</MudNavLink>
                     }
-                    <MudNavGroup Icon="@Icons.Material.Filled.ManageAccounts" Title="Quản lý người dùng" style="@($"color:#9E9E9E; font-size:18px;")"
-                                 Class="ml-3 mt-3 mb-3">
-                        <MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:16px; width:11.5rem")"
-							Class="rounded-xl mt-3 mb-3" Href="/user_management" Match="NavLinkMatch.All">
-							Người dùng</MudNavLink>
-                        <MudNavLink ActiveClass="active-nav-link mud-dark-text" style="@($"color:#9E9E9E; font-size:16px; width:11.5rem")"
-                                    Class="rounded-xl mt-3 mb-3" Href="/user_management/role" Match="NavLinkMatch.All">
-							Quyền hạn</MudNavLink>
-                    </MudNavGroup>
                 </AuthorizeView>
             </MudNavMenu>
         </div>
@@ -73,7 +64,7 @@
                     Icon = MudBlazor.Icons.Material.Filled.Store,
                 }
             });
-        if (role.Equals("Doctor"))
+        if (role == "Doctor" || role == "Admin")
         {
             NavItem.Add(new NavItem()
                 {
@@ -130,6 +121,18 @@
                     {
                         Href = "billing",
                         Icon = MudBlazor.Icons.Material.Filled.Paid,
+                    }
+                });
+        }
+        if (role.Equals("Admin"))
+        {
+            NavItem.Add(new NavItem()
+                {
+                    ItemContent = "Quản lý người dùng",
+                    NavLinkItem = new MudNavLink()
+                    {
+                        Href = "user_management",
+                        Icon = MudBlazor.Icons.Material.Filled.ManageAccounts,
                     }
                 });
         }

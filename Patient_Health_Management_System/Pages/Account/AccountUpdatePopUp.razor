@@ -13,8 +13,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@userForm.Name" Label="Họ và tên" ReadOnly="true" />
-        <MudTextField @bind-Value="@userForm.Email" Label="Email" ReadOnly="false" />
+        <MudTextField @bind-Value="@userForm.Name" Label="Họ và tên" ReadOnly="false" />
         <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
         <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" />
     </DialogContent>
@@ -58,7 +57,7 @@
             await ProtectedLocalStorage.SetAsync("access_token", newToken.access_token);
             access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
         }
-        await AccountService.UpdateUserById(userId, access_token.Value, accountForm);
+        await AccountService.UpdateUserNameById(userId, access_token.Value, accountForm.Name);
         MudDialog.Close(DialogResult.Ok(true));
     }
 
@@ -66,7 +65,7 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         userId = authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.Role))
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
         .SingleOrDefault().Value;
     }
 
