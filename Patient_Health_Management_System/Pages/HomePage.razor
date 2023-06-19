@@ -17,13 +17,27 @@
 		</div>
 
         <div style="display:flex; height:20rem; background-color:#FAFAFA; border-radius:20px; margin-top:300px">
-            <div style="display:flex; flex:1; flex-direction:row; padding:16px 20px; width:20%">
+            <div style="display:flex; flex:1; flex-direction:row; justify-content:space-evenly; padding:16px 20px; width:20%">
+                <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
+                          InputData="@data1" InputLabels="@labels1">
+                    <CustomGraphics>
+                        <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
+                        <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+                    </CustomGraphics>
+                </MudChart>
+                <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
+                          InputData="@data" InputLabels="@labels">
+                    <CustomGraphics>
+                        <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
+                        <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+                    </CustomGraphics>
+                </MudChart>
             </div>
         </div>
     </div>
 	<div style="display:flex; height:52rem; background-color:#FAFAFA; border-radius:20px; margin-left:40px; width:22%">
             <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; width:20%">
-			<MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today.AddDays(1))" />
+			<MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today)" />
             <MudPaper Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:center; align-content:center; height:50%; margin-top:15px; border-radius:24px ">
                 <MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>
             </MudPaper>
@@ -76,4 +90,11 @@
         .SingleOrDefault().Value;
         userName = await UserService.GetUserNameByUserId(userId);
     }
+
+    //example Chart
+    public static double[] data1 = { 20.0, 80.0 };
+    public string[] labels1 = { $"Đang điều trị ({data1[0]}%)", $"Đã xuất viện ({data1[1]}%)" };
+
+    public static double[] data = { 60.0, 40.0 };
+    public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
 }
