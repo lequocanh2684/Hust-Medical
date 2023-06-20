@@ -22,27 +22,31 @@
         <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
         </div>
         </div>
-        <div style="display:flex; background-color:#FAFAFA; border-radius:20px;">
-            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; overflow:scroll; height:300px">
-                <MudList Clickable="true">
+        <div style="display:flex; background-color:#FAFAFA; border-radius:20px; height:600px; margin-top:20px">
+            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; height:600px">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm thuốc</MudText>
+                <MudPaper Style="border-radius:20px; overflow:auto">
+                    <MudList Clickable="true">
                     <MudListItem Text="Tất cả" OnClick="(e) => FilterByMedicineGroupName(null)" />
                     @foreach (var item in medicineGroups)
                     {
                         <MudListItem Text=@item.Name OnClick="(e) => FilterByMedicineGroupName(item.Name)" />
                     }
-                </MudList>
-                <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+                    </MudList>
+                </MudPaper>
+                @*<MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>*@
             </div>
 	    </div>
 	</div>
 
-    <div style="display:flex; flex-direction:row">
-        <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
-		    <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:73%">
-        <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS"
-        Hideable="true" @bind-SelectedItems="@selectedMedicines">
+    <div style="display:flex; flex-direction:row; margin-left:20px">
+        <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px">
+		    <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
+        <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                                 FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="border-radius:20px; width:690px" Height="700px" @bind-SelectedItems="@selectedMedicines">
         <ToolBarContent>
-            <MudTextField @bind-Value="searchS" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+            <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm" Adornment="Adornment.Start" Immediate="true"
                 AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
         <Columns>
@@ -59,9 +63,10 @@
         </div>
         </div>
 
-        <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
-		    <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:73%">
-        <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell">
+        <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px; margin:0px 20px">
+            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
+                <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell" Height="760px"
+                             Style="border-radius:20px; width:460px" FixedHeader="true" Hideable="true" Striped="true" Bordered="true">
             <Columns>
                 <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
                 <PropertyColumn Property="m => m.Name" Title="Tên thuốc" IsEditable="false" />

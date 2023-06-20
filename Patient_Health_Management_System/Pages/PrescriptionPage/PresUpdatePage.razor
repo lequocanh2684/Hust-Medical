@@ -7,7 +7,7 @@
 @inject IPatientService PatientService
 @inject IMapper mapper
 
-<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
+@*<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
     <MudText Typo="Typo.h6">
         <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-3 mb-n1" />
         Sửa thông tin đơn thuốc
@@ -61,6 +61,79 @@
     </MudExpansionPanel>
     <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
 </MudPaper>
+*@
+
+<div style="display:flex">
+    <div style="display:flex; flex-direction:column; width:40%">
+        <div style="display:flex; background-color:#FAFAFA; border-radius:20px;">
+            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+                    Thêm thông tin đơn thuốc
+                </MudText>
+
+                <MudTextField @bind-Value="@prescriptionForm.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="false" />
+                <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
+                                 SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
+                <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
+            </div>
+        </div>
+        <div style="display:flex; background-color:#FAFAFA; border-radius:20px; height:600px; margin-top:20px">
+            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; height:600px">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm thuốc</MudText>
+                <MudPaper Style="border-radius:20px; overflow:auto">
+                    <MudList Clickable="true">
+                        <MudListItem Text="Tất cả" OnClick="(e) => FilterByMedicineGroupName(null)" />
+                        @foreach (var item in medicineGroups)
+                        {
+                            <MudListItem Text=@item.Name OnClick="(e) => FilterByMedicineGroupName(item.Name)" />
+                        }
+                    </MudList>
+                </MudPaper>
+                @*<MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>*@
+            </div>
+        </div>
+    </div>
+
+    <div style="display:flex; flex-direction:row; margin-left:20px">
+        <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px">
+            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
+                <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="border-radius:20px; width:690px" Height="700px" @bind-SelectedItems="@selectedMedicines">
+                    <ToolBarContent>
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <SelectColumn T="Medicine" />
+                        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
+                        <PropertyColumn Property="m => m.Unit" Title="Đơn vị" />
+                        <PropertyColumn Property="m => m.HowToUse" Title="Cách dùng" />
+                    </Columns>
+                    <PagerContent>
+                        <MudDataGridPager T="Medicine" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
+
+        <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px; margin:0px 20px">
+            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
+                <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell" Height="760px"
+                             Style="border-radius:20px; width:460px" FixedHeader="true" Hideable="true" Striped="true" Bordered="true">
+                    <Columns>
+                        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
+                        <PropertyColumn Property="m => m.Name" Title="Tên thuốc" IsEditable="false" />
+                        <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" IsEditable="true" />
+                        <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false" />
+                    </Columns>
+                </MudDataGrid>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
 
