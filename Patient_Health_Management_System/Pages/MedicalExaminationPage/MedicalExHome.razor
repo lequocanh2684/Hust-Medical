@@ -1,5 +1,5 @@
 ﻿@page "/medicalExamination"
-@attribute [Authorize(Roles = "Doctor")]
+@attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicalExaminationService medicalExamService
 @inject IPatientService patientService

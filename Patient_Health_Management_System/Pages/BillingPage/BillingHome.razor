@@ -1,5 +1,5 @@
 ﻿@page "/billing"
-@attribute [Authorize(Roles = "Cashier")]
+@attribute [Authorize(Roles = "Cashier, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IBillingService BillingService
 @inject IPatientService PatientService

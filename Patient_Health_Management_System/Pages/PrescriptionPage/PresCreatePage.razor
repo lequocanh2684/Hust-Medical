@@ -1,5 +1,5 @@
 @page "/prescription/create"
-@attribute [Authorize(Roles = "Doctor")]
+@attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject IPrescriptionService PrescriptionService
@@ -7,17 +7,23 @@
 @inject IPatientService PatientService
 @inject IMapper mapper
 
-<MudPaper Style="overflow:hidden; position:relative; margin-top:60px">
+<div style="display:flex">
+	<div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+		<div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:73%">
     <MudText Typo="Typo.h6">
         <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
         Thêm thông tin đơn thuốc
     </MudText>
-
+    
     <MudTextField @bind-Value="@prescriptionForm.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="false" />
     <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
                SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
     <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
+    </div>
+    </div>
 
+    <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+		<div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:73%">
     <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS"
     Hideable="true" @bind-SelectedItems="@selectedMedicines">
     <ToolBarContent>
@@ -35,7 +41,11 @@
         <MudDataGridPager T="Medicine" />
     </PagerContent>
     </MudDataGrid>
+    </div>
+    </div>
 
+    <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+		<div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:73%">
     <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell">
         <Columns>
             <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
@@ -44,12 +54,11 @@
             <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false"/>
         </Columns>
     </MudDataGrid>
+    </div>
+    </div>
 
-    <MudExpansionPanel IsExpanded="true" HideIcon="true">
-        <TitleContent>
-            <MudText>Nhóm thuốc</MudText>
-        </TitleContent>
-        <ChildContent>
+    <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; width:73%">
+		<div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:73%">
             <MudList Clickable="true">
                 <MudListItem Text="Tất cả" OnClick="(e) => FilterByMedicineGroupName(null)" />
                 @foreach (var item in medicineGroups)
@@ -57,10 +66,10 @@
                     <MudListItem Text=@item.Name OnClick="(e) => FilterByMedicineGroupName(item.Name)" />
                 }
             </MudList>
-        </ChildContent>
-    </MudExpansionPanel>
     <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
-</MudPaper>
+    </div>
+    </div>
+</div>
 
 @code {
     private PrescriptionForm prescriptionForm = new Domain.Forms.PrescriptionForm();

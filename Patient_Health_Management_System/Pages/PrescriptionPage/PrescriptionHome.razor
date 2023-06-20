@@ -1,4 +1,5 @@
 ﻿@page "/prescription"
+@attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IPrescriptionService PrescriptionService
 @inject IPatientService PatientService
