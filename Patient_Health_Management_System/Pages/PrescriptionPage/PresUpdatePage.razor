@@ -41,7 +41,7 @@
     <div style="display:flex; flex-direction:row; margin-left:20px">
         <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px">
             <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
-                <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicinesTable" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
                              Hideable="true" Striped="true" Bordered="true" Style="border-radius:20px; width:690px" Height="700px" @bind-SelectedItems="@selectedMedicines">
                     <ToolBarContent>
@@ -73,7 +73,12 @@
                         <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false" />
                     </Columns>
                 </MudDataGrid>
-                <MudButton Style="margin-top:20px" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+                @if (selectedMedicines.Any())
+                {
+                    disableButton = false;
+                }
+                else disableButton = true;
+                <MudButton Style="margin-top:20px" Disabled="disableButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
             </div>
         </div>
     </div>
@@ -87,11 +92,13 @@
     private PrescriptionForm prescriptionForm = new PrescriptionForm();
     private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
     private IEnumerable<Medicine> medicines = new List<Medicine>();
+    private IEnumerable<Medicine> medicinesTable = new List<Medicine>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
     private string userId = new string("");
     private string searchS = new string("");
     private string searchPatient = new string("");
+    private bool disableButton = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -101,6 +108,7 @@
         medicines = await MedicineService.GetMedicines();
         patients = await PatientService.GetPatients();
         medicineGroups = await MedicineService.GetMedicineGroups();
+        medicinesTable = medicines;
         await GetUserId();
         GetPatientName();
         GetSelectedMedicines();
@@ -135,7 +143,7 @@
 
     private void GetSelectedMedicines()
     {
-        selectedMedicines = medicines.Where(m => prescriptionForm.MedicinePrescribed.Select(mp => mp.MedicineId).Contains(m.Id)).ToHashSet();
+        selectedMedicines = medicinesTable.Where(m => prescriptionForm.MedicinePrescribed.Select(mp => mp.MedicineId).Contains(m.Id)).ToHashSet();
         foreach (var item in selectedMedicines)
         {
             item.BuyingQuantity = prescriptionForm.MedicinePrescribed.Where(mp => mp.MedicineId == item.Id).FirstOrDefault().BuyingQuantity;
@@ -143,11 +151,10 @@
         }
     }
 
-    private async Task FilterByMedicineGroupName(string? medicineGroupName)
+    private void FilterByMedicineGroupName(string? medicineGroupName)
     {
-        if (string.IsNullOrWhiteSpace(medicineGroupName)) medicines = await MedicineService.GetMedicines();
-        else medicines = await MedicineService.GetMedicineByGroupName(medicineGroupName);
-        await InvokeAsync(StateHasChanged);
+        if (string.IsNullOrWhiteSpace(medicineGroupName)) medicinesTable = medicines;
+        else medicinesTable = medicines.Where(m => m.GroupName == medicineGroupName);
     }
 
     private bool FilterS(Domain.Models.Medicine medicine) => FilterSearch(medicine, searchS);

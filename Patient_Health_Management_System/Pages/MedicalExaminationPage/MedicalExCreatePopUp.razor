@@ -1,4 +1,5 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IMedicalExaminationService MedicalExaminationService
 @inject IDiseaseService DiseaseService
 @inject IPatientService PatientService
@@ -25,7 +26,8 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => SubmitAndCreatePrescription())">Lưu và tạo đơn thuốc</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -66,6 +68,12 @@
         medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
         await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task SubmitAndCreatePrescription()
+    {
+        await Submit();
+        NavigationManager.NavigateTo($"/prescription/create/{medicalExaminationForm.PatientId}");
     }
 
     private async Task<IEnumerable<string>> OnSearchPatient(string searchPatient)

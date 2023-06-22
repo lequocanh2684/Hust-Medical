@@ -1,4 +1,5 @@
 @page "/prescription/create"
+@page "/prescription/create/{PatientId}"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -41,7 +42,7 @@
     <div style="display:flex; flex-direction:row; margin-left:20px">
         <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px">
             <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
-                <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple"
+                <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicinesTable" SortMode="SortMode.Multiple"
                     Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                     FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
                     FilterMode="DataGridFilterMode.ColumnFilterMenu" Hideable="true" Striped="true" Bordered="true"
@@ -78,7 +79,12 @@
                         <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false" />
                     </Columns>
                 </MudDataGrid>
-                <MudButton Style="margin-top:20px" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+                @if (selectedMedicines.Any())
+                {
+                    disableButton = false;
+                }
+                else disableButton = true;
+                <MudButton Style="margin-top:20px" Disabled="disableButton" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
             </div>
         </div>
     </div>
@@ -90,17 +96,27 @@
     private PrescriptionForm prescriptionForm = new Domain.Forms.PrescriptionForm();
     private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
     private IEnumerable<Medicine> medicines = new List<Medicine>();
+    private IEnumerable<Medicine> medicinesTable = new List<Medicine>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
     private string userId = new string("");
     private string searchS = new string("");
-    private string searchPatient = new string("");
+    private string? searchPatient = new string("");
+    private bool disableButton = true;
+
+    [Parameter]
+    public string? PatientId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         medicines = await MedicineService.GetMedicines();
         patients = await PatientService.GetPatients();
         medicineGroups = await MedicineService.GetMedicineGroups();
+        medicinesTable = medicines;
+        if(!String.IsNullOrEmpty(PatientId))
+        {
+            searchPatient = patients.Where(p => p.Id == PatientId).Select(p => p.Name).FirstOrDefault();
+        }
         await GetUserId();
     }
 
@@ -121,16 +137,16 @@
         {
             return patients.Select(d => d.Name);
         }
+        await Task.Delay(0);
         return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
         d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
         .Select(d => d.Name);
     }
 
-    private async Task FilterByMedicineGroupName(string? medicineGroupName)
+    private void FilterByMedicineGroupName(string? medicineGroupName)
     {
-        if (string.IsNullOrWhiteSpace(medicineGroupName)) medicines = await MedicineService.GetMedicines();
-        else medicines = await MedicineService.GetMedicineByGroupName(medicineGroupName);
-        await InvokeAsync(StateHasChanged);
+        if (string.IsNullOrWhiteSpace(medicineGroupName)) medicinesTable = medicines;
+        else medicinesTable = medicines.Where(m => m.GroupName == medicineGroupName);
     }
 
     private bool FilterS(Domain.Models.Medicine medicine) => FilterSearch(medicine, searchS);
