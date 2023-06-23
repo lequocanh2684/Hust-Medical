@@ -1,4 +1,6 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿using MongoDB.Bson.Serialization;
+
+namespace Patient_Health_Management_System.Repositories
 {
     public class MedicineRepo : IMedicineRepo, IMedicineGroupRepo
     {
@@ -41,6 +43,13 @@
         public async Task<List<Medicine>> GetMedicinesByName(string name)
         {
             return await _medicines.Find(medicine => medicine.Name == name && !medicine.IsDeleted).ToListAsync();
+        }
+
+        public async Task<string> GetLastMedicineId()
+        {
+            var projection = Builders<Medicine>.Projection.Include(medicine => medicine.MedicineId);
+            var lastMedicine = await _medicines.Find(_ => true).Project(projection).SortByDescending(medicine => medicine.MedicineId).Limit(1).FirstOrDefaultAsync();
+            return BsonSerializer.Deserialize<Medicine>(lastMedicine).MedicineId;
         }
 
         public async Task<Medicine> CreateMedicine(Medicine medicine)

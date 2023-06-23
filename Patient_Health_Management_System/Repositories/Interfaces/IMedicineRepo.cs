@@ -9,6 +9,7 @@ namespace Patient_Health_Management_System.Repositories.Interfaces
         Task<List<Medicine>> GetMedicineByKeyword(string keyword);
         Task<List<Medicine>> GetMedicinesByName(string name);
         Task<List<Medicine>> GetMedicineByGroupName(string groupName);
+        Task<string> GetLastMedicineId();
         Task<Medicine> CreateMedicine(Medicine medicine);
         Task ModifyMedicineById(Medicine medicine);
     }

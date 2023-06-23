@@ -9,14 +9,14 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@medicineForm.MedicineId" Label="Mã thuốc" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.Name" Label="Tên thuốc" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" />
+        @*<MudTextField @bind-Value="@medicineForm.MedicineId" Label="Mã thuốc" ReadOnly="false" />*@
+        <MudTextField @bind-Value="@medicineForm.Name" Label="Tên thuốc" ReadOnly="false" Required="true" RequiredError="Tên thuốc không được bỏ trống"/>
+        <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" Required="true" RequiredError="Đơn vị không được bỏ trống" />
+        <MudTextField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" Required="true" RequiredError="Giá bán không được bỏ trống"/>
         <MudTextField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" Required="true" RequiredError="Cách dùng không được bỏ trống" />
         <MudTextField @bind-Value="@medicineForm.GroupName" Label="Nhóm" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" />
+        <MudTextField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" Required="true" RequiredError="Giá nhập không được bỏ trống" />
         <MudTextField @bind-Value="@medicineForm.MinimumStock" Label="Tồn kho" ReadOnly="false" />
     </DialogContent>
     <DialogActions>
@@ -53,7 +53,7 @@
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         userId = authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.Role))
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
         .SingleOrDefault().Value;
     }
 }

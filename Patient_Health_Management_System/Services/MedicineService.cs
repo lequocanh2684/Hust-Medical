@@ -94,10 +94,10 @@
                 {
                     throw new Exception("Medicine name already exists");
                 }
-                ValidateMedicineForm(medicineForm);
+                //ValidateMedicineForm(medicineForm);
                 var medicine = new Medicine
                 {
-                    MedicineId = medicineForm.MedicineId,
+                    MedicineId = await AutoGenerateMedicineId(),
                     Name = medicineForm.Name,
                     GroupName = medicineForm.GroupName,
                     Unit = medicineForm.Unit,
@@ -133,7 +133,7 @@
                 }
                 else
                 {
-                    ValidateMedicineForm(medicineForm);
+                    //ValidateMedicineForm(medicineForm);
                     medicine.Name = medicineForm.Name;
                     medicine.GroupName = medicineForm.GroupName;
                     medicine.Unit = medicineForm.Unit;
@@ -176,12 +176,26 @@
             }
         }
 
-        private void ValidateMedicineForm(MedicineForm medicineForm)
+        //private void ValidateMedicineForm(MedicineForm medicineForm)
+        //{
+        //    var regex = new Regex(@"^TH[0-9]{8}$");
+        //    if (!regex.IsMatch(medicineForm.MedicineId))
+        //    {
+        //        throw new Exception("MedicineId format is invalid");
+        //    }
+        //}
+
+        private async Task<string> AutoGenerateMedicineId()
         {
-            var regex = new Regex(@"^TH[0-9]{8}$");
-            if (!regex.IsMatch(medicineForm.MedicineId))
+            try
             {
-                throw new Exception("MedicineId format is invalid");
+                var lastMedicineId = await _medicineRepo.GetLastMedicineId();
+                var newMedicineId = int.Parse(lastMedicineId.Substring(2, 8)) + 1;
+                return "TH" + newMedicineId.ToString("00000000");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
         #endregion
