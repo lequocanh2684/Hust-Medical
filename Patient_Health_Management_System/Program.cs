@@ -1,15 +1,19 @@
 ﻿using MudBlazor.Services;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 
 // Add services to the container.
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddRazorPages();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new() { Title = "Patient_Health_Management_System", Version = "v1" });
-});
+//builder.Services.AddSwaggerGen(c =>
+//{
+//    c.SwaggerDoc("v1", new() { Title = "Patient_Health_Management_System", Version = "v1" });
+//});
 builder.Services.AddMudServices();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMvcCore().AddApiExplorer();
@@ -41,8 +45,8 @@ app.Use((context, next) =>
     return next(context);
 });
 
-app.UseSwagger();
-app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patient_Health_Management_System v1"));
+//app.UseSwagger();
+//app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Patient_Health_Management_System v1"));
 
 app.UseHttpsRedirection();
 

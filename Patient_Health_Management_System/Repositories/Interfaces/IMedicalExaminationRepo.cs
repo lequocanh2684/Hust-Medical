@@ -7,6 +7,7 @@
         Task<MedicalExamination> GetMedicalExaminationById(string id);
         Task<List<MedicalExamination>> GetMedicalExaminationByKeyword(string keyword);
         Task<MedicalExamination> CreateMedicalExamination(MedicalExamination medicalExamination);
+        Task<string> GetLastMedicalExaminationId();
         Task ModifyMedicalExaminationById(MedicalExamination medicalExamination);
     }
 }

@@ -12,29 +12,31 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" />
-        <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" />
-        <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Required="true" />
-        <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
-            <MudSelectItem Value="@("Nam")" />
-            <MudSelectItem Value="@("Nữ")" />
-        </MudSelect>
-        <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" />
-        <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
-        <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" @bind-SelectedValues="roleIds">
-            @foreach (var role in roles)
-            {
-                <MudSelectItem T="string" Value="@role.Id">@role.Description</MudSelectItem> 
-            }
-        </MudSelect>
-        @if(roleIds.Contains(roles.Where(r => r.Name.Equals("Doctor")).Select(r => r.Id).FirstOrDefault()))
-		{
-			<MudTextField @bind-Value="@userForm.Specialist" Label="Chuyên khoa" ReadOnly="false" />
-		}
+        <MudForm @bind-IsValid="@success">
+            <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" Required="true" RequiredError="Họ và tên không được bỏ trống" />
+            <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" Required="true" RequiredError="Email không được bỏ trống" />
+            <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Required="true" />
+            <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
+                <MudSelectItem Value="@("Nam")" />
+                <MudSelectItem Value="@("Nữ")" />
+            </MudSelect>
+            <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" Required="true" RequiredError="Địa chỉ không được bỏ trống" />
+            <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" Required="true" RequiredError="Số điện thoại không được bỏ trống" />
+            <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" @bind-SelectedValues="roleIds">
+                @foreach (var role in roles)
+                {
+                    <MudSelectItem T="string" Value="@role.Id">@role.Description</MudSelectItem> 
+                }
+            </MudSelect>
+            @if(roleIds.Contains(roles.Where(r => r.Name.Equals("Doctor")).Select(r => r.Id).FirstOrDefault()))
+		    {
+                <MudAutocomplete T="string" Label="Chuyên khoa" @bind-Value="userForm.Specialist" SearchFunc="@OnSearchSpecialist" ResetValueOnEmptyText="true" MaxItems="null" />
+		    }
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -49,7 +51,9 @@
 
     private IEnumerable<string> roleIds = new HashSet<string>();
 
-    private string accessToken = new string("");
+    private string accessToken = string.Empty;
+
+    private bool success = false;
 
     [Parameter]
     public string AdminId {get; set;}
@@ -101,5 +105,15 @@
             await InvokeAsync(OnInitializedAsync);
             MudDialog.Close(DialogResult.Ok(true));
         }
+    }
+
+    private async Task<IEnumerable<string>> OnSearchSpecialist(string value)
+    {
+        if(string.IsNullOrEmpty(value))
+        {
+            return DefaultVariable.specialist;
+        }
+        await Task.Delay(0);
+        return DefaultVariable.specialist.Where(s => s.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
     }
 }

@@ -10,22 +10,24 @@ namespace Patient_Health_Management_System.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly string domain;
-        private readonly string client_id;
-        private readonly string client_secret;
+        private readonly string _domain;
+        private readonly string _client_id;
+        private readonly string _client_secret;
 
+        private readonly IKeyVaultService _keyVaultService;
         private IJsonSerializer _serializer;
         private IDateTimeProvider _provider;
         private IBase64UrlEncoder _urlEncoder;
 
         private readonly string _signingCert;
 
-        public AccountService(IConfiguration configuration)
+        public AccountService(IKeyVaultService keyVaultService)
         {
-            domain = configuration.GetSection("Auth0").GetSection("Domain").Value;
-            client_id = configuration.GetSection("Auth0").GetSection("ClientId").Value;
-            client_secret = configuration.GetSection("Auth0").GetSection("ClientSecret").Value;
-            _signingCert = configuration.GetSection("Auth0").GetSection("SigningCert").Value;
+            _keyVaultService = keyVaultService;
+            _domain = _keyVaultService.GetAuth0KeyVault().Domain;
+            _client_id = _keyVaultService.GetAuth0KeyVault().ClientId;
+            _client_secret = _keyVaultService.GetAuth0KeyVault().ClientSecret;
+            _signingCert = _keyVaultService.GetAuth0KeyVault().SigningCert;
             _serializer = new JsonNetSerializer();
             _provider = new UtcDateTimeProvider();
             _urlEncoder = new JwtBase64UrlEncoder();
@@ -33,10 +35,10 @@ namespace Patient_Health_Management_System.Services
 
         public async Task<Auth0Token> TokenGenerator()
         {
-            var client = new RestClient($"https://{domain}/oauth/token");
+            var client = new RestClient($"https://{_domain}/oauth/token");
             var request = new RestRequest();
             request.AddHeader("content-type", "application/json");
-            request.AddJsonBody($"{{\"client_id\":\"{client_id}\",\"client_secret\":\"{client_secret}\",\"audience\":\"https://{domain}/api/v2/\",\"grant_type\":\"client_credentials\"}}");
+            request.AddJsonBody($"{{\"client_id\":\"{_client_id}\",\"client_secret\":\"{_client_secret}\",\"audience\":\"https://{_domain}/api/v2/\",\"grant_type\":\"client_credentials\"}}");
             var response = await client.PostAsync<Auth0Token>(request);
             return response;
         }
@@ -45,7 +47,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -62,7 +64,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users-by-email");
+                var client = new RestClient($"https://{_domain}/api/v2/users-by-email");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {accessToken}");
@@ -81,7 +83,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/roles");
+                var client = new RestClient($"https://{_domain}/api/v2/roles");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -99,7 +101,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users");
+                var client = new RestClient($"https://{_domain}/api/v2/users");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -118,7 +120,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -135,7 +137,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -152,7 +154,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}/roles");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}/roles");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -169,11 +171,11 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/jobs/verification-email");
+                var client = new RestClient($"https://{_domain}/api/v2/jobs/verification-email");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
-                request.AddJsonBody($"{{\"user_id\":\"{id}\",\"client_id\":\"{client_id}\"}}");
+                request.AddJsonBody($"{{\"user_id\":\"{id}\",\"client_id\":\"{_client_id}\"}}");
                 await client.PostAsync(request);
             }
             catch (Exception ex)
@@ -215,7 +217,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -232,7 +234,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {accessToken}");
@@ -249,7 +251,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");
@@ -266,7 +268,7 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                var client = new RestClient($"https://{domain}/api/v2/users/{id}/roles");
+                var client = new RestClient($"https://{_domain}/api/v2/users/{id}/roles");
                 var request = new RestRequest();
                 request.AddHeader("content-type", "application/json");
                 request.AddHeader("authorization", $"Bearer {access_token}");

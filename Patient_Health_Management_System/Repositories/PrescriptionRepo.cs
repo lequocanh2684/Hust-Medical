@@ -4,7 +4,7 @@
     {
         private readonly IMongoCollection<Prescription> _prescriptions;
 
-        public PrescriptionRepo(MongoDbSetup mongoDbSetup)
+        public PrescriptionRepo(RepoInitialize mongoDbSetup)
         {
             _prescriptions = mongoDbSetup.GetDatabase().GetCollection<Prescription>("prescription");
         }
@@ -63,6 +63,20 @@
             {
                 var filter = Builders<Prescription>.Filter.Text(keyword, new TextSearchOptions { CaseSensitive = false });
                 return await _prescriptions.Find(filter).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<string> GetLastPrescriptionId()
+        {
+            try
+            {
+                var projection = Builders<Prescription>.Projection.Include(prescription => prescription.PrescriptionId);
+                var lastPrescription = await _prescriptions.Find(prescription => true).Project(projection).SortByDescending(prescription => prescription.PrescriptionId).Limit(1).FirstOrDefaultAsync();
+                return BsonSerializer.Deserialize<Prescription>(lastPrescription).PrescriptionId;
             }
             catch (Exception e)
             {

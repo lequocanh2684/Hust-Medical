@@ -1,5 +1,7 @@
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
@@ -11,7 +13,7 @@ namespace Patient_Health_Management_System.Extensions
     {
         public static void AddRepositories(this WebApplicationBuilder builder)
         {
-            builder.Services.AddSingleton<MongoDbSetup>();
+            builder.Services.AddSingleton<RepoInitialize>();
             builder.Services.AddScoped<IMedicineRepo, MedicineRepo>();
             builder.Services.AddScoped<IMedicineGroupRepo, MedicineRepo>();
             builder.Services.AddScoped<IDiseaseRepo, DiseaseRepo>();
@@ -33,7 +35,8 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IBillingService, BillingService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<Medicine>>());
+            builder.Services.AddSingleton<IKeyVaultService, KeyVaultService>();
+            //builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<Medicine>>());
         }
 
         public static void AddAuthentication(this WebApplicationBuilder builder)
@@ -50,10 +53,10 @@ namespace Patient_Health_Management_System.Extensions
 })
  .AddOpenIdConnect("Auth0", options =>
  {
-     options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}";
+     options.Authority = $"https://{builder.Configuration["auth0Domain"]}";
 
-     options.ClientId = builder.Configuration["Auth0:ClientId"];
-     options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+     options.ClientId = builder.Configuration["auth0ClientId"];
+     options.ClientSecret = builder.Configuration["auth0ClientSecret"];
 
      options.ResponseType = OpenIdConnectResponseType.Code;
 
@@ -75,7 +78,7 @@ namespace Patient_Health_Management_System.Extensions
      {
          OnRedirectToIdentityProviderForSignOut = (context) =>
          {
-             var logoutUri = $"https://{builder.Configuration["Auth0:Domain"]}/v2/logout?client_id={builder.Configuration["Auth0:ClientId"]}";
+             var logoutUri = $"https://{builder.Configuration["auth0Domain"]}/v2/logout?client_id={builder.Configuration["auth0ClientId"]}";
 
              var postLogoutUri = context.Properties.RedirectUri;
              if (!string.IsNullOrEmpty(postLogoutUri))

@@ -13,9 +13,9 @@
 
 @code{
 
-    private Domain.Models.MedicalExamination medicalExamination= new Domain.Models.MedicalExamination();
+    private MedicalExamination medicalExamination= new MedicalExamination();
 
-    private string userId = new string("");
+    private string userId = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -41,13 +41,8 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
     }
 } 

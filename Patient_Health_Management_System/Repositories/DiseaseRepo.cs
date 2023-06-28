@@ -7,7 +7,7 @@ namespace Patient_Health_Management_System.Repositories
         private readonly IMongoCollection<Disease> _diseases;
         private readonly IMongoCollection<DiseaseGroup> _diseaseGroups;
 
-        public DiseaseRepo(MongoDbSetup mongoDbSetup)
+        public DiseaseRepo(RepoInitialize mongoDbSetup)
         {
             _diseases = mongoDbSetup.GetDatabase().GetCollection<Disease>("diseases");
             _diseaseGroups = mongoDbSetup.GetDatabase().GetCollection<DiseaseGroup>("diseases_group");

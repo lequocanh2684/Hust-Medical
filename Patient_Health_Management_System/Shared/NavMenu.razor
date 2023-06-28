@@ -112,7 +112,7 @@
                     }
                 });
         }
-        else if (role.Equals("Cashier"))
+        if (role == "Cashier" || role == "Admin")
         {
             NavItem.Add(new NavItem()
                 {

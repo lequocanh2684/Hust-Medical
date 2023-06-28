@@ -10,29 +10,36 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@patientForm.PatientId" Label="Mã bệnh nhân" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Name" Label="Tên bệnh nhân" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Gender" Label="Giới tính" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Ethnic" Label="Dân tộc" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="false" />
-        <MudDatePicker @bind-Date="@patientForm.DateOfBirth" Editable="true" Label="Ngày tháng năm sinh" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Address" Label="Địa chỉ" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
-        <MudTextField @bind-Value="@patientForm.Email" Label="Email" ReadOnly="false" />
+        <MudForm @bind-IsValid="@success">
+            <MudTextField @bind-Value="@patientForm.Name" Label="Tên bệnh nhân" ReadOnly="false" Required="true" RequiredError="Tên bệnh nhân không được bỏ trống" />
+            <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@patientForm.Gender">
+                <MudSelectItem Value="@("Nam")" />
+                <MudSelectItem Value="@("Nữ")" />
+            </MudSelect>
+            <MudTextField @bind-Value="@patientForm.Ethnic" Label="Dân tộc" ReadOnly="false" Required="true" RequiredError="Dân tộc không được bỏ trống" />
+            <MudTextField @bind-Value="@patientForm.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="false" />
+            <MudTextField @bind-Value="@patientForm.IDNumber" Label="Số căn cước công dân" ReadOnly="false" Required="true" RequiredError="Số căn cước không được bỏ trống" />
+            <MudDatePicker @bind-Date="@patientForm.DateOfBirth" Editable="true" Label="Ngày tháng năm sinh" ReadOnly="false" />
+            <MudTextField @bind-Value="@patientForm.Address" Label="Địa chỉ" ReadOnly="false" Required="true" RequiredError="Địa chỉ không được bỏ trống" />
+            <MudTextField @bind-Value="@patientForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
+            <MudTextField @bind-Value="@patientForm.Email" Label="Email" ReadOnly="false" />
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
-    private PatientForm patientForm = new Domain.Forms.PatientForm();
+    private PatientForm patientForm = new PatientForm();
 
-    private Domain.Models.Patient? patient = new Domain.Models.Patient();
+    private Patient patient = new Patient();
 
-    private string userId = new string("");
+    private string userId = string.Empty;
+
+    private bool success = false;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 

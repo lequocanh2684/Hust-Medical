@@ -89,15 +89,14 @@
             try
             {
                 var medicineIsExisted = await _medicineRepo.GetMedicinesByName(medicineForm.Name);
-                var medicineIdIsExisted = await _medicineRepo.GetMedicineByMedicineId(medicineForm.MedicineId);
-                if (medicineIsExisted.Any() || medicineIdIsExisted != null)
+                if (medicineIsExisted.Any())
                 {
                     throw new Exception("Medicine name already exists");
                 }
                 //ValidateMedicineForm(medicineForm);
                 var medicine = new Medicine
                 {
-                    MedicineId = await AutoGenerateMedicineId(),
+                    MedicineId = await AutoGenerateNewMedicineId(),
                     Name = medicineForm.Name,
                     GroupName = medicineForm.GroupName,
                     Unit = medicineForm.Unit,
@@ -176,6 +175,7 @@
             }
         }
 
+        /*Deprecated*/
         //private void ValidateMedicineForm(MedicineForm medicineForm)
         //{
         //    var regex = new Regex(@"^TH[0-9]{8}$");
@@ -185,13 +185,13 @@
         //    }
         //}
 
-        private async Task<string> AutoGenerateMedicineId()
+        private async Task<string> AutoGenerateNewMedicineId()
         {
             try
             {
                 var lastMedicineId = await _medicineRepo.GetLastMedicineId();
                 var newMedicineId = int.Parse(lastMedicineId.Substring(2, 8)) + 1;
-                return "TH" + newMedicineId.ToString("00000000");
+                return "TH" + newMedicineId.ToString("D8");
             }
             catch (Exception e)
             {

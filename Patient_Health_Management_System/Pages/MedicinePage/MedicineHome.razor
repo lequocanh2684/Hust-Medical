@@ -125,14 +125,15 @@
 
     private async Task ShowMedicineCreate()
     {
-        var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm thông tin thuốc");
+        var parameter = new DialogParameters { ["MedicineGroups"] = medicineGroups };
+        var dialog = await DialogService.ShowAsync<MedicineCreatePopUp>("Thêm thông tin thuốc", parameter);
         var result = await dialog.Result;
         if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowMedicineUpdate(string id)
     {
-        var parameter = new DialogParameters { ["Id"] = id };
+        var parameter = new DialogParameters { ["Id"] = id, ["MedicineGroups"] = medicineGroups };
         var dialog = await DialogService.ShowAsync<MedicineUpdatePopUp>("Chỉnh sửa thông tin thuốc", parameter);
         var result = await dialog.Result;
         if(!result.Canceled) await InvokeAsync(OnInitializedAsync);

@@ -9,18 +9,21 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@medicineGroupForm.Name" Label="Tên nhóm thuốc" ReadOnly="false" />
+        <MudForm @bind-IsValid="@success">
+            <MudTextField @bind-Value="@medicineGroupForm.Name" Label="Tên nhóm thuốc" ReadOnly="false" Required="true" RequiredError="Tên nhóm thuốc không được bỏ trống" />
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
     private MedicineGroupForm medicineGroupForm = new MedicineGroupForm();
-    private string userId = new string("");
+    private string userId = string.Empty;
+    private bool success = false;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 

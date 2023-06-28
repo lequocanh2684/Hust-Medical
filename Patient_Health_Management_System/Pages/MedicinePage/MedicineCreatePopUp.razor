@@ -9,29 +9,34 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        @*<MudTextField @bind-Value="@medicineForm.MedicineId" Label="Mã thuốc" ReadOnly="false" />*@
-        <MudTextField @bind-Value="@medicineForm.Name" Label="Tên thuốc" ReadOnly="false" Required="true" RequiredError="Tên thuốc không được bỏ trống"/>
-        <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" Required="true" RequiredError="Đơn vị không được bỏ trống" />
-        <MudTextField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" Required="true" RequiredError="Giá bán không được bỏ trống"/>
-        <MudTextField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" Required="true" RequiredError="Cách dùng không được bỏ trống" />
-        <MudTextField @bind-Value="@medicineForm.GroupName" Label="Nhóm" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" Required="true" RequiredError="Giá nhập không được bỏ trống" />
-        <MudTextField @bind-Value="@medicineForm.MinimumStock" Label="Tồn kho" ReadOnly="false" />
+        <MudForm @bind-IsValid="@success">
+            <MudTextField @bind-Value="@medicineForm.Name" Label="Tên thuốc" ReadOnly="false" Required="true" RequiredError="Tên thuốc không được bỏ trống"/>
+            <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" Required="true" RequiredError="Đơn vị không được bỏ trống" />
+            <MudNumericField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" Min="0" HideSpinButtons="true" />
+            <MudNumericField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" Min="0" HideSpinButtons="true" />
+            <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" Required="true" RequiredError="Cách dùng không được bỏ trống" />
+            <MudAutocomplete T="string" Label="Nhóm thuốc" @bind-Value="searchMedicineGroup" SearchFunc="@OnSearchMedicineGroup" ResetValueOnEmptyText="true" MaxItems="null" />
+            <MudNumericField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" Min="0" HideSpinButtons="true" />
+            <MudNumericField @bind-Value="@medicineForm.MinimumStock" Label="Tồn kho" ReadOnly="false" Min="0" HideSpinButtons="true" />
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@(!success)" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
 
 @code {
     private MedicineForm medicineForm = new Domain.Forms.MedicineForm();
-    private string userId = new string("");
+    private string userId = string.Empty;
+    private string searchMedicineGroup = string.Empty;
+    private bool success = false;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
+    public List<MedicineGroup> MedicineGroups { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,6 +52,16 @@
     {
         await MedicineService.CreateMedicine(medicineForm, userId);
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task<IEnumerable<string>> OnSearchMedicineGroup(string inputSearch)
+    {
+        if (string.IsNullOrEmpty(inputSearch))
+        {
+            return MedicineGroups.Select(mg => mg.Name);
+        }
+        await Task.Delay(0);
+        return MedicineGroups.Where(mg => mg.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase)).Select(d => d.Name);
     }
 
     private async Task GetUserId()

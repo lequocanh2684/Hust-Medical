@@ -16,8 +16,6 @@
                     <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
                     Thêm thông tin đơn thuốc
                 </MudText>
-
-                <MudTextField @bind-Value="@prescriptionForm.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="false" />
                 <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient" SearchFunc="@OnSearchPatient"
                     ResetValueOnEmptyText="true" MaxItems="null" />
                 <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
@@ -93,15 +91,15 @@
 </div>
 
 @code {
-    private PrescriptionForm prescriptionForm = new Domain.Forms.PrescriptionForm();
+    private PrescriptionForm prescriptionForm = new PrescriptionForm();
     private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
     private IEnumerable<Medicine> medicines = new List<Medicine>();
     private IEnumerable<Medicine> medicinesTable = new List<Medicine>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
-    private string userId = new string("");
-    private string searchS = new string("");
-    private string? searchPatient = new string("");
+    private string userId = string.Empty;
+    private string searchS = string.Empty;
+    private string searchPatient = string.Empty;
     private bool disableButton = true;
 
     [Parameter]
@@ -131,15 +129,15 @@
         NavigationManager.NavigateTo("/prescription");
     }
 
-    private async Task<IEnumerable<string>> OnSearchPatient(string searchPatient)
+    private async Task<IEnumerable<string>> OnSearchPatient(string inputSearch)
     {
-        if (string.IsNullOrEmpty(searchPatient))
+        if (string.IsNullOrEmpty(inputSearch))
         {
             return patients.Select(d => d.Name);
         }
         await Task.Delay(0);
-        return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
-        d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
+        return patients.Where(d => d.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase) ||
+        d.PatientId.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase))
         .Select(d => d.Name);
     }
 

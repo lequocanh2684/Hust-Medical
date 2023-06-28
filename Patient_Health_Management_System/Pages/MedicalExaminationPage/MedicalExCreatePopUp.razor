@@ -12,22 +12,24 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@medicalExaminationForm.MedicalExaminationId" Label="Mã đơn khám" ReadOnly="false" />
-        <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
-                         SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
-        <MudTextField @bind-Value="@medicalExaminationForm.DiseaseName" Label="Chẩn đoán" ReadOnly="false" />
-        <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao (cm)" ReadOnly="false" />
-        <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng (kg)" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.BloodPressure" Label="Huyết áp (mmHg)" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.VascularIndex" Label="Mạch (lần/ph)" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.BodyTemperature" Label="Thân nhiệt (độ C)" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.BreathingRate" Label="Nhịp thở (lần/ph)" ReadOnly="false" />
-        <MudTextField @bind-Value="@medicalExaminationForm.Note" Label="Ghi chú" ReadOnly="false" />
+        <MudForm @bind-IsValid="@success">
+            <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
+                             SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
+            <MudAutocomplete T="string" Label="Chẩn đoán" @bind-Value="searchDisease"
+                             SearchFunc="@OnSearchDisease" ResetValueOnEmptyText="true" MaxItems="null" />
+            <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao (cm)" ReadOnly="false" />
+            <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng (kg)" ReadOnly="false" />
+            <MudTextField @bind-Value="@medicalExaminationForm.BloodPressure" Label="Huyết áp (mmHg)" ReadOnly="false" Required="true" RequiredError="Huyết áp không được bỏ trống" />
+            <MudTextField @bind-Value="@medicalExaminationForm.VascularIndex" Label="Mạch (lần/ph)" ReadOnly="false" Required="true" RequiredError="Chỉ số mạch không được bỏ trống" />
+            <MudTextField @bind-Value="@medicalExaminationForm.BodyTemperature" Label="Thân nhiệt (độ C)" ReadOnly="false" Required="true" RequiredError="Thân nhiệt không được bỏ trống" />
+            <MudTextField @bind-Value="@medicalExaminationForm.BreathingRate" Label="Nhịp thở (lần/ph)" ReadOnly="false" Required="true" RequiredError="Nhịp thở không được bỏ trống" />
+            <MudTextField @bind-Value="@medicalExaminationForm.Note" Label="Ghi chú" ReadOnly="false" />
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
-        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => SubmitAndCreatePrescription())">Lưu và tạo đơn thuốc</MudButton>
+        <MudButton Variant="Variant.Outlined" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => SubmitAndCreatePrescription())">Lưu và tạo đơn thuốc</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -35,17 +37,19 @@
 
     private MedicalExaminationForm medicalExaminationForm = new MedicalExaminationForm();
 
-    private List<Domain.Models.Disease> diseases = new List<Domain.Models.Disease>();
+    private List<Disease> diseases = new List<Disease>();
 
-    private List<Domain.Models.Patient> patients = new List<Domain.Models.Patient>();
+    private List<Patient> patients = new List<Patient>();
 
-    private string searchDisease = new string("");
+    private string searchDisease = string.Empty;
 
-    private string searchPatient = new string("");
+    private string searchPatient = string.Empty;
 
-    private string userId = new string("");
+    private string userId = string.Empty;
 
-    private string value = new string("");
+    private string value = string.Empty;
+
+    private bool success = false;
 
     private IEnumerable<string> options { get; set; } = new HashSet<string>();
 
@@ -76,39 +80,34 @@
         NavigationManager.NavigateTo($"/prescription/create/{medicalExaminationForm.PatientId}");
     }
 
-    private async Task<IEnumerable<string>> OnSearchPatient(string searchPatient)
+    private async Task<IEnumerable<string>> OnSearchPatient(string inputSearch)
     {
-        if (string.IsNullOrEmpty(searchPatient))
+        if (string.IsNullOrEmpty(inputSearch))
         {
             return patients.Select(d => d.Name);
         }
-        return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
-                                   d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
+        await Task.Delay(0);
+        return patients.Where(d => d.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase) || d.PatientId.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase))
                        .Select(d => d.Name);
     }
 
-    private async Task<IEnumerable<string>> OnSearchDisease(string searchDisease)
+    private async Task<IEnumerable<string>> OnSearchDisease(string inputSearch)
     {   
-        if (string.IsNullOrEmpty(searchDisease))
+        if (string.IsNullOrEmpty(inputSearch))
         {
             return diseases.Select(d => d.Name);
         }
-        return diseases.Where(d => d.Name.Contains(searchDisease, StringComparison.InvariantCultureIgnoreCase) ||
-                                   d.DiseaseId.Contains(searchDisease, StringComparison.InvariantCultureIgnoreCase))
+        await Task.Delay(0);
+        return diseases.Where(d => d.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase) || d.DiseaseId.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase))
                        .Select(d => d.Name);
     }
 
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
     }
 
 }

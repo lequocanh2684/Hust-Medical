@@ -4,7 +4,7 @@
     {
         private readonly IMongoCollection<Billing> _billing;
 
-        public BillingRepo(MongoDbSetup mongoDbSetup)
+        public BillingRepo(RepoInitialize mongoDbSetup)
         {
             _billing = mongoDbSetup.GetDatabase().GetCollection<Billing>("billing");
         }

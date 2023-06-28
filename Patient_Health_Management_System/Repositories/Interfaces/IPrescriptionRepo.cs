@@ -7,6 +7,7 @@
         Task<Prescription> GetPrescriptionById(string id);
         Task<Prescription> GetPrescriptionByPrescriptionId(string prescriptionId);
         Task<List<Prescription>> GetPrescriptionsByKeyword(string keyword);
+        Task<string> GetLastPrescriptionId();
         Task<Prescription> CreatePrescription(Prescription prescription);
         Task ModifyPrescriptionById(Prescription prescription);
 

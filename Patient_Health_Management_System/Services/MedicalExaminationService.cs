@@ -33,10 +33,9 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                ValidateMedicalExamForm(medicalExaminationForm);
                 var medicalExamination = new MedicalExamination
                 {
-                    MedicalExaminationId = medicalExaminationForm.MedicalExaminationId,
+                    MedicalExaminationId = await AutoGenerateNewMedicalExaminationId(),
                     PatientId = medicalExaminationForm.PatientId,
                     DiseaseName = medicalExaminationForm.DiseaseName,
                     Height = medicalExaminationForm.Height,
@@ -72,8 +71,7 @@ namespace Patient_Health_Management_System.Services
                 }
                 else
                 {
-                    ValidateMedicalExamForm(medicalExaminationForm);
-                    medicalExamination.MedicalExaminationId = medicalExaminationForm.MedicalExaminationId;
+                    medicalExamination.MedicalExaminationId = await AutoGenerateNewMedicalExaminationId();
                     medicalExamination.PatientId = medicalExaminationForm.PatientId;
                     medicalExamination.DiseaseName = medicalExaminationForm.DiseaseName;
                     medicalExamination.Height = medicalExaminationForm.Height;
@@ -116,12 +114,27 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        private void ValidateMedicalExamForm(MedicalExaminationForm medicalExaminationForm)
+        /*Deprecated*/
+        //private void ValidateMedicalExamForm(MedicalExaminationForm medicalExaminationForm)
+        //{
+        //    var regex = new Regex(@"^DK[0-9]{8}$");
+        //    if (!regex.IsMatch(medicalExaminationForm.MedicalExaminationId))
+        //    {
+        //        throw new Exception("MedicalExaminationId format is invalid");
+        //    }
+        //}
+
+        private async Task<string> AutoGenerateNewMedicalExaminationId()
         {
-            var regex = new Regex(@"^DK[0-9]{8}$");
-            if (!regex.IsMatch(medicalExaminationForm.MedicalExaminationId))
+            try
             {
-                throw new Exception("MedicalExaminationId format is invalid");
+                var lastMedicalExaminationId = await _medicalExaminationRepo.GetLastMedicalExaminationId();
+                var newMedicalExaminationId = int.Parse(lastMedicalExaminationId.Substring(2, 8)) + 1;
+                return "DK" + newMedicalExaminationId.ToString("D8");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
     }

@@ -20,7 +20,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task<Patient?> GetPatientById(string id)
+        public async Task<Patient> GetPatientById(string id)
         {
             try
             {
@@ -36,10 +36,9 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                ValidatePatientForm(patientForm);
                 var patient = new Patient()
                 {
-                    PatientId = patientForm.PatientId,
+                    PatientId = await AutoGenerateNewPatientId(),
                     Name = patientForm.Name,
                     Age = GetAge(patientForm.DateOfBirth, DateTime.Today),
                     Ethnic = patientForm.Ethnic,
@@ -77,8 +76,6 @@ namespace Patient_Health_Management_System.Services
                 }
                 else
                 {
-                    ValidatePatientForm(patientForm);
-                    patient.PatientId = patientForm.PatientId;
                     patient.Name = patientForm.Name;
                     patient.Age = GetAge(patientForm.DateOfBirth, DateTime.Today);
                     patient.Address = patientForm.Address;
@@ -123,12 +120,27 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        private void ValidatePatientForm(PatientForm patientForm)
+        /*Deprecated*/
+        //private void ValidatePatientForm(PatientForm patientForm)
+        //{
+        //    var regex = new Regex(@"^BN[0-9]{8}$");
+        //    if (!regex.IsMatch(patientForm.PatientId))
+        //    {
+        //        throw new Exception("PatientId format is invalid");
+        //    }
+        //}
+
+        private async Task<string> AutoGenerateNewPatientId()
         {
-            var regex = new Regex(@"^BN[0-9]{8}$");
-            if (!regex.IsMatch(patientForm.PatientId))
+            try
             {
-                throw new Exception("PatientId format is invalid");
+                var lastPatientId = await _patientRepo.GetLastPatientId();
+                var newPatientIdNumber = int.Parse(lastPatientId.Substring(2, 8)) + 1;
+                return "BN" + newPatientIdNumber.ToString("D8");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
 

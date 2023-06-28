@@ -18,7 +18,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())" Disabled="@(!success)">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => Submit())" Disabled="@(!success)">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -26,17 +26,17 @@
 
     [Parameter]
     public string UserId { get; set; }
-    
+
     [Parameter]
     public string AdminId { get; set; }
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
-    private string email = new string("");
+    private string email = string.Empty;
 
-    private string? accessToken = new string("");
+    private string accessToken = string.Empty;
 
-    bool success;
+    private bool success = false;
 
     protected override async Task OnInitializedAsync()
     {

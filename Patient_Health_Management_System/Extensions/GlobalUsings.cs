@@ -5,6 +5,7 @@ global using System.Text.RegularExpressions;
 global using System.Text.Json.Serialization;
 global using MongoDB.Bson;
 global using MongoDB.Bson.Serialization.Attributes;
+global using MongoDB.Bson.Serialization;
 global using MongoDB.Driver;
 global using Patient_Health_Management_System.Extensions;
 global using Patient_Health_Management_System.Domain.Forms;

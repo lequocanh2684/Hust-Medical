@@ -4,7 +4,7 @@
     {
         private readonly IMongoCollection<User> _user;
 
-        public UserRepo(MongoDbSetup mongoDbSetup)
+        public UserRepo(RepoInitialize mongoDbSetup)
         {
             _user = mongoDbSetup.GetDatabase().GetCollection<User>("user_extra_info");
         }

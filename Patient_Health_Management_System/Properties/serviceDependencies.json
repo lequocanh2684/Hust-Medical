@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "signalr1": {
+      "type": "signalr",
+      "connectionId": "Azure:SignalR:ConnectionString"
+    },
+    "secrets1": {
+      "type": "secrets",
+      "connectionId": "VaultUri",
+      "dynamicId": null
+    }
+  }
+}

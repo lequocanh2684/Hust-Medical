@@ -1,13 +1,11 @@
-﻿using MongoDB.Bson.Serialization;
-
-namespace Patient_Health_Management_System.Repositories
+﻿namespace Patient_Health_Management_System.Repositories
 {
     public class MedicineRepo : IMedicineRepo, IMedicineGroupRepo
     {
         private readonly IMongoCollection<Medicine> _medicines;
         private readonly IMongoCollection<MedicineGroup> _medicineGroups;
 
-        public MedicineRepo(MongoDbSetup mongoDbSetup)
+        public MedicineRepo(RepoInitialize mongoDbSetup)
         {
             _medicines = mongoDbSetup.GetDatabase().GetCollection<Medicine>("medicine");
             _medicineGroups = mongoDbSetup.GetDatabase().GetCollection<MedicineGroup>("medicine_group");

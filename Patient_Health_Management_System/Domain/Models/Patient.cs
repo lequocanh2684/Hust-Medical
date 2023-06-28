@@ -23,6 +23,9 @@ namespace Patient_Health_Management_System.Domain.Models
         [BsonElement("medical_insurance_number")]
         public string? MedicalInsuranceNumber { get; set; }
 
+        [BsonElement("id_number")]
+        public string IDNumber { get; set; }
+
         [BsonElement("date_of_birth")]
         public DateTime? DateOfBirth { get; set; }
 
@@ -30,7 +33,7 @@ namespace Patient_Health_Management_System.Domain.Models
         public string Address { get; set; }
 
         [BsonElement("phone_number")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [BsonElement("email")]
         public string? Email { get; set; }
