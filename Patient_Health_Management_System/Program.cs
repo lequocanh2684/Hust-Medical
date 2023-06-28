@@ -5,6 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
 builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+builder.Services.AddSignalR().AddAzureSignalR(options =>
+{
+    options.ConnectionString = builder.Configuration["azure-signalr-connectionstring-f154a"];
+});
 
 // Add services to the container.
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
