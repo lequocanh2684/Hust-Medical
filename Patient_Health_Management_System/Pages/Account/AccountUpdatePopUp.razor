@@ -1,5 +1,4 @@
-﻿@using RestSharp;
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject IAccountService AccountService
@@ -13,13 +12,14 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField @bind-Value="@userForm.Name" Label="Họ và tên" ReadOnly="false" />
-        <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
-        <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" />
+        <MudForm @bind-IsValid="@success">
+            <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" Required="true" RequiredError="Số điện thoại không được bỏ trống" />
+            <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" Required="true" RequiredError="Địa chỉ không được bỏ trống" />
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
-        <MudButton Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -28,10 +28,12 @@
 
     private AccountForm accountForm = new AccountForm();
 
-    private string userId = new string("");
+    private string userId = string.Empty;
+
+    private bool success = false;
 
     [Parameter]
-    public User user { get; set; }
+    public User UserParam { get; set; }
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 

@@ -65,10 +65,10 @@
                 <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell" Height="760px"
                              Style="border-radius:20px; width:460px" FixedHeader="true" Hideable="true" Striped="true" Bordered="true">
                     <Columns>
-                        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
-                        <PropertyColumn Property="m => m.Name" Title="Tên thuốc" IsEditable="false" />
-                        <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" IsEditable="true" />
-                        <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false" />
+                        <PropertyColumn Property="sm => sm.MedicineId" Title="Mã thuốc" IsEditable="false" />
+                        <PropertyColumn Property="sm => sm.Name" Title="Tên thuốc" IsEditable="false" />
+                        <PropertyColumn Property="sm => sm.BuyingQuantity" Title="Số lượng" IsEditable="true" />
+                        <PropertyColumn Property="sm => sm.SellingPrice * sm.BuyingQuantity" Title="Giá bán" IsEditable="false" />
                     </Columns>
                 </MudDataGrid>
                 @if (selectedMedicines.Any())

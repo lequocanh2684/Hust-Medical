@@ -15,7 +15,10 @@
     <MudTextField Label="Email" Value="@user.Email" ReadOnly="true"></MudTextField>
     <MudTextField Label="Số điện thoại" Value="@user.PhoneNumber" ReadOnly="true"></MudTextField>
     <MudTextField Label="Địa chỉ" Value="@user.Address" ReadOnly="true"></MudTextField>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa</MudButton>  
+    <MudTextField Label="Giới tính" Value="@user.Gender" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Chức danh" Value="@user.Role" ReadOnly="true"></MudTextField>
+    <MudTextField Label="Chuyên khoa" Value="@user.Specialist" ReadOnly="true"></MudTextField>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa thông tin cá nhân</MudButton>  
 </div>
 </div>
 
@@ -32,7 +35,7 @@
 
     private async Task ShowUpdate(User user)
     {
-        var parameter = new DialogParameters { ["User"] = user };
+        var parameter = new DialogParameters { ["UserParam"] = user };
         var dialog = await DialogService.ShowAsync<AccountUpdatePopUp>("Chỉnh sửa thông tin tài khoản", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);

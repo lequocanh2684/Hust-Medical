@@ -6,5 +6,7 @@
         Task<Billing> GetBillingById(string id);
         Task<Billing> CreateBilling(Billing billing);
         Task ModifyBillingById(Billing billing);
+
+        Task<string> GetLastBillingId();
     }
 }

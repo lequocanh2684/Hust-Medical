@@ -2,8 +2,6 @@
 {
     public class BillingForm
     {
-        public string BillId { get; set; }
-
         public string PatientId { get; set; }
 
         public string PrescriptionId { get; set; }

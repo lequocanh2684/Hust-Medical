@@ -38,13 +38,12 @@
         {
             try
             {
-                ValidateBillingForm(billingForm);
                 var bill = new Billing()
                 {
-                    BillId = billingForm.BillId,
+                    BillId = await AutoGenerateNewBillingId(),
                     PatientId = billingForm.PatientId,
                     PrescriptionId = billingForm.PrescriptionId,
-                    PaymentMethod = new string(""),
+                    PaymentMethod = string.Empty,
                     IsPaid = false,
                     PaidAt = DateTime.Parse(DefaultVariable.PaidAt),
                     PaidBy = null,
@@ -69,7 +68,7 @@
             try
             {
                 var bill = await _billingRepo.GetBillingById(id);
-                if (bill == null)
+                if (bill is null)
                 {
                     throw new Exception("Billing not found");
                 }
@@ -91,7 +90,7 @@
             try
             {
                 var bill = await _billingRepo.GetBillingById(id);
-                if (bill == null)
+                if (bill is null)
                 {
                     throw new Exception("Billing not found");
                 }
@@ -114,7 +113,7 @@
             try
             {
                 var bill = await _billingRepo.GetBillingById(id);
-                if (bill == null)
+                if (bill is null)
                 {
                     throw new Exception("Billing not found");
                 }
@@ -133,13 +132,27 @@
             }
         }
 
-        private void ValidateBillingForm(BillingForm billingForm)
+        private async Task<string> AutoGenerateNewBillingId()
         {
-            var regex = new Regex(@"^HD[0-9]{8}$");
-            if (!regex.IsMatch(billingForm.BillId))
+            try
             {
-                throw new Exception("BillId format is invalid");
+                var lastPrescriptionId = await _billingRepo.GetLastBillingId();
+                var newPrescriptionId = int.Parse(lastPrescriptionId.Substring(2, 8)) + 1;
+                return "HD" + newPrescriptionId.ToString("D8");
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
             }
         }
+
+        //private void ValidateBillingForm(BillingForm billingForm)
+        //{
+        //    var regex = new Regex(@"^HD[0-9]{8}$");
+        //    if (!regex.IsMatch(billingForm.BillId))
+        //    {
+        //        throw new Exception("BillId format is invalid");
+        //    }
+        //}
     }
 }

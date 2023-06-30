@@ -6,6 +6,7 @@
 @inject IPrescriptionService PrescriptionService
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
+@inject IBillingService BillingService
 @inject IMapper mapper
 
 <div style="display:flex">
@@ -71,10 +72,10 @@
                     Style="border-radius:20px; width:460px" FixedHeader="true" Hideable="true" Striped="true"
                     Bordered="true">
                     <Columns>
-                        <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" IsEditable="false" />
-                        <PropertyColumn Property="m => m.Name" Title="Tên thuốc" IsEditable="false" />
-                        <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" IsEditable="true" />
-                        <PropertyColumn Property="m => m.SellingPrice" Title="Giá bán" IsEditable="false" />
+                        <PropertyColumn Property="sm => sm.MedicineId" Title="Mã thuốc" IsEditable="false" />
+                        <PropertyColumn Property="sm => sm.Name" Title="Tên thuốc" IsEditable="false" />
+                        <PropertyColumn Property="sm => sm.BuyingQuantity" Title="Số lượng" IsEditable="true"/>
+                        <PropertyColumn Property="sm => sm.SellingPrice * sm.BuyingQuantity" Title="Giá bán" IsEditable="false" />
                     </Columns>
                 </MudDataGrid>
                 @if (selectedMedicines.Any())
@@ -125,7 +126,16 @@
         .CreateMapper();
         prescriptionForm.MedicinePrescribed = mapper.Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
         prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
-        await PrescriptionService.CreatePrescription(prescriptionForm, userId);
+        var newPrescription = await PrescriptionService.CreatePrescription(prescriptionForm, userId);
+        if(newPrescription is not null)
+        {
+            var billingForm = new BillingForm
+            {
+                PrescriptionId = newPrescription.Id,
+                PatientId = newPrescription.PatientId,
+            };
+            await BillingService.CreateBilling(billingForm, userId);
+        }
         NavigationManager.NavigateTo("/prescription");
     }
 
