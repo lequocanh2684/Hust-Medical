@@ -12,7 +12,7 @@ namespace Patient_Health_Management_System.Services.Interfaces
         Task<Medicine> CreateMedicine(MedicineForm medicineForm, string userId);
         Task UpdateMedicineById(string id, MedicineForm medicineForm, string userId);
         Task DeleteMedicineById(string id, string userId);
-        Workbook ExportToExcel(IEnumerable<Medicine> medicines);
+        byte[] ExportToExcel(IEnumerable<Medicine> medicines);
         #endregion
 
         #region medicine_group

@@ -1,11 +1,10 @@
 ﻿@page "/medicine"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IMedicineService MedicineService
 @inject IDialogService DialogService
 @layout MainLayout
-
-
 
 <AuthorizeView Context="contextAuthorize">
     <NotAuthorized>
@@ -22,7 +21,7 @@
                                  Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                         <ToolBarContent>
                             <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowMedicineCreate()">Thêm thuốc mới</MudButton>
-                            <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="() => ExportReport()">Xuất báo cáo</MudButton>
+                            <MudButton Color="Color.Tertiary" Variant="Variant.Filled" @onclick="ExportReport">Xuất báo cáo</MudButton>
                             <MudSpacer />
                             <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm thuốc" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -108,6 +107,8 @@
 
     private MudTable<MedicineGroup> medicineGroupTable;
 
+    private MudDataGrid<Medicine> mudDataGrid;
+
     private string searchS = new string("");
 
     protected override async Task OnInitializedAsync()
@@ -148,10 +149,9 @@
         if(!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private Workbook ExportReport()
+    private async Task ExportReport()
     {
-        var report = MedicineService.ExportToExcel(medicines);
-        return report;
+        NavigationManager.NavigateTo("api/export/medicines", true);
     }
     #endregion
 

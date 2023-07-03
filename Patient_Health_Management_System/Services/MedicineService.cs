@@ -187,30 +187,34 @@ namespace Patient_Health_Management_System.Services
         //    }
         //}
 
-        public Workbook ExportToExcel(IEnumerable<Medicine> medicines)
+        public byte[] ExportToExcel(IEnumerable<Medicine> medicines)
         {
             try
             {
-                using (var reader = ObjectReader.Create(medicines, "MedicineId", "Name", "GroupName", "Unit", "HowToUse", "QuantityDefault", "ImportPrice", "SellingPrice", "MinimumStock"))
+                using (var stream = new MemoryStream())
                 {
-                    Workbook workbook = new Workbook();
-                    Worksheet sheet = workbook.Worksheets[0];
-                    workbook.LoadFromFile(@"./reportTemplate/Báo cáo xuất kho thuốc.xlsx");
+                    using (var reader = ObjectReader.Create(medicines, "MedicineId", "Name", "GroupName", "Unit", "HowToUse", "QuantityDefault", "ImportPrice", "SellingPrice", "MinimumStock"))
+                    {
+                        Workbook workbook = new Workbook();
+                        Worksheet sheet = workbook.Worksheets[0];
+                        workbook.LoadFromFile($"{Directory.GetCurrentDirectory()}{@"\wwwroot\reportTemplate\Báo cáo xuất kho thuốc.xlsx"}");
 
-                    //Create datatable
-                    DataTable dt = new DataTable();
-                    dt.Load(reader);
+                        //Create datatable
+                        DataTable dt = new DataTable();
+                        dt.Load(reader);
 
-                    //Fill data
-                    workbook.MarkerDesigner.AddDataTable("Medicine", dt);
-                    workbook.MarkerDesigner.Apply();
+                        //Fill data
+                        workbook.MarkerDesigner.AddDataTable("Medicine", dt);
+                        workbook.MarkerDesigner.Apply();
 
-                    //AutoFit
-                    sheet.AllocatedRange.AutoFitColumns();
-                    sheet.AllocatedRange.AutoFitRows();
+                        //AutoFit
+                        sheet.AllocatedRange.AutoFitColumns();
+                        sheet.AllocatedRange.AutoFitRows();
 
-                    workbook.SaveToFile("Báo cáo xuất kho thuốc ngày " + DateTime.Now.ToString("dd-MM-yyyy"), FileFormat.Version2013);
-                    return workbook;
+                        //Save
+                        workbook.SaveToStream(stream);
+                        return stream.ToArray();
+                    }
                 }
             }
             catch (Exception e)
@@ -233,7 +237,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
         #endregion
-                             
+
         #region medicine_group
         public async Task<List<MedicineGroup>> GetMedicineGroups()
         {
