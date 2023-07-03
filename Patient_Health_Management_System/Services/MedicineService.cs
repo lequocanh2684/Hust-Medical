@@ -1,4 +1,6 @@
-﻿namespace Patient_Health_Management_System.Services
+﻿using System.Data;
+
+namespace Patient_Health_Management_System.Services
 {
     public class MedicineService : IMedicineService
     {
@@ -185,6 +187,38 @@
         //    }
         //}
 
+        public Workbook ExportToExcel(IEnumerable<Medicine> medicines)
+        {
+            try
+            {
+                using (var reader = ObjectReader.Create(medicines, "MedicineId", "Name", "GroupName", "Unit", "HowToUse", "QuantityDefault", "ImportPrice", "SellingPrice", "MinimumStock"))
+                {
+                    Workbook workbook = new Workbook();
+                    Worksheet sheet = workbook.Worksheets[0];
+                    workbook.LoadFromFile(@"./reportTemplate/Báo cáo xuất kho thuốc.xlsx");
+
+                    //Create datatable
+                    DataTable dt = new DataTable();
+                    dt.Load(reader);
+
+                    //Fill data
+                    workbook.MarkerDesigner.AddDataTable("Medicine", dt);
+                    workbook.MarkerDesigner.Apply();
+
+                    //AutoFit
+                    sheet.AllocatedRange.AutoFitColumns();
+                    sheet.AllocatedRange.AutoFitRows();
+
+                    workbook.SaveToFile("Báo cáo xuất kho thuốc ngày " + DateTime.Now.ToString("dd-MM-yyyy"), FileFormat.Version2013);
+                    return workbook;
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private async Task<string> AutoGenerateNewMedicineId()
         {
             try
@@ -199,7 +233,7 @@
             }
         }
         #endregion
-
+                             
         #region medicine_group
         public async Task<List<MedicineGroup>> GetMedicineGroups()
         {

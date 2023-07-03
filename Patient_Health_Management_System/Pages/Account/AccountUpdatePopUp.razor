@@ -39,7 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        userForm = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper().Map<UserForm>(user);
+        userForm = new MapperConfiguration(cfg => cfg.CreateMap<User, UserForm>()).CreateMapper().Map<UserForm>(UserParam);
         await GetUserId();
     }
 

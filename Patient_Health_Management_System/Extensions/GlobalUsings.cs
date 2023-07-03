@@ -17,3 +17,5 @@ global using Patient_Health_Management_System.Services;
 global using Patient_Health_Management_System.Services.Interfaces;
 global using System.Security.Claims;
 global using AutoMapper;
+global using Spire.Xls;
+global using FastMember;
