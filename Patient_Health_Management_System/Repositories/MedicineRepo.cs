@@ -65,6 +65,12 @@
         {
             return await _medicines.Find(medicine => medicine.GroupName == groupName).ToListAsync();
         }
+
+        public async Task<List<Medicine>> ImportMedicineExcel(List<Medicine> medicines)
+        {
+            await _medicines.InsertManyAsync(medicines);
+            return medicines;
+        }
         #endregion
 
         #region medicine_group

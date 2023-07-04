@@ -12,11 +12,10 @@
         [HttpGet("/api/export/medicines")]
         public async Task<IActionResult> ExportMedicines()
         {
-            var medicines = await _medicineService.GetMedicines();
-            var fileContents = _medicineService.ExportToExcel(medicines);
+            var fileContents = _medicineService.ExportToExcel();
             var response = File(fileContents,
                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                              "Báo cáo xuất kho thuốc ngày " + DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss") + ".xlsx");
+                                              "Báo cáo xuất kho thuốc ngày " + DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss-tt") + ".xlsx");
             return response;
         }
     }

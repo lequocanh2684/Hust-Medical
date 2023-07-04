@@ -1,6 +1,5 @@
 ﻿@page "/medicine"
 @attribute [Authorize(Roles = "Doctor, Admin")]
-@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject IMedicineService MedicineService
 @inject IDialogService DialogService
@@ -20,15 +19,23 @@
                                  FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
                                  Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                         <ToolBarContent>
-                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowMedicineCreate()">Thêm thuốc mới</MudButton>
-                            <MudButton Color="Color.Tertiary" Variant="Variant.Filled" @onclick="ExportReport">Xuất báo cáo</MudButton>
-                            <MudSpacer />
+                            <MudGrid Spacing="2">
+                                <MudItem>
+                                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ShowMedicineCreate">Thêm thuốc mới</MudButton>
+                                </MudItem>
+                                <MudItem>
+                                    <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="ExportReport">Xuất báo cáo</MudButton>
+                                </MudItem>
+                                <MudItem>
+                                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ImportMedicineExcel">Nhập từ file excel</MudButton>
+                                </MudItem>
+                            </MudGrid>
                             <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm thuốc" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </ToolBarContent>
                         <Columns>
                             <SelectColumn T="Medicine" />
-                            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc" Sortable="false" Filterable="false" />
+                            <PropertyColumn Property="m => m.MedicineId" Title="Mã thuốc"/>
                             <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
                             <PropertyColumn Property="m => m.GroupName" Title="Nhóm thuốc" />
                             <PropertyColumn Property="m => m.Unit" Title="Đơn vị" />
@@ -152,6 +159,13 @@
     private async Task ExportReport()
     {
         NavigationManager.NavigateTo("api/export/medicines", true);
+    }
+
+    private async Task ImportMedicineExcel()
+    {
+        var dialog = await DialogService.ShowAsync<MedicineExcelImport>("Nhập thuốc từ file excel");
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
     #endregion
 

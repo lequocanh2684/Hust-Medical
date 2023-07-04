@@ -1,0 +1,97 @@
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IMedicineService MedicineService
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
+            Nhập thuốc từ file excel
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudFileUpload T="IBrowserFile" Accept=".xlsx" OnFilesChanged="OnInputFileChanged" Hidden="false" Class="flex-1" InputClass="absolute mud-width-full mud-height-full overflow-hidden z-20" InputStyle="opacity:0"
+                       @ondragenter="@SetDragClass" @ondragleave="@ClearDragClass" @ondragend="@ClearDragClass">
+            <ButtonTemplate>
+                <MudPaper Height="100px" Outlined="true" Class="@DragClass">
+                    <MudText Typo="Typo.h6">Kéo và thả tập tin vào đây</MudText>
+                    @foreach (var file in fileNames)
+                    {
+                        <MudChip Color="Color.Dark" Text="@file" />
+                    }
+                </MudPaper>
+            </ButtonTemplate>
+        </MudFileUpload>
+        <MudToolBar DisableGutters="true" Class="gap-4">
+            <MudButton OnClick="Upload" Disabled="@(!fileNames.Any())" Color="Color.Primary" Variant="Variant.Filled">Tải lên</MudButton>
+            <MudButton OnClick="Clear" Disabled="@(!fileNames.Any())" Color="Color.Error" Variant="Variant.Filled">Xóa tập tin</MudButton>
+        
+        </MudToolBar>
+        <MudSpacer />
+        <MudText Typo="Typo.subtitle1">Chưa có mẫu? </MudText>
+        <MudLink Href="./reportTemplate/Mẫu nhập kho thuốc.xlsx">Tải mẫu</MudLink>
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+    private static string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full z-10";
+    private string DragClass = DefaultDragClass;
+    private List<string> fileNames = new List<string>();
+    private Workbook workbook = new Workbook();
+    private string userId = string.Empty;
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        var files = e.GetMultipleFiles(1);
+        foreach (var file in files)
+        {
+            fileNames.Add(file.Name);
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.OpenReadStream().CopyToAsync(memoryStream);
+                memoryStream.Position = 0;
+                workbook.LoadFromStream(memoryStream);
+            }
+        }
+    }
+
+    private async Task Clear()
+    {
+        fileNames.Clear();
+        ClearDragClass();
+        await Task.Delay(100);
+    }
+
+    private async Task Upload()
+    {
+        await MedicineService.ImportMedicineExcel(workbook, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Tải lên thành công", Severity.Success);
+        workbook.Dispose();
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+
+    private void SetDragClass()
+    {
+        DragClass = $"{DefaultDragClass} mud-border-primary";
+    }
+
+    private void ClearDragClass()
+    {
+        DragClass = DefaultDragClass;
+    }
+
+    private async Task GetUserId()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
+    }
+}
+

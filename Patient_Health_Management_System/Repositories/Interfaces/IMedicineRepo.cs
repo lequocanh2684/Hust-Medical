@@ -12,5 +12,6 @@ namespace Patient_Health_Management_System.Repositories.Interfaces
         Task<string> GetLastMedicineId();
         Task<Medicine> CreateMedicine(Medicine medicine);
         Task ModifyMedicineById(Medicine medicine);
+        Task<List<Medicine>> ImportMedicineExcel(List<Medicine> medicines);
     }
 }
