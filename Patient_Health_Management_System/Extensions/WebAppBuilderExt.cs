@@ -1,3 +1,4 @@
+using Append.Blazor.Printing;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -34,6 +35,7 @@ namespace Patient_Health_Management_System.Extensions
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddSingleton<IKeyVaultService, KeyVaultService>();
+            builder.Services.AddScoped<IPrintingService, PrintingService>();
             //builder.Services.AddSingleton(typeof(ILogger), builder.Services.BuildServiceProvider().GetService<ILogger<Medicine>>());
         }
 

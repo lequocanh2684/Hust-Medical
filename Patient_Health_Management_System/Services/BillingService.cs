@@ -46,14 +46,14 @@
                     PaymentMethod = string.Empty,
                     IsPaid = false,
                     PaidAt = DateTime.Parse(DefaultVariable.PaidAt),
-                    PaidBy = null,
+                    PaidBy = string.Empty,
                     CreatedAt = DateTime.Now,
                     CreatedBy = userId,
                     UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
-                    UpdatedBy = null,
+                    UpdatedBy = string.Empty,
                     IsDeleted = false,
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                    DeletedBy = null
+                    DeletedBy = string.Empty
                 };
                 return await _billingRepo.CreateBilling(bill);
             }

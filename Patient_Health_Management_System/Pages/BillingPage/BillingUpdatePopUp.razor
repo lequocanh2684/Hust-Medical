@@ -1,4 +1,6 @@
-﻿@inject IBillingService BillingService
+﻿@using Append.Blazor.Printing
+@inject IPrintingService PrintingService
+@inject IBillingService BillingService
 @inject IPatientService PatientService
 @inject IPrescriptionService PrescriptionService
 
@@ -10,7 +12,7 @@
         </MudText>
     </TitleContent>
     <DialogContent>
-        <MudForm @bind-IsValid="@success">
+        <MudForm @bind-IsValid="@success" id="bill-print">
             <MudTextField Value="@patient.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
             <MudTextField Value="@patient.Name" Label="Tên bệnh nhân" ReadOnly="true" />
             <MudTextField Value="@prescription.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="true" />
@@ -42,6 +44,7 @@
     <DialogActions>
         <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
         <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(_ => Print())">In</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -91,6 +94,11 @@
         };
         await BillingService.UpdatePayingStatusById(Bill.Id, billingForm, UserId);
         MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private async Task Print()
+    {
+        await PrintingService.Print("bill-print", PrintType.Html);
     }
 
     private void GetTotalBillCost()

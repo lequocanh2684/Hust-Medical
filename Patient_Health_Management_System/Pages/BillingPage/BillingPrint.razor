@@ -1,0 +1,75 @@
+﻿@using Append.Blazor.Printing
+@inject IPrintingService PrintingService
+
+<MudDialog>
+    <DialogContent>
+        <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
+    </DialogContent>
+</MudDialog>
+
+<form id="printable-form">
+    <label for="patient-id">Mã bệnh nhân:</label>
+    <input type="text" id="patient-id" name="patient-id"><br><br>
+
+    <label for="patient-name">Tên bệnh nhân:</label>
+    <input type="text" id="patient-name" name="patient-name"><br><br>
+
+    <label for="prescription-id">Mã đơn thuốc:</label>
+    <input type="text" id="prescription-id" name="prescription-id"><br><br>
+
+    <table>
+        <tr>
+            <th>Tên thuốc</th>
+            <th>Số lượng</th>
+            <th>Giá bán (đơn vị: đồng)</th>
+        </tr>
+        <tr>
+            <td>Thuốc A</td>
+            <td><input type="number" id="medicine-a-qty" name="medicine-a-qty"></td>
+            <td><input type="number" id="medicine-a-price" name="medicine-a-price"></td>
+        </tr>
+        <tr>
+            <td>Thuốc B</td>
+            <td><input type="number" id="medicine-b-qty" name="medicine-b-qty"></td>
+            <td><input type="number" id="medicine-b-price" name="medicine-b-price"></td>
+        </tr>
+        <tr>
+            <td>Thuốc C</td>
+            <td><input type="number" id="medicine-c-qty" name="medicine-c-qty"></td>
+            <td><input type="number" id="medicine-c-price" name="medicine-c-price"></td>
+        </tr>
+    </table>
+
+    <label for="total-bill-cost">Tổng tiền (đơn vị: đồng):</label>
+    <input type="number" id="total-bill-cost" name="total-bill-cost"><br><br>
+
+    <label for="paid-status">Trạng thái thanh toán:</label>
+    <select id="paid-status" name="paid-status">
+        <option value="Chưa thanh toán">Chưa thanh toán</option>
+        <option value="Đã thanh toán">Đã thanh toán</option>
+    </select><br><br>
+
+    <label for="payment-method">Phương thức thanh toán:</label>
+    <select id="payment-method" name="payment-method">
+        <option value="Tiền mặt">Tiền mặt</option>
+        <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
+    </select><br><br>
+
+    <label for="paid-at">Ngày thanh toán:</label>
+    <input type="date" id="paid-at" name="paid-at"><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await PrintingService.Print("printable-form", PrintType.Html);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

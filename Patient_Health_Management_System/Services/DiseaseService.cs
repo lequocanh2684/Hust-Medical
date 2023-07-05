@@ -1,6 +1,4 @@
-﻿using Patient_Health_Management_System.Repositories.Interfaces;
-
-namespace Patient_Health_Management_System.Services
+﻿namespace Patient_Health_Management_System.Services
 {
     public class DiseaseService : IDiseaseService
     {
@@ -80,11 +78,11 @@ namespace Patient_Health_Management_System.Services
                     GroupName = diseaseForm.GroupName,
                     CreatedBy = userId,
                     CreatedAt = DateTime.Now,
-                    UpdatedBy = null,
+                    UpdatedBy = string.Empty,
                     UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
                     IsDeleted = false,
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                    DeletedBy = null
+                    DeletedBy = string.Empty
                 };
                 return await _diseaseRepo.CreateDisease(disease);
             }

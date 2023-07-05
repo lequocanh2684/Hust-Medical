@@ -1,9 +1,11 @@
 ﻿@page "/billing"
 @attribute [Authorize(Roles = "Cashier, Admin")]
+@using Append.Blazor.Printing
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IBillingService BillingService
 @inject IPatientService PatientService
 @inject IDialogService DialogService
+@inject IPrintingService PrintingService
 @inject NavigationManager NavigationManager
 
 <AuthorizeView Context="contextAuthorize">
@@ -41,7 +43,9 @@
                                 <MudStack Row>
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
                                                    OnClick="(e) => ShowUpdate(context.Item)" />
-                                    @* <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                    <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Surface" Size="Size.Medium"
+                                                   OnClick="ShowPrint" />
+                                    @*<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                                    OnClick="(e) => ShowDelete(context.Item.Id)" />
                                     <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
                                                    OnClick="(e) => ShowDetail(context.Item.Id)" /> *@
@@ -61,15 +65,15 @@
                     </PagerContent>
                 </MudDataGrid>
             </div>
-        </div>
+        </div>  
     </Authorized>
 </AuthorizeView>
 
 @code {
     private IEnumerable<Billing> billings = new List<Billing>();
     private IEnumerable<Patient> patients = new List<Patient>();
-    private string searchS = new string("");
-    private string userId = new string("");
+    private string searchS = string.Empty;
+    private string userId = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
 
     protected override async Task OnInitializedAsync()
@@ -91,7 +95,14 @@
         var parameter = new DialogParameters { ["Bill"] = billing, ["UserId"] = userId };
         var dialog = DialogService.Show<BillingUpdatePopUp>("Cập nhật hoá đơn", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowPrint()
+    {
+        var dialog = DialogService.Show<BillingPrint>("In hoá đơn");
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private bool FilterS(Billing billing) => FilterSearch(billing, searchS);
