@@ -1,75 +1,85 @@
 ﻿@using Append.Blazor.Printing
 @inject IPrintingService PrintingService
+@inject IPatientService PatientService
+@inject IPrescriptionService PrescriptionService
 
 <MudDialog>
-    <DialogContent>
-        <MudProgressCircular Indeterminate="true" Size="Size.Large" Color="Color.Primary" />
-    </DialogContent>
+	<DialogContent>
+		<form id="printable-form">
+			<div style="display:block;text-align:center;">
+				<h3 style="text-align:center;">HustMec</h3>
+				<MudText>Mễ Trì, Từ Liêm, Hà Nội, Việt Nam</MudText>
+				<MudText>090123456</MudText>
+			</div>
+			<div style="display: flex; text-align: center; flex-direction: column; flex-wrap: wrap; padding-top:10px">
+				<h3>PHIẾU THU</h3>
+				<MudText Typo="Typo.body1" Style="text-align:center">HD00000001</MudText>
+				<MudText Typo="Typo.caption" Style="text-align:center;width:100%">@(DateTime.Now.ToString("dd-MM-yyyy hh:mm tt"))</MudText>
+			</div>
+			<div style="display: flex; padding-top:20px; padding-bottom:30px">
+				<MudGrid Spacing="3">
+					<MudItem>
+						<MudText Typo="Typo.body1" Style="text-align:center">Tên khách hàng: abc</MudText>
+					</MudItem>
+					<MudItem>
+						<MudText Typo="Typo.body1" Style="text-align:center">Số điện thoại: 090123456</MudText>
+					</MudItem>
+					<MudItem>
+						<MudText Typo="Typo.body1" Style="text-align:center">Địa chỉ: Mễ Trì, Từ Liêm, Hà Nội, Việt Nam</MudText>
+					</MudItem>
+				</MudGrid>
+			</div>
+				<MudDataGrid Style="display:flex; width:700px" Elevation="0" Items="@prescription.MedicinePrescribed" ReadOnly="true">
+					<Columns>
+						<PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
+						<PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
+						<PropertyColumn Property="m => m.SellingPrice" Title="Giá bán (đơn vị: đồng)" />
+						<PropertyColumn Property="m => m.SellingPrice * m.BuyingQuantity" Title="Thành tiền (đơn vị: đồng)" />
+					</Columns>
+				</MudDataGrid>
+				<MudText Style="padding-top:20px; font-weight:bold" Typo="Typo.body1">Tổng cộng: @totalBillCost (đồng) </MudText>
+				<MudText Style="padding-top:20px" Typo="Typo.body1">Ghi chú: @prescription.Note </MudText>
+				<MudGrid Style="padding-top:20px" Spacing="2">
+					<MudItem>
+						<MudText Typo="Typo.body1">Người nộp tiền: abc</MudText>
+					</MudItem>
+					<MudItem>
+						<MudText Typo="Typo.body1">Người thu tiền: xyz</MudText>
+					</MudItem>
+				</MudGrid>
+		</form>
+	</DialogContent>
+	<DialogActions>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => PrintingService.Print("printable-form", PrintType.Html))">In</MudButton>
+	</DialogActions>
 </MudDialog>
 
-<form id="printable-form">
-    <label for="patient-id">Mã bệnh nhân:</label>
-    <input type="text" id="patient-id" name="patient-id"><br><br>
-
-    <label for="patient-name">Tên bệnh nhân:</label>
-    <input type="text" id="patient-name" name="patient-name"><br><br>
-
-    <label for="prescription-id">Mã đơn thuốc:</label>
-    <input type="text" id="prescription-id" name="prescription-id"><br><br>
-
-    <table>
-        <tr>
-            <th>Tên thuốc</th>
-            <th>Số lượng</th>
-            <th>Giá bán (đơn vị: đồng)</th>
-        </tr>
-        <tr>
-            <td>Thuốc A</td>
-            <td><input type="number" id="medicine-a-qty" name="medicine-a-qty"></td>
-            <td><input type="number" id="medicine-a-price" name="medicine-a-price"></td>
-        </tr>
-        <tr>
-            <td>Thuốc B</td>
-            <td><input type="number" id="medicine-b-qty" name="medicine-b-qty"></td>
-            <td><input type="number" id="medicine-b-price" name="medicine-b-price"></td>
-        </tr>
-        <tr>
-            <td>Thuốc C</td>
-            <td><input type="number" id="medicine-c-qty" name="medicine-c-qty"></td>
-            <td><input type="number" id="medicine-c-price" name="medicine-c-price"></td>
-        </tr>
-    </table>
-
-    <label for="total-bill-cost">Tổng tiền (đơn vị: đồng):</label>
-    <input type="number" id="total-bill-cost" name="total-bill-cost"><br><br>
-
-    <label for="paid-status">Trạng thái thanh toán:</label>
-    <select id="paid-status" name="paid-status">
-        <option value="Chưa thanh toán">Chưa thanh toán</option>
-        <option value="Đã thanh toán">Đã thanh toán</option>
-    </select><br><br>
-
-    <label for="payment-method">Phương thức thanh toán:</label>
-    <select id="payment-method" name="payment-method">
-        <option value="Tiền mặt">Tiền mặt</option>
-        <option value="Chuyển khoản ngân hàng">Chuyển khoản ngân hàng</option>
-    </select><br><br>
-
-    <label for="paid-at">Ngày thanh toán:</label>
-    <input type="date" id="paid-at" name="paid-at"><br><br>
-
-    <input type="submit" value="Submit">
-</form>
-
-
 @code {
+
+	[Parameter]
+	public Billing Bill { get; set; }
 
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await PrintingService.Print("printable-form", PrintType.Html);
-        MudDialog.Close(DialogResult.Ok(true));
-    }
+	private Patient patient = new Patient();
+
+	private Prescription prescription = new Prescription();
+
+	private int totalBillCost = 0;
+
+	protected override async Task OnInitializedAsync()
+	{
+		patient = await PatientService.GetPatientById(Bill.PatientId);
+		prescription = await PrescriptionService.GetPrescriptionById(Bill.PrescriptionId);
+		GetTotalBillCost();
+	}
+
+	private void GetTotalBillCost()
+	{
+		foreach (var item in prescription.MedicinePrescribed)
+		{
+			totalBillCost += item.SellingPrice * item.BuyingQuantity;
+		}
+	}
 }

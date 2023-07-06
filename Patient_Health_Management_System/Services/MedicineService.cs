@@ -196,7 +196,7 @@ namespace Patient_Health_Management_System.Services
                 using (var stream = new MemoryStream())
                 {
                     var medicines = _medicineRepo.GetMedicines().Result.OrderBy(m => m.MedicineId);
-                    using (var reader = ObjectReader.Create(medicines, "MedicineId", "Name", "GroupName", "Unit", "HowToUse", "QuantityDefault", "ImportPrice", "SellingPrice", "MinimumStock"))
+                    using (var reader = ObjectReader.Create(medicines, "MedicineId", "Name", "GroupName", "Unit", "HowToUse", "ImportPrice", "SellingPrice", "MinimumStock"))
                     {
                         Workbook workbook = new Workbook();
                         Worksheet sheet = workbook.Worksheets[0];

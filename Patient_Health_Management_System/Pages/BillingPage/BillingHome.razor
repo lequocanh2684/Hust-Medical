@@ -44,7 +44,7 @@
                                     <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
                                                    OnClick="(e) => ShowUpdate(context.Item)" />
                                     <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Surface" Size="Size.Medium"
-                                                   OnClick="ShowPrint" />
+                                                   OnClick="(e) => ShowPrint(context.Item)" />
                                     @*<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                                    OnClick="(e) => ShowDelete(context.Item.Id)" />
                                     <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
@@ -98,9 +98,10 @@
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
-    private async Task ShowPrint()
+    private async Task ShowPrint(Billing billing)
     {
-        var dialog = DialogService.Show<BillingPrint>("In hoá đơn");
+        var parameter = new DialogParameters { ["Bill"] = billing};
+        var dialog = DialogService.Show<BillingPrint>("In hoá đơn", parameter, new DialogOptions(){ FullScreen = true, CloseButton = true });
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
