@@ -13,19 +13,19 @@
 			</div>
 			<div style="display: flex; text-align: center; flex-direction: column; flex-wrap: wrap; padding-top:10px">
 				<h3>PHIẾU THU</h3>
-				<MudText Typo="Typo.body1" Style="text-align:center">HD00000001</MudText>
-				<MudText Typo="Typo.caption" Style="text-align:center;width:100%">@(DateTime.Now.ToString("dd-MM-yyyy hh:mm tt"))</MudText>
+				<MudText Typo="Typo.body1" Style="text-align:center">@Bill.BillId</MudText>
+				<MudText Typo="Typo.caption" Style="text-align:center;width:100%">@(Bill.CreatedAt.ToLocalTime().ToString("dd-MM-yyyy hh:mm tt"))</MudText>
 			</div>
 			<div style="display: flex; padding-top:20px; padding-bottom:30px">
 				<MudGrid Spacing="3">
 					<MudItem>
-						<MudText Typo="Typo.body1" Style="text-align:center">Tên khách hàng: abc</MudText>
+						<MudText Typo="Typo.body1" Style="text-align:center">Tên bệnh nhân: @patient.Name</MudText>
 					</MudItem>
 					<MudItem>
-						<MudText Typo="Typo.body1" Style="text-align:center">Số điện thoại: 090123456</MudText>
+						<MudText Typo="Typo.body1" Style="text-align:center">Số điện thoại: @patient.PhoneNumber</MudText>
 					</MudItem>
 					<MudItem>
-						<MudText Typo="Typo.body1" Style="text-align:center">Địa chỉ: Mễ Trì, Từ Liêm, Hà Nội, Việt Nam</MudText>
+						<MudText Typo="Typo.body1" Style="text-align:center">Địa chỉ: @patient.Address</MudText>
 					</MudItem>
 				</MudGrid>
 			</div>
@@ -39,14 +39,14 @@
 				</MudDataGrid>
 				<MudText Style="padding-top:20px; font-weight:bold" Typo="Typo.body1">Tổng cộng: @totalBillCost (đồng) </MudText>
 				<MudText Style="padding-top:20px" Typo="Typo.body1">Ghi chú: @prescription.Note </MudText>
-				<MudGrid Style="padding-top:20px" Spacing="2">
-					<MudItem>
-						<MudText Typo="Typo.body1">Người nộp tiền: abc</MudText>
-					</MudItem>
-					<MudItem>
-						<MudText Typo="Typo.body1">Người thu tiền: xyz</MudText>
-					</MudItem>
-				</MudGrid>
+				<div style="display: flex; justify-content:space-evenly; padding-top:40px">
+					<MudText Style="width:300px" Typo="Typo.body1">Người nộp tiền</MudText>
+					<MudText Style="width:300px" Typo="Typo.body1">Người thu tiền</MudText>
+				</div>
+				<div style="display: flex; justify-content:space-evenly; padding-top:5px">
+					<MudText Style="width:300px" Typo="Typo.body1">(ký tên)</MudText>
+					<MudText Style="width:300px" Typo="Typo.body1">(ký tên)</MudText>
+				</div>
 		</form>
 	</DialogContent>
 	<DialogActions>
