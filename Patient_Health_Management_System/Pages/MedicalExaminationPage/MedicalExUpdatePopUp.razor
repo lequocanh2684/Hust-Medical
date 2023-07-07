@@ -1,5 +1,6 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 @inject IMedicalExaminationService MedicalExaminationService
 @inject IDiseaseService DiseaseService
 @inject IPatientService PatientService
@@ -16,8 +17,6 @@
         <MudForm @bind-IsValid="@success">
             <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
                              SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
-            @*<MudAutocomplete T="string" Label="Chẩn đoán" @bind-Value="searchDisease"
-                             SearchFunc="@OnSearchDisease" ResetValueOnEmptyText="true" MaxItems="null" />*@
             <MudTextField @bind-Value="@medicalExaminationForm.DiseaseName" Label="Chẩn đoán" ReadOnly="false" Required="true" RequiredError="Chẩn đoán không được bỏ trống" />
             <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao (cm)" ReadOnly="false" />
             <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng (kg)" ReadOnly="false" />
@@ -76,6 +75,8 @@
     {
         medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
         await MedicalExaminationService.UpdateMedicalExaminationById(Id, medicalExaminationForm, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Cập nhật thông tin đơn khám thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject IUserService UserService
 @inject IAccountService AccountService
@@ -103,6 +104,8 @@
         if (!result.Canceled)
         {
             await InvokeAsync(OnInitializedAsync);
+            Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+            Snackbar.Add("Thêm người dùng mới thành công", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));
         }
     }

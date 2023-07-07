@@ -1,4 +1,5 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @inject IMedicineService MedicineService
 @inject IMapper mapper
 
@@ -49,6 +50,8 @@
     private async Task Submit()
     {
         await MedicineService.UpdateMedicineGroupById(Id, medicineGroupForm, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+		Snackbar.Add("Chỉnh sửa nhóm thuốc thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

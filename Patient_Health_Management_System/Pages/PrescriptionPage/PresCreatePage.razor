@@ -3,6 +3,7 @@
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 @inject IPrescriptionService PrescriptionService
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
@@ -136,6 +137,8 @@
             };
             await BillingService.CreateBilling(billingForm, userId);
         }
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Tạo đơn thuốc thành công!", Severity.Success);
         NavigationManager.NavigateTo("/prescription");
     }
 
@@ -172,13 +175,8 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userClaim = authState.User.Claims;
-        foreach (var item in userClaim)
-        {
-            if (item.Type == ClaimTypes.NameIdentifier)
-            {
-                userId = item.Value;
-            }
-        }
+        userId = authState.User.Claims
+        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+        .SingleOrDefault().Value;
     }
 }

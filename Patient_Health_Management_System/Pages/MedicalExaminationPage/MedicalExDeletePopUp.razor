@@ -1,4 +1,5 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @inject IMedicalExaminationService medicalExamService
 
 <MudDialog>
@@ -35,6 +36,8 @@
     private async Task Submit()
     {
         await medicalExamService.DeleteMedicalExaminationById(Id, userId);
+    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+		Snackbar.Add("Xoá đơn khám thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

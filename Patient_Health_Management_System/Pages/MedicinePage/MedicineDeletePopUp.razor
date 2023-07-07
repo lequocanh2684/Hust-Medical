@@ -1,4 +1,5 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @inject IMedicineService MedicineService
 
 <MudDialog>
@@ -13,7 +14,7 @@
 
 @code{
 
-    private Domain.Models.Medicine medicine = new Domain.Models.Medicine();
+    private Medicine medicine = new Medicine();
 
     private string userId = string.Empty;
 
@@ -36,6 +37,8 @@
     private async Task Submit()
     {
         await MedicineService.DeleteMedicineById(Id, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add($"Đã xóa thuốc {medicine.Name}", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

@@ -15,7 +15,7 @@
             <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
                 <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
 
-                <MudDataGrid T="Patient" MultiSelection="true" Items="@patients" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                <MudDataGrid T="Patient" Items="@patients" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
                              Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                     <ToolBarContent>
@@ -25,7 +25,6 @@
                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
                     <Columns>
-                        <SelectColumn T="Patient" />
                         <PropertyColumn Property="m => m.PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
                         <PropertyColumn Property="m => m.Name" Title="Tên bệnh nhân" />
                         <PropertyColumn Property="m => m.Gender" Title="Giới tính" />

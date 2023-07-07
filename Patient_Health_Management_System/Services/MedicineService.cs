@@ -179,6 +179,24 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
+        public async Task DeleteMultiMedicinesById(List<Medicine> medicines, string userId)
+        {
+            try
+            {
+                foreach (var medicine in medicines)
+                {
+                    medicine.IsDeleted = true;
+                    medicine.DeletedAt = DateTime.Now;
+                    medicine.DeletedBy = userId;
+                }
+                await _medicineRepo.DeleteMultiMedicinesById(medicines);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         /*Deprecated*/
         //private void ValidateMedicineForm(MedicineForm medicineForm)
         //{

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject ISnackbar Snackbar
 @inject IUserService UserService
 @inject IAccountService AccountService
 
@@ -42,6 +43,8 @@
         }
         await UserService.DeleteUserByUserId(UserId, AdminId);
         await AccountService.BlockUserById(UserId, access_token.Value);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+		Snackbar.Add("Xoá người dùng thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 }

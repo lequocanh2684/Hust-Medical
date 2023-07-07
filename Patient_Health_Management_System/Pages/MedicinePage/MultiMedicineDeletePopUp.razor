@@ -1,10 +1,10 @@
-@inject AuthenticationStateProvider AuthenticationStateProvider
+﻿@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
-@inject IPrescriptionService PrescriptionService
+@inject IMedicineService MedicineService
 
 <MudDialog>
     <DialogContent>
-        <MudText>Bạn có chắc muốn xoá đơn thuốc này không?</MudText>
+        <MudText>Bạn có chắc muốn xoá những thuốc đã chọn không?</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Huỷ</MudButton>
@@ -12,16 +12,17 @@
     </DialogActions>
 </MudDialog>
 
-@code{
+@code {
 
-    private Patient patient = new Patient();
-
-    private string userId = new string("");
+    private string userId = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public string Id { get; set; }
+
+    [Parameter]
+    public HashSet<Medicine> SelectedMedicines { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,9 +36,9 @@
 
     private async Task Submit()
     {
-        await PrescriptionService.DeletePrescriptionById(Id, userId);
+        await MedicineService.DeleteMultiMedicinesById(SelectedMedicines.ToList(), userId);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-		Snackbar.Add("Xoá đơn thuốc thành công!", Severity.Success);
+        Snackbar.Add($"Đã xóa {SelectedMedicines.Count} thuốc ", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

@@ -16,7 +16,7 @@
             <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
 
                     <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicines" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
-                                 FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                                 FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu" @bind-SelectedItems="@selectedMedicines"
                                  Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                         <ToolBarContent>
                             <MudGrid Spacing="2">
@@ -29,6 +29,12 @@
                                 <MudItem>
                                     <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ImportMedicineExcel">Nhập từ file excel</MudButton>
                                 </MudItem>
+                                @if (selectedMedicines.Count > 0)
+                                {
+                                    <MudItem>
+                                        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteMultiMedicine">Xóa @selectedMedicines.Count thuốc</MudButton>
+                                    </MudItem>
+                                }
                             </MudGrid>
                             <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm thuốc" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -116,7 +122,9 @@
 
     private MudDataGrid<Medicine> mudDataGrid;
 
-    private string searchS = new string("");
+    private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
+
+    private string searchS = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,6 +172,15 @@
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
+
+    private async Task DeleteMultiMedicine()
+    {
+        var parameter = new DialogParameters { ["SelectedMedicines"] = selectedMedicines };
+        var dialog = await DialogService.ShowAsync<MultiMedicineDeletePopUp>("Xóa những thuốc được chọn", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+        selectedMedicines.Clear();
+    }
     #endregion
 
     #region Medicine Group Pop Up
@@ -205,34 +222,6 @@
         if (medicine.GroupName?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
     }
-    #endregion
-
-    #region Deprecated Function
-
-    //private void FilterByMedicineGroupName(string? medicineGroupName)
-    //{
-    //    if (string.IsNullOrWhiteSpace(medicineGroupName)) medicinesForTable = medicines.ToList();
-    //    else medicinesForTable = medicines.Where(x => x.GroupName.Equals(medicineGroupName)).ToList();
-    //}
-
-    //private void RowClickEvent(TableRowClickEventArgs<MedicineGroup> tableRowClickEventArgs){}
-
-    //private string SelectedRowClassFunc(MedicineGroup element, int rowNumber)
-    //{
-    //    if (selectedRowMedicineGroupNumber == rowNumber)
-    //    {
-    //        selectedRowMedicineGroupNumber = -1;
-    //        searchS = "";
-    //        return string.Empty;
-    //    }
-    //    else if (medicineGroupTable.SelectedItem != null && medicineGroupTable.SelectedItem.Equals(element))
-    //    {
-    //        selectedRowMedicineGroupNumber = rowNumber;
-    //        searchS = medicineGroupTable.SelectedItem.Name;
-    //        return "selected";
-    //    }
-    //    else return string.Empty;
-    //}
     #endregion
 }
 

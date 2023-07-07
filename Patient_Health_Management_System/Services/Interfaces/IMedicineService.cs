@@ -14,6 +14,7 @@ namespace Patient_Health_Management_System.Services.Interfaces
         Task DeleteMedicineById(string id, string userId);
         byte[] ExportToExcel();
         Task<List<Medicine>> ImportMedicineExcel(Workbook workbook, string userId);
+        Task DeleteMultiMedicinesById(List<Medicine> medicines, string userId);
         #endregion
 
         #region medicine_group

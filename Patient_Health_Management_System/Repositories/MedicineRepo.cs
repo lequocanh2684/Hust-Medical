@@ -71,6 +71,16 @@
             await _medicines.InsertManyAsync(medicines);
             return medicines;
         }
+
+        public async Task DeleteMultiMedicinesById(List<Medicine> medicines)
+        {
+            var deletes = new List<WriteModel<Medicine>>();
+            foreach (var medicine in medicines)
+            {
+                deletes.Add(new ReplaceOneModel<Medicine>(Builders<Medicine>.Filter.Eq(m => m.Id, medicine.Id), medicine));
+            }
+            await _medicines.BulkWriteAsync(deletes, new BulkWriteOptions() { IsOrdered = false });
+        }
         #endregion
 
         #region medicine_group

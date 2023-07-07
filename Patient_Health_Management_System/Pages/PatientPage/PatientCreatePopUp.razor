@@ -1,4 +1,5 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @inject IPatientService PatientService
 
 <MudDialog>
@@ -32,7 +33,7 @@
 
 
 @code {
-    private PatientForm patientForm = new Domain.Forms.PatientForm();
+    private PatientForm patientForm = new PatientForm();
     private string userId = string.Empty;
     private bool success = false;
 
@@ -54,6 +55,8 @@
     private async Task Submit()
     {
         await PatientService.CreatePatient(patientForm, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Thêm thông tin bệnh nhân thành công", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

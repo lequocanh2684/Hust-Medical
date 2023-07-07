@@ -1,5 +1,4 @@
-﻿@using Append.Blazor.Printing
-@inject IPrintingService PrintingService
+﻿@inject ISnackbar Snackbar
 @inject IBillingService BillingService
 @inject IPatientService PatientService
 @inject IPrescriptionService PrescriptionService
@@ -42,9 +41,8 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
+        <MudButton OnClick="@(_ => MudDialog.Cancel())">Hủy</MudButton>
         <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(_ => Print())">In</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -93,12 +91,9 @@
             PaymentMethod = Bill.PaymentMethod,
         };
         await BillingService.UpdatePayingStatusById(Bill.Id, billingForm, UserId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add($"Cập nhật hóa đơn thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
-    }
-
-    private async Task Print()
-    {
-        await PrintingService.Print("bill-print", PrintType.Html);
     }
 
     private void GetTotalBillCost()

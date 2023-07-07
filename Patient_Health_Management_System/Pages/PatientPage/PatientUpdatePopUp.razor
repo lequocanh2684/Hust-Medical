@@ -1,4 +1,5 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @inject IPatientService PatientService
 @inject IMapper mapper
 
@@ -63,6 +64,8 @@
     private async Task Submit()
     {
         await PatientService.UpdatePatientById(Id, patientForm, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Cập nhật thông tin bệnh nhân thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

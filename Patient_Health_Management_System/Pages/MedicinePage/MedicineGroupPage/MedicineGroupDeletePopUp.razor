@@ -1,4 +1,5 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 @inject IMedicineService MedicineService
 
 <MudDialog>
@@ -35,6 +36,8 @@
     private async Task Submit()
     {
         await MedicineService.DeleteMedicineGroupById(Id, userId);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("Xoá nhóm thuốc thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }
 
