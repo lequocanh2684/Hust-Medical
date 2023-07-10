@@ -1,5 +1,4 @@
-@page "/prescription/create"
-@page "/prescription/create/{PatientId}"
+@page "/prescription/create/{PatientId}/{MedicalExId}"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
@@ -8,6 +7,7 @@
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
 @inject IBillingService BillingService
+@inject IMedicalExaminationService MedicalExaminationService
 @inject IMapper mapper
 
 <div style="display:flex">
@@ -18,8 +18,8 @@
                     <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
                     Thêm thông tin đơn thuốc
                 </MudText>
-                <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient" SearchFunc="@OnSearchPatient"
-                    ResetValueOnEmptyText="true" MaxItems="null" />
+                <MudTextField Value="@patient.Name" Label="Tên bệnh nhân" ReadOnly="true" />
+                <MudTextField Value="@medicalExamination.DiseaseName" Label="Chẩn đoán" ReadOnly="true" />
                 <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false" />
             </div>
         </div>
@@ -97,12 +97,15 @@
     private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
     private IEnumerable<Medicine> medicines = new List<Medicine>();
     private IEnumerable<Medicine> medicinesTable = new List<Medicine>();
-    private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
+    private Patient patient = new Patient();
+    private MedicalExamination medicalExamination = new MedicalExamination();
     private string userId = string.Empty;
     private string searchS = string.Empty;
-    private string searchPatient = string.Empty;
     private bool disableButton = true;
+
+    [Parameter]
+    public string? MedicalExId { get; set; }
 
     [Parameter]
     public string? PatientId { get; set; }
@@ -110,13 +113,10 @@
     protected override async Task OnInitializedAsync()
     {
         medicines = await MedicineService.GetMedicines();
-        patients = await PatientService.GetPatients();
+        patient = await PatientService.GetPatientById(PatientId);
+        medicalExamination = await MedicalExaminationService.GetMedicalExaminationById(MedicalExId);
         medicineGroups = await MedicineService.GetMedicineGroups();
         medicinesTable = medicines;
-        if(!String.IsNullOrEmpty(PatientId))
-        {
-            searchPatient = patients.Where(p => p.Id == PatientId).Select(p => p.Name).FirstOrDefault();
-        }
         await GetUserId();
     }
 
@@ -126,7 +126,8 @@
         .ForMember(mp => mp.MedicineId, opt => opt.MapFrom(m => m.Id)))
         .CreateMapper();
         prescriptionForm.MedicinePrescribed = mapper.Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
-        prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
+        prescriptionForm.PatientId = PatientId;
+        prescriptionForm.MedicalExaminationId = MedicalExId;
         var newPrescription = await PrescriptionService.CreatePrescription(prescriptionForm, userId);
         if(newPrescription is not null)
         {
@@ -140,18 +141,6 @@
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         Snackbar.Add("Tạo đơn thuốc thành công!", Severity.Success);
         NavigationManager.NavigateTo("/prescription");
-    }
-
-    private async Task<IEnumerable<string>> OnSearchPatient(string inputSearch)
-    {
-        if (string.IsNullOrEmpty(inputSearch))
-        {
-            return patients.Select(d => d.Name);
-        }
-        await Task.Delay(0);
-        return patients.Where(d => d.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase) ||
-        d.PatientId.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase))
-        .Select(d => d.Name);
     }
 
     private void FilterByMedicineGroupName(string? medicineGroupName)

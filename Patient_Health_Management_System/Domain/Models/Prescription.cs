@@ -11,6 +11,9 @@
         [BsonElement("patient_id")]
         public string PatientId { get; set; }
 
+        [BsonElement("medical_examination_id")]
+        public string MedicalExaminationId { get; set; }
+
         [BsonElement("note")]
         public string? Note { get; set; }
 

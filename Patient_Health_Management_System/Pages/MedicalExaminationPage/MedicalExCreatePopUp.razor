@@ -14,8 +14,7 @@
     </TitleContent>
     <DialogContent>
         <MudForm @bind-IsValid="@success">
-            <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
-                             SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
+            <MudTextField Value="@PatientName" Label="Bệnh nhân" ReadOnly="true"/>
             <MudTextField @bind-Value="@medicalExaminationForm.DiseaseName" Label="Chẩn đoán" ReadOnly="false" Required="true" RequiredError="Chẩn đoán không được bỏ trống" />
             <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Height" Label="Chiều cao (cm)" ReadOnly="false" />
             <MudNumericField HideSpinButtons="true" @bind-Value="@medicalExaminationForm.Weight" Label="Cân nặng (kg)" ReadOnly="false" />
@@ -37,14 +36,6 @@
 
     private MedicalExaminationForm medicalExaminationForm = new MedicalExaminationForm();
 
-    private List<Disease> diseases = new List<Disease>();
-
-    private List<Patient> patients = new List<Patient>();
-
-    private string searchDisease = string.Empty;
-
-    private string searchPatient = string.Empty;
-
     private string userId = string.Empty;
 
     private string value = string.Empty;
@@ -55,10 +46,14 @@
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
+    [Parameter]
+    public string PatientName { get; set; }
+
+    [Parameter]
+    public string PatientId { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        diseases = await DiseaseService.GetDiseases();
-        patients = await PatientService.GetPatients();
         await GetUserId();
     }
 
@@ -69,39 +64,18 @@
 
     private async Task Submit()
     {
-        medicalExaminationForm.PatientId = patients.Where(d => d.Name == searchPatient).FirstOrDefault().Id;
+        medicalExaminationForm.PatientId = PatientId;
         await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         Snackbar.Add($"Thêm thông tin đơn khám thành công", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
+        NavigationManager.NavigateTo("/medicalExamination");
     }
 
     private async Task SubmitAndCreatePrescription()
     {
         await Submit();
         NavigationManager.NavigateTo($"/prescription/create/{medicalExaminationForm.PatientId}");
-    }
-
-    private async Task<IEnumerable<string>> OnSearchPatient(string inputSearch)
-    {
-        if (string.IsNullOrEmpty(inputSearch))
-        {
-            return patients.Select(d => d.Name);
-        }
-        await Task.Delay(0);
-        return patients.Where(d => d.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase) || d.PatientId.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase))
-                       .Select(d => d.Name);
-    }
-
-    private async Task<IEnumerable<string>> OnSearchDisease(string inputSearch)
-    {   
-        if (string.IsNullOrEmpty(inputSearch))
-        {
-            return diseases.Select(d => d.Name);
-        }
-        await Task.Delay(0);
-        return diseases.Where(d => d.Name.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase) || d.DiseaseId.Contains(inputSearch, StringComparison.InvariantCultureIgnoreCase))
-                       .Select(d => d.Name);
     }
 
     private async Task GetUserId()

@@ -20,7 +20,7 @@
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
                              Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                     <ToolBarContent>
-                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => CreateNewPrescription()">Thêm đơn thuốc mới</MudButton>
+                        @*<MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => CreateNewPrescription()">Thêm đơn thuốc mới</MudButton>*@
                         <MudSpacer />
                         <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm đơn khám" Adornment="Adornment.Start" Immediate="true"
                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -77,13 +77,13 @@
     {
         var parameter = new DialogParameters { ["Id"] = Id };
         var dialog = await DialogService.ShowAsync<PresDetailPopUp>("Thông tin đơn thuốc", parameter);
-        //var result = await dialog.Result;
     }
 
-    private void CreateNewPrescription()
-    {
-        NavigationManager.NavigateTo("/prescription/create");
-    }
+    //Deprecated
+    //private void CreateNewPrescription()
+    //{
+    //    NavigationManager.NavigateTo("/prescription/create");
+    //}
 
     private void UpdatePrescription(string id)
     {

@@ -36,7 +36,7 @@
             }
             @if(Bill.IsPaid)
             {
-                <MudTextField Value="@Bill.PaidAt.ToLocalTime().ToString("dd/MM/yyyy hh:mm tt")" Label="Ngày thanh toán" ReadOnly="true" />
+                <MudTextField Value="@Bill.PaidAt.ToLocalTime().ToString("dd/MM/yyyy h:mm tt")" Label="Ngày thanh toán" ReadOnly="true" />
             }
         </MudForm>
     </DialogContent>

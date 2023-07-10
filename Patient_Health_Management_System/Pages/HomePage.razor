@@ -38,18 +38,37 @@
         </div>
     </div>
 	<div style="display:flex; height:52rem; background-color:#FAFAFA; border-radius:20px; margin-left:40px; width:22%">
-            <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; width:20%">
+            <div style="display:flex; flex:1; flex-direction:column; padding:14px 20px; justify-content:space-evenly">
 			<MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today)" />
-            <MudPaper Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:center; align-content:center; height:50%; margin-top:15px; border-radius:24px ">
-                <MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>
+            <MudPaper Elevation="0" Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:space-between; height:45%; border-radius:24px; overflow:auto">
+                @*<MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>*@
+                <MudStack>
+                    @for(int i = 0; i<10; i++){
+                        <MudPaper Elevation="0" Class="pa-4" style="@($"border-left: solid 8px {GenerateRandomColor()} ; margin: 14px 20px")">
+                            <MudStack Row="true">  
+                                <MudStack Justify="Justify.Center" Spacing="0">
+                                    <MudText Style="font-weight:bold" Typo="Typo.body2">9:30</MudText>
+                                    <MudText Style="font-weight:bold" Typo="Typo.body1">khám cho bệnh nhân abc</MudText>
+                                    <MudText Typo="Typo.body2">Bác sĩ Nguyễn Văn A</MudText>
+                                </MudStack>
+							</MudStack>
+					</MudPaper>
+                    }
+			    </MudStack>
             </MudPaper>
             </div>
     </div>
 </div>
 @code{
-    private string dayTime = new string("");
+    private string dayTime = string.Empty;
 
-    private string userName = new string("");
+    private string userName = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SetDayTime();
+        await GetUserName();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -60,11 +79,7 @@
             {
                 var auth0Token = await AccountService.TokenGenerator();
                 await ProtectedLocalStorage.SetAsync("access_token", auth0Token.access_token);
-                await OnAfterRenderAsync(firstRender);
             }
-            SetDayTime();
-            await GetUserName();
-            StateHasChanged();
         }
     }
 
@@ -91,6 +106,12 @@
         .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
         .SingleOrDefault().Value;
         userName = await UserService.GetUserNameByUserId(userId);
+    }
+
+    private string GenerateRandomColor()
+    {
+        Random random = new Random();
+		return String.Format("#{0:X6}", random.Next(0x1000000));
     }
 
     //example Chart

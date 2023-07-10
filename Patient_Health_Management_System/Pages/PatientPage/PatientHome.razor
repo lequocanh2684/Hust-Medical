@@ -32,21 +32,29 @@
                         <PropertyColumn Property="m => m.DateOfBirth.GetValueOrDefault().ToLocalTime().ToString(dateTimeFormat)" Title="Ngày tháng năm sinh" />
                         <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                             <CellTemplate>
-                                <MudStack Row>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                                   OnClick="(e) => ShowUpdate(context.Item.Id)" />
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDelete(context.Item.Id, context.Item.Name)" />
-                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDetail(context.Item.Id)" />
-                                </MudStack>
+                                <MudMenu AnchorOrigin="Origin.BottomLeft">
+                                    <ActivatorContent>
+                                        <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
+                                    </ActivatorContent>
+                                    <ChildContent>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDetail(context.Item.Id)">Thông tin chi tiết</MudMenuItem>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowUpdate(context.Item.Id)">Chỉnh sửa thông tin</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem OnClick="(e) => ShowCreateNewMedicalEx(context.Item.Id, context.Item.Name)">Tạo đơn khám</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDelete(context.Item.Id, context.Item.Name)">Xóa người dùng</MudMenuItem>
+
+                                    </ChildContent>
+                                </MudMenu>
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>
                     <NoRecordsContent>
                         <MudText>Không tìm thấy dữ liệu</MudText>
                     </NoRecordsContent>
-
                     <LoadingContent>
                         <MudText>Loading...</MudText>
                     </LoadingContent>
@@ -81,7 +89,7 @@
     {
         var dialog = DialogService.Show<PatientCreatePopUp>("Thêm bệnh nhân");
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowUpdate(string id)
@@ -89,7 +97,7 @@
         var parameter = new DialogParameters { ["Id"] = id };
         var dialog = DialogService.Show<PatientUpdatePopUp>("Sửa thông tin bệnh nhân", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private async Task ShowDelete(string id, string name)
@@ -97,8 +105,16 @@
         var parameter = new DialogParameters { ["Id"] = id, ["name"] = name };
         var dialog = DialogService.Show<PatientDeletePopUp>("Xóa bệnh nhân", parameter);
         var result = await dialog.Result;
-        await InvokeAsync(OnInitializedAsync);
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
+
+    private async Task ShowCreateNewMedicalEx(string id, string name)
+	{
+        var parameter = new DialogParameters { ["PatientId"] = id, ["PatientName"] = name };
+        var dialog = DialogService.Show<MedicalExaminationPage.MedicalExCreatePopUp>("Tạo đơn khám", parameter);
+		var result = await dialog.Result;
+		if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+	}
 
     private bool FilterS(Domain.Models.Patient patient) => FilterSearch(patient, searchS);
 

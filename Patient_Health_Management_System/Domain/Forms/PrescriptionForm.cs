@@ -4,6 +4,7 @@
     {
         [Required]
         public string PatientId { get; set; }
+        public string MedicalExaminationId { get; set; }
         public string? Note { get; set; }
 
         [Required]

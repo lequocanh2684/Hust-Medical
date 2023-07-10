@@ -6,6 +6,7 @@
 @inject IPrescriptionService PrescriptionService
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
+@inject IMedicalExaminationService MedicalExaminationService
 @inject IMapper mapper
 
 <div style="display:flex">
@@ -16,8 +17,8 @@
                     <MudIcon Icon="@Icons.Material.Filled.Create" Class="mr-3 mb-n1" />
                     Thêm thông tin đơn thuốc
                 </MudText>
-                <MudAutocomplete T="string" Label="Bệnh nhân" @bind-Value="searchPatient"
-                                 SearchFunc="@OnSearchPatient" ResetValueOnEmptyText="true" MaxItems="null" />
+                <MudTextField Value="@patient.Name" Label="Tên bệnh nhân" ReadOnly="true" />
+                <MudTextField Value="@medicalExamination.DiseaseName" Label="Chẩn đoán" ReadOnly="true" />
                 <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false"/>
             </div>
         </div>
@@ -90,8 +91,9 @@
     private IEnumerable<MedicineGroup> medicineGroups = new List<MedicineGroup>();
     private IEnumerable<Medicine> medicines = new List<Medicine>();
     private IEnumerable<Medicine> medicinesTable = new List<Medicine>();
-    private IEnumerable<Patient> patients = new List<Patient>();
     private HashSet<Medicine> selectedMedicines = new HashSet<Medicine>();
+    private Patient patient = new Patient();
+    private MedicalExamination medicalExamination = new MedicalExamination();
     private string userId = string.Empty;
     private string searchS = string.Empty;
     private string searchPatient = string.Empty;
@@ -106,11 +108,11 @@
         mapper = new MapperConfiguration(cfg => cfg.CreateMap<Prescription, PrescriptionForm>()).CreateMapper();
         prescriptionForm = mapper.Map<PrescriptionForm>(prescription);
         medicines = await MedicineService.GetMedicines();
-        patients = await PatientService.GetPatients();
+        patient = await PatientService.GetPatientById(prescription.PatientId);
+        medicalExamination = await MedicalExaminationService.GetMedicalExaminationById(prescription.MedicalExaminationId);
         medicineGroups = await MedicineService.GetMedicineGroups();
         medicinesTable = medicines;
         await GetUserId();
-        GetPatientName();
         GetSelectedMedicines();
     }
 
@@ -120,27 +122,10 @@
             .ForMember(mp => mp.MedicineId, opt => opt.MapFrom(m => m.Id)))
             .CreateMapper();
         prescriptionForm.MedicinePrescribed = mapper.Map<List<MedicinePrescribed>>(selectedMedicines.ToList());
-        prescriptionForm.PatientId = patients.Where(p => p.Name == searchPatient).Select(p => p.Id).FirstOrDefault();
         await PrescriptionService.UpdatePrescriptionById(Id, prescriptionForm, userId);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         Snackbar.Add("Cập nhật đơn thuốc thành công!", Severity.Success);
         NavigationManager.NavigateTo("/prescription");
-    }
-
-    private async Task<IEnumerable<string>> OnSearchPatient(string searchPatient)
-    {
-        if (string.IsNullOrEmpty(searchPatient))
-        {
-            return patients.Select(d => d.Name);
-        }
-        return patients.Where(d => d.Name.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase) ||
-        d.PatientId.Contains(searchPatient, StringComparison.InvariantCultureIgnoreCase))
-        .Select(d => d.Name);
-    }
-
-    private void GetPatientName()
-    {
-        searchPatient = patients.Where(p => p.Id == prescriptionForm.PatientId).FirstOrDefault().Name;
     }
 
     private void GetSelectedMedicines()
