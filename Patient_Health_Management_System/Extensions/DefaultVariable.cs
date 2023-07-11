@@ -10,5 +10,7 @@
         {
             "Răng hàm mặt", "Tai mũi họng", "Nội soi"
         };
+
+        public static readonly Random random = new Random();
     }
 }

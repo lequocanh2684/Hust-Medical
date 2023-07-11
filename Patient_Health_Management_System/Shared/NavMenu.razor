@@ -4,7 +4,7 @@
     <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; margin-top:10px">
         <div class="pl-5 pr-3">
             <MudDrawerHeader>
-                <MudText Typo="Typo.h4">HustHosp</MudText>
+                <MudLink Href="@homeUrl" Typo="Typo.h4" Underline="Underline.None">HustHosp</MudLink>
             </MudDrawerHeader>
             <MudNavMenu>
                 <AuthorizeView Roles="@role">
@@ -30,19 +30,21 @@
 @code {
     bool open = false;
 
-    void ToggleDrawer()
-    {
-        open = !open;
-    }
-
     private List<NavItem> NavItem = new List<NavItem>();
 
-    private string role = new string("");
+    private string role = string.Empty;
+
+    private string homeUrl = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         role = await GetUserRole();
         DisplayNavMenu();
+    }
+
+    void ToggleDrawer()
+    {
+        open = !open;
     }
 
     private async Task<string> GetUserRole()
@@ -53,26 +55,33 @@
         .SingleOrDefault().Value;
     }
 
+    private void DisplayHomeUrl()
+    {
+        if(role == "Doctor" || role == "Admin")
+		{
+			homeUrl = "/home";
+		}
+		else if(role == "Cashier")
+		{
+			homeUrl = "/billing";
+		}
+		else if(role == "Warehouse Manager")
+		{
+			homeUrl = "/medicine";
+		}
+    }
+
     private void DisplayNavMenu()
     {
-        NavItem.Add(new NavItem()
-            {
-                ItemContent = "Trang chủ",
-                NavLinkItem = new MudNavLink()
-                {
-                    Href = "/Home",
-                    Icon = MudBlazor.Icons.Material.Filled.Store,
-                }
-            });
         if (role == "Doctor" || role == "Admin")
         {
             NavItem.Add(new NavItem()
                 {
-                    ItemContent = "Quản lý thuốc",
+                    ItemContent = "Trang chủ",
                     NavLinkItem = new MudNavLink()
                     {
-                        Href = "medicine",
-                        Icon = MudBlazor.Icons.Material.Filled.LibraryBooks,
+                         Href = "/home",
+                         Icon = MudBlazor.Icons.Material.Filled.Store,
                     }
                 });
             NavItem.Add(new NavItem()
@@ -81,7 +90,7 @@
                     NavLinkItem = new MudNavLink()
                     {
                         Href = "patient",
-                        Icon = MudBlazor.Icons.Material.Filled.Sick,
+                        Icon = MudBlazor.Icons.Material.Filled.EmojiEmotions,
                     }
                 });
             NavItem.Add(new NavItem()
@@ -99,7 +108,7 @@
                     NavLinkItem = new MudNavLink()
                     {
                         Href = "prescription",
-                        Icon = MudBlazor.Icons.Material.Filled.Sick,
+                        Icon = MudBlazor.Icons.Custom.FileFormats.FileDocument,
                     }
                 });
         }
@@ -115,6 +124,18 @@
                     }
                 });
         }
+        if (role == "Warehouse Manager" || role == "Admin")
+        {
+            NavItem.Add(new NavItem()
+                {
+                    ItemContent = "Quản lý thuốc",
+                    NavLinkItem = new MudNavLink()
+                    {
+                        Href = "medicine",
+                        Icon = MudBlazor.Icons.Material.Filled.Medication,
+                    }
+                });
+        }
         if (role.Equals("Admin"))
         {
             NavItem.Add(new NavItem()
@@ -127,6 +148,15 @@
                     }
                 });
         }
+        NavItem.Add(new NavItem()
+            {
+                ItemContent = "Trợ giúp",
+                NavLinkItem = new MudNavLink()
+                {
+                    Href = "support",
+                    Icon = MudBlazor.Icons.Material.Filled.Help,
+                }
+            });
     }
 }
 

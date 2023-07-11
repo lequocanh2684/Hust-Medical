@@ -11,7 +11,9 @@
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		if (authState.User.Identity.IsAuthenticated)
 		{
-			NavigationManager.NavigateTo("/home");
+			if (authState.User.IsInRole("Admin") || authState.User.IsInRole("Doctor")) NavigationManager.NavigateTo("/home");
+			else if (authState.User.IsInRole("Cashier")) NavigationManager.NavigateTo("/billing");
+			else if (authState.User.IsInRole("Warehouse Manager")) NavigationManager.NavigateTo("/medicine");
 		}
 		else NavigationManager.NavigateTo("/auth/login");
 	}

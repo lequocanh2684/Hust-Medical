@@ -231,6 +231,7 @@ namespace Patient_Health_Management_System.Services
 
                         //Save
                         workbook.SaveToStream(stream);
+                        workbook.Dispose();
                         return stream.ToArray();
                     }
                 }

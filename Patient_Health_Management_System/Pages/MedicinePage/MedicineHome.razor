@@ -1,9 +1,11 @@
 ﻿@page "/medicine"
-@attribute [Authorize(Roles = "Doctor, Admin")]
+@attribute [Authorize(Roles = "Warehouse Manager, Admin")]
 @inject NavigationManager NavigationManager
 @inject IMedicineService MedicineService
 @inject IDialogService DialogService
 @layout MainLayout
+
+<PageTitle>Quản lý kho thuốc</PageTitle>
 
 <AuthorizeView Context="contextAuthorize">
     <NotAuthorized>

@@ -2,11 +2,13 @@
 @attribute [Authorize(Roles = "Cashier, Admin")]
 @using Append.Blazor.Printing
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IBillingService BillingService
 @inject IPatientService PatientService
 @inject IDialogService DialogService
 @inject IPrintingService PrintingService
-@inject NavigationManager NavigationManager
+
+<PageTitle>Quản lý hóa đơn</PageTitle>
 
 <AuthorizeView Context="contextAuthorize">
     <NotAuthorized>
@@ -124,8 +126,12 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        userId = authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-        .SingleOrDefault().Value;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims
+            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+            .SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
     }
 }

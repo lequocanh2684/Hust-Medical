@@ -13,7 +13,7 @@
         <MudTextField Value="@User.Address" Label="Địa chỉ" ReadOnly="true" />
         <MudTextField Value="@User.PhoneNumber" Label="Số điện thoại" ReadOnly="true" />
         <MudTextField Value="@User.Role" Label="Chức vụ" ReadOnly="true" />
-        @if (!String.IsNullOrEmpty(User.Specialist))
+        @if (User.Role.Equals("Bác sĩ"))
         {
             <MudTextField Value="@User.Specialist" Label="Chuyên khoa" ReadOnly="true" />
         }

@@ -1,72 +1,82 @@
 ﻿@page "/user_management"
-@attribute [Authorize(Roles = "Admin, Doctor")]
+@attribute [Authorize(Roles = "Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @inject IUserService UserService
 
-<div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
-    <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
-        <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
+<PageTitle>Quản lý người dùng</PageTitle>
 
-        <MudDataGrid T="User" MultiSelection="true" Items="@users" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
-                     FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
-                     Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
-            <ToolBarContent>
-                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowUserCreate()">Thêm người dùng mới</MudButton>
-                <MudSpacer />
-                <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm người dùng" Adornment="Adornment.Start" Immediate="true"
-                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-            <Columns>
-                <SelectColumn T="Medicine" />
-                <PropertyColumn Property="m => m.UserId" Title="Mã người dùng" Sortable="false" Filterable="false" />
-                <PropertyColumn Property="m => m.Name" Title="Tên người dùng" />
-                <PropertyColumn Property="m => m.Role" Title="Chức vụ" />
-                <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
-                    <CellTemplate>
-                        <MudMenu AnchorOrigin="Origin.BottomLeft">
-                            <ActivatorContent>
-                                <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
-                            </ActivatorContent>
-							<ChildContent>
-								<MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
-											 OnClick="() => ShowUserDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
-                                <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
-                                             OnClick="() => ShowUserUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
-                                <MudDivider />
-                                <MudMenuItem OnClick="() => ShowChangePassword(context.Item.UserId)">Đổi mật khẩu</MudMenuItem>
-                                <MudMenuItem OnClick="() => ShowChangeEmail(context.Item.UserId)">Đổi email</MudMenuItem>
-                                <MudDivider />
-                                <MudMenuItem  Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
-                                           OnClick="() => ShowUserDelete(context.Item.UserId, context.Item.Name)">Xóa người dùng</MudMenuItem>
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
+
+                <MudDataGrid T="User" MultiSelection="true" Items="@users" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                    <ToolBarContent>
+                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowUserCreate()">Thêm người dùng mới</MudButton>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm người dùng" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <SelectColumn T="Medicine" />
+                        <PropertyColumn Property="m => m.UserId" Title="Mã người dùng" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="m => m.Name" Title="Tên người dùng" />
+                        <PropertyColumn Property="m => m.Role" Title="Chức vụ" />
+                        <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
+                            <CellTemplate>
+                                <MudMenu AnchorOrigin="Origin.BottomLeft">
+                                    <ActivatorContent>
+                                        <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
+                                    </ActivatorContent>
+							        <ChildContent>
+								        <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+											         OnClick="() => ShowUserDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                                     OnClick="() => ShowUserUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem OnClick="() => ShowChangePassword(context.Item.UserId)">Đổi mật khẩu</MudMenuItem>
+                                        <MudMenuItem OnClick="() => ShowChangeEmail(context.Item.UserId)">Đổi email</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem  Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                                   OnClick="() => ShowUserDelete(context.Item.UserId, context.Item.Name)">Xóa người dùng</MudMenuItem>
                                 
-							</ChildContent>
-						</MudMenu>
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
-            <NoRecordsContent>
-                <MudText>Không tìm thấy dữ liệu</MudText>
-            </NoRecordsContent>
+							        </ChildContent>
+						        </MudMenu>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
 
-            <LoadingContent>
-                <MudText>Loading...</MudText>
-            </LoadingContent>
-            <PagerContent>
-                <MudDataGridPager T="User" />
-            </PagerContent>
-        </MudDataGrid>
-    </div>
-</div>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudDataGridPager T="User" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private IEnumerable<User> users = new List<User>();
 
-    private string adminId = new string("");
+    private string adminId = string.Empty;
 
-    private string searchS = new string("");
+    private string searchS = string.Empty;
 
-    private string? accessToken = new string("");
+    private string? accessToken = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -134,8 +144,12 @@
     private async Task GetAdminId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        adminId = authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-        .SingleOrDefault().Value;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            adminId = authState.User.Claims
+            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+            .SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
     }
 }

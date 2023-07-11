@@ -2,11 +2,12 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ProtectedLocalStorage ProtectedLocalStorage
+@inject NavigationManager NavigationManager
 @inject IUserService UserService
 @inject IDialogService DialogService
 @layout MainLayout
 
-
+<PageTitle>Quản lí tài khoản</PageTitle>
 
 <div style="height:30rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
             <div style="padding-top:1rem; margin:0px 20px; width:96.7%">
@@ -17,7 +18,10 @@
     <MudTextField Label="Địa chỉ" Value="@user.Address" ReadOnly="true"></MudTextField>
     <MudTextField Label="Giới tính" Value="@user.Gender" ReadOnly="true"></MudTextField>
     <MudTextField Label="Chức danh" Value="@user.Role" ReadOnly="true"></MudTextField>
-    <MudTextField Label="Chuyên khoa" Value="@user.Specialist" ReadOnly="true"></MudTextField>
+    @if(user.Role is "Doctor")
+    {
+        <MudTextField Label="Chuyên khoa" Value="@user.Specialist" ReadOnly="true"></MudTextField>
+    }
     <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa thông tin cá nhân</MudButton>  
 </div>
 </div>
@@ -44,8 +48,12 @@
     private async Task GetUserId()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        userId = authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-        .SingleOrDefault().Value;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims
+            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+            .SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
     }
 }

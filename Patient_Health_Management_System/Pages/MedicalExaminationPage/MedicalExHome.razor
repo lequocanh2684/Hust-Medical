@@ -8,12 +8,13 @@
 @inject NavigationManager NavigationManager
 @layout MainLayout
 
+<PageTitle>Quản lý đơn khám</PageTitle>
+
 <AuthorizeView Context="contextAuthorize">
     <NotAuthorized>
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-
         <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
             <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
                 <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>

@@ -1,64 +1,74 @@
 ﻿@page "/home"
+@attribute [Authorize(Roles = "Doctor, Admin")]
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedLocalStorage ProtectedLocalStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IAccountService AccountService
 @inject IUserService UserService
 
 <PageTitle>Trang chủ</PageTitle>
 
-<div style="display:flex; flex-direction:row">
-    <div style="display:flex; flex-direction:column; width:70%">
-        <div style="display:flex; flex-direction:column; height:100%">
-        <MudImage Src="./assets/imgs/Stethoscope.jpg" Fluid="false" ObjectPosition="ObjectPosition.Right" ObjectFit="ObjectFit.Fill" 
-        Style="background-color:#FAFAFA; border-radius:24px; width:60%; height:50%; position:absolute" />
-        <MudText Typo="Typo.h5" Style="position: relative; top: 80px; left: 50px; color: #FAF3FF;">@dayTime</MudText>
-        <MudText Typo="Typo.h2" Style="position: relative; top: 90px; left: 50px; color: #FAF3FF; font-weight:400">@userName</MudText>
-        <MudText Typo="Typo.h6" Style="position: relative; top: 210px; left: 50px; color: #FAF3FF;">Quote trong ngày</MudText>
-        <MudText Typo="Typo.body1" Style="position: relative; top: 220px; left: 50px; width: 45%; color: #FAF3FF;">One positive command he gave us: You shall love and honor your emperor. In every congregation a prayer must be said for the czar's health, or the chief of police would close the synagogue.</MudText>
-		</div>
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+        <div style="display:flex; flex-direction:row">
+            <div style="display:flex; flex-direction:column; width:70%">
+                <div style="display:flex; flex-direction:column; height:100%">
+                <MudImage Src="./assets/imgs/Stethoscope.jpg" Fluid="false" ObjectPosition="ObjectPosition.Right" ObjectFit="ObjectFit.Fill" 
+                Style="background-color:#FAFAFA; border-radius:24px; width:60%; height:50%; position:absolute" />
+                <MudText Typo="Typo.h5" Style="position: relative; top: 80px; left: 50px; color: #FAF3FF;">@dayTime</MudText>
+                <MudText Typo="Typo.h2" Style="position: relative; top: 90px; left: 50px; color: #FAF3FF; font-weight:400">@userName</MudText>
+                <MudText Typo="Typo.h6" Style="position: relative; top: 210px; left: 50px; color: #FAF3FF;">Quote trong ngày</MudText>
+                <MudText Typo="Typo.body1" Style="position: relative; top: 220px; left: 50px; width: 45%; color: #FAF3FF;">One positive command he gave us: You shall love and honor your emperor. In every congregation a prayer must be said for the czar's health, or the chief of police would close the synagogue.</MudText>
+		        </div>
 
-        <div style="display:flex; background-color:#FAFAFA; border-radius:20px;">
-            <div style="display:flex; flex:1; flex-direction:row; justify-content:space-evenly; padding:16px 20px; width:20%">
-                <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
-                          InputData="@data1" InputLabels="@labels1">
-                    <CustomGraphics>
-                        <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
-                        <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
-                    </CustomGraphics>
-                </MudChart>
-                <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
-                          InputData="@data" InputLabels="@labels">
-                    <CustomGraphics>
-                        <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
-                        <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
-                    </CustomGraphics>
-                </MudChart>
+                <div style="display:flex; background-color:#FAFAFA; border-radius:20px;">
+                    <div style="display:flex; flex:1; flex-direction:row; justify-content:space-evenly; padding:16px 20px; width:20%">
+                        <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
+                                  InputData="@data1" InputLabels="@labels1">
+                            <CustomGraphics>
+                                <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
+                                <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+                            </CustomGraphics>
+                        </MudChart>
+                        <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
+                                  InputData="@data" InputLabels="@labels">
+                            <CustomGraphics>
+                                <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
+                                <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+                            </CustomGraphics>
+                        </MudChart>
+                    </div>
+                </div>
+            </div>
+	        <div style="display:flex; height:52rem; background-color:#FAFAFA; border-radius:20px; margin-left:40px; width:22%">
+                    <div style="display:flex; flex:1; flex-direction:column; padding:14px 20px; justify-content:space-evenly">
+			        <MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today)" />
+                    <MudPaper Elevation="0" Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:space-between; height:45%; border-radius:24px; overflow:auto">
+                        @*<MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>*@
+                        <MudStack>
+                            @for(int i = 0; i<10; i++){
+                                <MudPaper Elevation="0" Class="pa-4" style="@($"border-left: solid 8px {GenerateRandomColor()} ; margin: 14px 20px")">
+                                    <MudStack Row="true">  
+                                        <MudStack Justify="Justify.Center" Spacing="0">
+                                            <MudText Style="font-weight:bold" Typo="Typo.body2">9:30</MudText>
+                                            <MudText Style="font-weight:bold" Typo="Typo.body1">khám cho bệnh nhân abc</MudText>
+                                            <MudText Typo="Typo.body2">Bác sĩ Nguyễn Văn A</MudText>
+                                        </MudStack>
+							        </MudStack>
+					        </MudPaper>
+                            }
+			            </MudStack>
+                    </MudPaper>
+                    </div>
             </div>
         </div>
-    </div>
-	<div style="display:flex; height:52rem; background-color:#FAFAFA; border-radius:20px; margin-left:40px; width:22%">
-            <div style="display:flex; flex:1; flex-direction:column; padding:14px 20px; justify-content:space-evenly">
-			<MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today)" />
-            <MudPaper Elevation="0" Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:space-between; height:45%; border-radius:24px; overflow:auto">
-                @*<MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>*@
-                <MudStack>
-                    @for(int i = 0; i<10; i++){
-                        <MudPaper Elevation="0" Class="pa-4" style="@($"border-left: solid 8px {GenerateRandomColor()} ; margin: 14px 20px")">
-                            <MudStack Row="true">  
-                                <MudStack Justify="Justify.Center" Spacing="0">
-                                    <MudText Style="font-weight:bold" Typo="Typo.body2">9:30</MudText>
-                                    <MudText Style="font-weight:bold" Typo="Typo.body1">khám cho bệnh nhân abc</MudText>
-                                    <MudText Typo="Typo.body2">Bác sĩ Nguyễn Văn A</MudText>
-                                </MudStack>
-							</MudStack>
-					</MudPaper>
-                    }
-			    </MudStack>
-            </MudPaper>
-            </div>
-    </div>
-</div>
+    </Authorized>
+</AuthorizeView>
+
 @code{
     private string dayTime = string.Empty;
 
@@ -102,16 +112,20 @@
     private async Task GetUserName()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var userId = authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-        .SingleOrDefault().Value;
-        userName = await UserService.GetUserNameByUserId(userId);
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var userId = authState.User.Claims
+            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+            .SingleOrDefault().Value;
+            userName = await UserService.GetUserNameByUserId(userId);
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+        
     }
 
     private string GenerateRandomColor()
     {
-        Random random = new Random();
-		return String.Format("#{0:X6}", random.Next(0x1000000));
+		return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
     }
 
     //example Chart
