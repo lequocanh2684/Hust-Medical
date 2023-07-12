@@ -35,14 +35,24 @@
                         <PropertyColumn Property="pr => pr.Note" Title="Ghi chú" />
                         <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                             <CellTemplate>
-                                <MudStack Row>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                                   OnClick="(e) => UpdatePrescription(context.Item.Id)" />
-                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDelete(context.Item.Id)" />
-                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDetail(context.Item.Id)" />
-                                </MudStack>
+                                <MudMenu AnchorOrigin="Origin.BottomLeft">
+                                    <ActivatorContent>
+                                        <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
+                                    </ActivatorContent>
+                                    <ChildContent>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDetail(context.Item.Id)">Thông tin chi tiết</MudMenuItem>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                                     OnClick="(e) => UpdatePrescription(context.Item.Id)">Chỉnh sửa thông tin</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Print" IconColor="Color.Info" IconSize="Size.Medium" 
+                                                     OnClick="(e) => ShowPrint(context.Item)">In đơn thuốc</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDelete(context.Item.Id)">Xóa đơn thuốc</MudMenuItem>
+
+                                    </ChildContent>
+                                </MudMenu>
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>
@@ -98,6 +108,14 @@
         var dialog = DialogService.Show<PresDeletePopUp>("Xóa đơn thuốc", parameter);
         var result = await dialog.Result;
         await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowPrint(Prescription prescription)
+    {
+        var parameter = new DialogParameters { ["Prescription"] = prescription };
+        var dialog = DialogService.Show<PrescriptionPrint>("In đơn thuốc", parameter, new DialogOptions() { FullScreen = true, CloseButton = true });
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 
     private bool FilterS(Domain.Models.Prescription prescription) => FilterSearch(prescription, searchS);

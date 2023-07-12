@@ -1,17 +1,26 @@
 ﻿@inject NavigationManager NavigationManager
+@inject IMedicineService MedicineService
+@inject IDiseaseRepo DiseaseRepo
 
-<div style="display:flex; width:97%; padding:20px 0px">
-	<MudInput @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium" 
-	Placeholder="Tìm kiếm..." DisableUnderLine="true" />
+<div style="display:flex; width:97%; padding:16px 0px">
+	<MudAutocomplete @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium"
+					 Placeholder="Tìm kiếm..." DisableUnderLine="true" SearchFunc="@Search" ResetValueOnEmptyText="true"/>
 	<MudSpacer />
 	<MudAvatar Class="hovicon effect-9 sub-b" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
-	onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>
+	@onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>
 	<MudText Style="display:flex; align-items:center; padding-left: 20px" Typo="Typo.body1">@UserName</MudText>
 </div>
 
 @code {
-	private string search = new string("");
+	private string search = string.Empty;
 
 	[Parameter]
 	public string UserName { get; set; }
+
+	private async Task<IEnumerable<string>> Search(string value)
+	{
+		var medicines =  await MedicineService.GetMedicineByKeyword(value);
+		var diseases = await DiseaseRepo.GetDiseasesByName(value);
+		return medicines.Select(m => m.Name).Union(diseases.Select(d => d.Name));
+	}
 }

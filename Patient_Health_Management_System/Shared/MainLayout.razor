@@ -9,12 +9,14 @@
 
 <div style="margin-left:280px;">
 	<TopBar UserName="@userName"/>
+</div>
+<div style="margin-left:280px;">
 	@Body
 </div>
 
 @code {
 
-	private string userName = new string("");
+	private static string userName = string.Empty;
 
 	protected override async Task OnInitializedAsync()
 	{
