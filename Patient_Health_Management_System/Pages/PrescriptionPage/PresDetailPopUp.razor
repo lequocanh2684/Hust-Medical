@@ -1,6 +1,7 @@
 @inject IPrescriptionService PrescriptionService
 @inject IMedicineService MedicineService
 @inject IPatientService PatientService
+@inject IUserService UserService
 
 <MudDialog>
     <TitleContent>
@@ -15,7 +16,8 @@
         <MudTextField Value="@patient.Name" Label="Họ tên bệnh nhân" ReadOnly="true" />
         <MudTextField Value="@prescription.Note" Label="Ghi chú" ReadOnly="true" />
         <MudTextField Value="@prescription.CreatedAt.ToLocalTime()" Label="Ngày tạo" ReadOnly="true" />
-
+        <MudTextField Value="@($"Bác sĩ {user.CreatedBy}")" Label="Người tạo" ReadOnly="true" />
+        <MudText Typo="Typo.body1" Style="font-weight:bold">Bảng kê thuốc</MudText>
         <MudDataGrid Items="@prescription.MedicinePrescribed">
             <Columns>
                 <PropertyColumn Property="m => m.Name" Title="Tên thuốc"/>
@@ -30,16 +32,19 @@
 @code {
     private Domain.Models.Prescription prescription = new Domain.Models.Prescription();
     private Patient patient = new Patient();
+    private User user = new User();
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
     public string Id { get; set; }
 
+
     protected override async Task OnInitializedAsync()
     {
         prescription = await PrescriptionService.GetPrescriptionById(Id);
         patient = await PatientService.GetPatientById(prescription.PatientId);
+        user = await UserService.GetUserByUserId(prescription.CreatedBy);
     }
 
     private void Cancel()

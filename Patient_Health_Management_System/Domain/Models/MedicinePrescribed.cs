@@ -13,5 +13,8 @@ namespace Patient_Health_Management_System.Domain.Models
 
         [BsonElement("selling_price")]
         public int SellingPrice { get; set; }
+
+        [BsonElement("how_to_use")]
+        public string HowToUse { get; set; }
     }
 }

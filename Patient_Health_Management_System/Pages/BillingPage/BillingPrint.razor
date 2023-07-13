@@ -16,19 +16,9 @@
 				<MudText Typo="Typo.body1" Style="text-align:center">@Bill.BillId</MudText>
 				<MudText Typo="Typo.caption" Style="text-align:center;width:100%">@(Bill.CreatedAt.ToLocalTime().ToString("dd-MM-yyyy hh:mm tt"))</MudText>
 			</div>
-			<div style="display: flex; padding-top:20px; padding-bottom:30px">
-				<MudGrid Spacing="3">
-					<MudItem>
-						<MudText Typo="Typo.body1" Style="text-align:center">Tên bệnh nhân: @patient.Name</MudText>
-					</MudItem>
-					<MudItem>
-						<MudText Typo="Typo.body1" Style="text-align:center">Số điện thoại: @patient.PhoneNumber</MudText>
-					</MudItem>
-					<MudItem>
-						<MudText Typo="Typo.body1" Style="text-align:center">Địa chỉ: @patient.Address</MudText>
-					</MudItem>
-				</MudGrid>
-			</div>
+				<MudText Typo="Typo.body1">Tên bệnh nhân: @patient.Name</MudText>
+				<MudText Typo="Typo.body1">Số điện thoại: @patient.PhoneNumber</MudText>
+				<MudText Typo="Typo.body1">Địa chỉ: @patient.Address</MudText>
 				<MudDataGrid Style="display:flex; width:700px" Elevation="0" Items="@prescription.MedicinePrescribed" ReadOnly="true">
 					<Columns>
 						<PropertyColumn Property="m => m.Name" Title="Tên thuốc" />

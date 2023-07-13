@@ -20,7 +20,7 @@
                 <MudSelectItem Value="@("Nữ")" />
             </MudSelect>
             <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" Required="true" RequiredError="Địa chỉ không được bỏ trống" />
-            <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" Required="true" RequiredError="Số điện thoại không được bỏ trống" />
+            <MudNumericField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" HideSpinButtons="true" ReadOnly="false" Required="true" RequiredError="Số điện thoại không được bỏ trống" />
             <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" @bind-SelectedValues="roleIds">
                 @foreach (var role in roles)
                 {

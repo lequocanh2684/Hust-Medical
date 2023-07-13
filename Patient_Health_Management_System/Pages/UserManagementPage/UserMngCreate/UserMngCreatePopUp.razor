@@ -22,7 +22,7 @@
                 <MudSelectItem Value="@("Nữ")" />
             </MudSelect>
             <MudTextField @bind-Value="@userForm.Address" Label="Địa chỉ" ReadOnly="false" Required="true" RequiredError="Địa chỉ không được bỏ trống" />
-            <MudTextField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" Required="true" RequiredError="Số điện thoại không được bỏ trống" />
+            <MudNumericField @bind-Value="@userForm.PhoneNumber" Label="Số điện thoại" HideSpinButtons="true" ReadOnly="false" Required="true" RequiredError="Số điện thoại không được bỏ trống" />
             <MudSelect T="string" Label="Vai trò" AnchorOrigin="Origin.BottomCenter" @bind-SelectedValues="roleIds">
                 @foreach (var role in roles)
                 {
@@ -78,10 +78,18 @@
         userForm.Email = accountForm.Email;
         userForm.Role = roles.Where(r => r.Id.Equals(roleIds.FirstOrDefault())).Select(r => r.Description).FirstOrDefault();
         accountForm.Connection = "Username-Password-Authentication";
-        await AccountService.CreateUser(accessToken, accountForm);
-        var newUser = await AccountService.GetUserByEmail(accessToken, accountForm.Email);
-        userForm.UserId = newUser.ToList().FirstOrDefault().UserId;
-        await AssignRoleToNewUser();
+        var createNewAuth0Account = await AccountService.CreateUser(accessToken, accountForm);
+
+        if (createNewAuth0Account.IsSuccessful)
+        {
+            var newUser = await AccountService.GetUserByEmail(accessToken, accountForm.Email);
+            if (newUser.Any())
+            {
+                userForm.UserId = newUser.ToList().FirstOrDefault().UserId;
+                await AssignRoleToNewUser();
+            }
+            else throw new Exception("failed to get new user email from Auth0 Management Portal");
+        }
     }
 
     private async Task<string> GetAccessToken()

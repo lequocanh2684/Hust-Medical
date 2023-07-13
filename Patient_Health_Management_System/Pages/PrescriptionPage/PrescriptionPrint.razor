@@ -16,35 +16,23 @@
 			<div style="display: flex; text-align: center; flex-direction: column; flex-wrap: wrap; padding-top:10px">
 				<h3>ĐƠN THUỐC</h3>
 				<MudText Typo="Typo.body1" Style="text-align:center">@Prescription.PrescriptionId</MudText>
-				</div>
-				<div style="display: flex; padding-top:20px; padding-bottom:30px">
-					<MudGrid Spacing="2">
-						<MudItem>
-							<MudText Typo="Typo.body1" Style="text-align:center">Tên bệnh nhân: @patient.Name</MudText>
-						</MudItem>
-						<MudItem>
-							<MudText Typo="Typo.body1" Style="text-align:center">Số điện thoại: @patient.PhoneNumber</MudText>
-						</MudItem>
-					</MudGrid>
-					<MudGrid Spacing="2">
-						<MudItem>
-							<MudText Typo="Typo.body1" Style="text-align:center">Địa chỉ: @patient.Address</MudText>
-						</MudItem>
-						<MudItem>
-							<MudText Typo="Typo.body1" Style="text-align:center">Chẩn đoán: @medicalExamination.DiseaseName</MudText>
-						</MudItem>
-					</MudGrid>
-				</div>
+			</div>
+				<MudText Typo="Typo.body1">Tên bệnh nhân: @patient.Name</MudText>
+				<MudText Typo="Typo.body1">Số điện thoại: @patient.PhoneNumber</MudText>
+				<MudText Typo="Typo.body1">Địa chỉ: @patient.Address</MudText>
+				<MudText Typo="Typo.body1">Chẩn đoán: @medicalExamination.DiseaseName</MudText>
 				<MudDataGrid Style="display:flex; width:700px" Elevation="0" Items="@Prescription.MedicinePrescribed" ReadOnly="true">
 					<Columns>
 						<PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
 						<PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
-						<PropertyColumn Property="m => GetMedicineHowToUse(m.MedicineId)" Title="Cách dùng" />
+						<PropertyColumn Property="m => m.HowToUse" Title="Cách dùng" />
 					</Columns>
 				</MudDataGrid>
 				<MudText Style="padding-top:20px" Typo="Typo.body1">Ghi chú: @Prescription.Note </MudText>
 				<div style="display: flex; justify-content:end; padding-top:40px">
-					<MudText Style="width:300px" Typo="Typo.body1">@(Prescription.CreatedAt.ToLocalTime().ToString($"Ngày dd Tháng M Năm yyyy"))</MudText>
+					<MudText Style="width:300px" Typo="Typo.body1">Ngày @customCreatedAt.Day Tháng @customCreatedAt.Month Năm @customCreatedAt.Year</MudText>
+				</div>
+				<div style="display: flex; justify-content:end; padding-top:5px">
 					<MudText Style="width:300px" Typo="Typo.body1">Bác sĩ khám bệnh</MudText>
 				</div>
 				<div style="display: flex; justify-content:end; padding-top:5px">
@@ -69,15 +57,12 @@
 
 	private MedicalExamination medicalExamination = new MedicalExamination();
 
+	private DateTime customCreatedAt = new DateTime();
+
 	protected override async Task OnInitializedAsync()
 	{
+		customCreatedAt = Prescription.CreatedAt.ToLocalTime();
 		patient = await PatientService.GetPatientById(Prescription.PatientId);
 		medicalExamination = await MedicalExaminationService.GetMedicalExaminationById(Prescription.MedicalExaminationId);
-	}
-
-	private async Task<string> GetMedicineHowToUse(string id)
-	{
-		var medicine = await MedicineService.GetMedicineById(id);
-		return medicine.HowToUse;
 	}
 }

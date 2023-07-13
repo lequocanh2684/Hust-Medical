@@ -1,3 +1,5 @@
+using RestSharp;
+
 namespace Patient_Health_Management_System.Services.Interfaces
 {
     public interface IAccountService
@@ -8,11 +10,11 @@ namespace Patient_Health_Management_System.Services.Interfaces
 
         Task<IEnumerable<UserResponse>> GetUserByEmail(string accessToken, string email);
 
-		Task<IEnumerable<Role>> GetRoles(string access_token);
+        Task<IEnumerable<Role>> GetRoles(string access_token);
 
         Task AssignRolesToUserByUserId(string id, string access_token, IEnumerable<string> roleIds);
 
-        Task CreateUser(string access_token, AccountForm accountForm);
+        Task<RestResponse> CreateUser(string access_token, AccountForm accountForm);
 
         Task UpdateUserById(string id, string access_token, AccountForm accountForm);
 

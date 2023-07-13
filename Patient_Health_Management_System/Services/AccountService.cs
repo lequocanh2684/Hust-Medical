@@ -97,7 +97,7 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
-        public async Task CreateUser(string access_token, AccountForm accountForm)
+        public async Task<RestResponse> CreateUser(string access_token, AccountForm accountForm)
         {
             try
             {
@@ -107,7 +107,8 @@ namespace Patient_Health_Management_System.Services
                 request.AddHeader("authorization", $"Bearer {access_token}");
                 var body = JsonSerializer.Serialize(accountForm);
                 request.AddJsonBody(body);
-                await client.PostAsync(request);
+                var result = await client.PostAsync(request);
+                return result;
             }
             catch (Exception ex)
             {
