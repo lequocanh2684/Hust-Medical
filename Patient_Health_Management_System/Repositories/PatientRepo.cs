@@ -71,5 +71,19 @@ namespace Patient_Health_Management_System.Repositories
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<long> GetNumberPatientsByCreatedDay(DateTime date)
+        {
+            try
+            {
+                var filter = Builders<Patient>.Filter;
+                var filterDate = filter.Gte(p => p.CreatedAt, date.Date) & filter.Lt(p => p.CreatedAt, date.Date.AddDays(1));
+                return await _patient.Find(filterDate).CountDocumentsAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

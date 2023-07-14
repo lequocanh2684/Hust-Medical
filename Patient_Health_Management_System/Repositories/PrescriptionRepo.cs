@@ -108,5 +108,20 @@
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<List<MedicinePrescribed>> GetRevenueMedicinePrescribedByCreatedDay(DateTime date)
+        {
+            try
+            {
+                var filter = Builders<Prescription>.Filter;
+                var filterDate = filter.Gte(prescription => prescription.CreatedAt, date.Date) & filter.Lt(prescription => prescription.CreatedAt, date.Date.AddDays(1));
+                var listMedicinePrescribed = await _prescriptions.Find(filterDate).ToListAsync();
+                return listMedicinePrescribed.SelectMany(prescription => prescription.MedicinePrescribed).ToList();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

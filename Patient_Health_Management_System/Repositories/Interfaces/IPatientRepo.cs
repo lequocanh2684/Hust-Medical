@@ -7,5 +7,6 @@
         Task<string> GetLastPatientId();
         Task CreatePatient(Patient patient);
         Task ModifyPatientById(Patient patient);
+        Task<long> GetNumberPatientsByCreatedDay(DateTime date);
     }
 }

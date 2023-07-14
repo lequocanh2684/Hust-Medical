@@ -10,5 +10,6 @@
         Task<Prescription> CreatePrescription(PrescriptionForm prescriptionForm, string userId);
         Task UpdatePrescriptionById(string id, PrescriptionForm prescriptionForm, string userId);
         Task DeletePrescriptionById(string id, string userId);
+        Task<int> GetRevenueMedicinePrescribedByCreatedDay(DateTime date);
     }
 }
