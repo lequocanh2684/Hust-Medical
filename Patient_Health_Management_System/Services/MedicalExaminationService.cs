@@ -114,6 +114,18 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
+        public async Task<List<MedicalExamination>> GetMedicalExaminationsByDoctorId(string doctorId)
+        {
+            try
+            {
+                return await _medicalExaminationRepo.GetMedicalExaminationsByDoctorId(doctorId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         /*Deprecated*/
         //private void ValidateMedicalExamForm(MedicalExaminationForm medicalExaminationForm)
         //{

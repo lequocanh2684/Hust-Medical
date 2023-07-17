@@ -3,6 +3,8 @@
 @inject NavigationManager NavigationManager
 @layout LoginLayout
 
+<PageTitle>Đăng nhập</PageTitle>
+
 <div class="d-flex justify-center align-center flex-column" style="height:100vh; --tw-bg-opacity:1; background-color:rgba(247,247,248,var(--tw-bg-opacity))">
 	<div class="d-flex flex-column align-center justify-center" style="flex: 1 1 auto; width:24rem">
 		<div style="margin-bottom:1.25rem">
@@ -24,14 +26,14 @@
 	</div>
 </div>
 
-@code {
+@code  {
 
 	protected override async Task OnInitializedAsync()
 	{
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		if(authState.User.Identity.IsAuthenticated)
 		{
-			NavigationManager.NavigateTo("/home");
+			NavigationManager.NavigateTo("/");
 		}
 	}
 }

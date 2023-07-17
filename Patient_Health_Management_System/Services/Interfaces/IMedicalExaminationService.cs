@@ -7,5 +7,6 @@ namespace Patient_Health_Management_System.Services
         Task<MedicalExamination> CreateMedicalExamination(MedicalExaminationForm medicalExaminationForm, string userId);
         Task UpdateMedicalExaminationById(string id, MedicalExaminationForm medicalExaminationForm, string userId);
         Task DeleteMedicalExaminationById(string id, string userId);
+        Task<List<MedicalExamination>> GetMedicalExaminationsByDoctorId(string doctorId);
     }
 }

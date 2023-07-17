@@ -11,5 +11,6 @@
         Task<Prescription> CreatePrescription(Prescription prescription);
         Task ModifyPrescriptionById(Prescription prescription);
         Task<List<MedicinePrescribed>> GetRevenueMedicinePrescribedByCreatedDay(DateTime date);
+        Task<List<Prescription>> GetPrescriptionsByDoctorId(string doctorId);
     }
 }

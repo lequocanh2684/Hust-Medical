@@ -123,5 +123,19 @@
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<List<Prescription>> GetPrescriptionsByDoctorId(string doctorId)
+        {
+            try
+            {
+                var filter = Builders<Prescription>.Filter;
+                var filterDoctorId = filter.Eq(p => p.CreatedBy, doctorId) & filter.Eq(p => p.IsDeleted, false);
+                return await _prescriptions.Find(filterDoctorId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

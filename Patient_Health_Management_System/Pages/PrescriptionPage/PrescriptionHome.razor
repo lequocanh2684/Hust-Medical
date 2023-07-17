@@ -1,11 +1,10 @@
 ﻿@page "/prescription"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IPrescriptionService PrescriptionService
 @inject IPatientService PatientService
 @inject IDialogService DialogService
-@inject NavigationManager NavigationManager
-
 
 <PageTitle>Quản lý đơn thuốc</PageTitle>
 
@@ -76,13 +75,27 @@
 @code {
     private IEnumerable<Prescription> prescriptions = new List<Prescription>();
     private IEnumerable<Patient> patients = new List<Patient>();
-    private string searchS = "";
+    private string searchS = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
+    private string userId = string.Empty;
+    private string userRole = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        prescriptions = await PrescriptionService.GetPrescriptions();
-        patients = await PatientService.GetPatients();
+        var getUserClaim = await GetUserClaim();
+        if (getUserClaim.IsCompletedSuccessfully)
+        {
+            if (userRole.Equals("Admin"))
+            {
+                prescriptions = await PrescriptionService.GetPrescriptions();
+                patients = await PatientService.GetPatients();
+            }
+            else
+            {
+                prescriptions = await PrescriptionService.GetPrescriptionsByDoctorId(userId);
+                patients = await PatientService.GetPatientsByDoctorId(userId);
+            }
+        }
     }
 
     private async Task ShowDetail(string Id)
@@ -125,5 +138,17 @@
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
+    }
+
+    private async Task<Task> GetUserClaim()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+        return Task.CompletedTask;
     }
 }

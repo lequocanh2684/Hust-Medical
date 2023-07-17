@@ -85,5 +85,19 @@ namespace Patient_Health_Management_System.Repositories
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<List<Patient>> GetPatientsByDoctorId(string doctorId)
+        {
+            try
+            {
+                var filter = Builders<Patient>.Filter;
+                var filterDoctorId = filter.Eq(p => p.CreatedBy, doctorId) & filter.Eq(p => p.IsDeleted, false);
+                return await _patient.Find(filterDoctorId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

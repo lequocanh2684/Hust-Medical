@@ -8,5 +8,6 @@ namespace Patient_Health_Management_System.Services.Interfaces
         Task UpdatePatientById(string id, PatientForm patientForm, string userId);
         Task DeletePatientById(string id, string userId);
         Task<long> GetNumberPatientsByCreatedDay(DateTime date);
+        Task<List<Patient>> GetPatientsByDoctorId(string doctorId);
     }
 }

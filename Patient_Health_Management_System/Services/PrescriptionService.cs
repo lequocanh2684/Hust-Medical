@@ -155,6 +155,18 @@
             }
         }
 
+        public async Task<List<Prescription>> GetPrescriptionsByDoctorId(string doctorId)
+        {
+            try
+            {
+                return await _presriptionRepo.GetPrescriptionsByDoctorId(doctorId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private async Task<string> AutoGenerateNewPrescriptionId()
         {
             try

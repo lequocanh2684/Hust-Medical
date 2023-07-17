@@ -2,8 +2,7 @@
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicalExaminationService medicalExamService
-@inject IPatientService patientService
-@inject IDiseaseService diseaseService
+@inject IPatientService PatientService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
 @layout MainLayout
@@ -77,13 +76,27 @@
     private IEnumerable<MedicalExamination> medicalExaminations = new List<MedicalExamination>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private IEnumerable<Disease> diseases = new List<Disease>();
-    private string searchS = "";
+    private string searchS = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
+    private string userId = string.Empty;
+    private string userRole = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        medicalExaminations = await medicalExamService.GetMedicalExaminations();
-        patients = await patientService.GetPatients();
+        var getUserClaim = await GetUserClaim();
+        if (getUserClaim.IsCompletedSuccessfully)
+        {
+            if (userRole.Equals("Admin"))
+            {
+                medicalExaminations = await medicalExamService.GetMedicalExaminations();
+                patients = await PatientService.GetPatients();
+            }
+            else
+            {
+                medicalExaminations = await medicalExamService.GetMedicalExaminationsByDoctorId(userId);
+                patients = await PatientService.GetPatientsByDoctorId(userId);
+            }
+        }
     }
 
     private async Task ShowDetail(string id, MedicalExamination medicalExamination)
@@ -129,5 +142,17 @@
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (medicalExam.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
+    }
+
+    private async Task<Task> GetUserClaim()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+        return Task.CompletedTask;
     }
 }
