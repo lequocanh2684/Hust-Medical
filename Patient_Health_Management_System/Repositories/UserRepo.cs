@@ -1,4 +1,6 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿using Patient_Health_Management_System.Domain.Models;
+
+namespace Patient_Health_Management_System.Repositories
 {
     public class UserRepo : IUserRepo
     {
@@ -33,6 +35,17 @@
         public async Task ModifyUserByUserId(User User)
         {
             await _user.ReplaceOneAsync(u => u.Id == User.Id, User);
+        }
+        public async Task<long> GetNumberUsers()
+        {
+            try
+            {
+                return await _user.Find(u=> !u.IsDeleted).CountDocumentsAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
     }
 }

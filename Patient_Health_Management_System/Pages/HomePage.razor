@@ -5,6 +5,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject IAccountService AccountService
+@inject IPatientService PatientService
+@inject IMedicalExaminationService MedicalExaminationService
 @inject IUserService UserService
 
 <PageTitle>Trang chủ</PageTitle>
@@ -16,7 +18,7 @@
     <Authorized>
         <div style="display:flex; flex-direction:row">
             <div style="display:flex; flex-direction:column; width:70%">
-                <div style="display:flex; flex-direction:column; height:100%">
+                <div style="display:flex; flex-direction:column; height:58%">
                 <MudImage Src="./assets/imgs/Stethoscope.jpg" Fluid="false" ObjectPosition="ObjectPosition.Right" ObjectFit="ObjectFit.Fill" 
                 Style="background-color:#FAFAFA; border-radius:24px; width:60%; height:50%; position:absolute" />
                 <MudText Typo="Typo.h5" Style="position: relative; top: 80px; left: 50px; color: #FAF3FF;">@dayTime</MudText>
@@ -25,9 +27,48 @@
                 <MudText Typo="Typo.body1" Style="position: relative; top: 220px; left: 50px; width: 45%; color: #FAF3FF;">One positive command he gave us: You shall love and honor your emperor. In every congregation a prayer must be said for the czar's health, or the chief of police would close the synagogue.</MudText>
 		        </div>
 
-                <div style="display:flex; background-color:#FAFAFA; border-radius:20px;">
-                    <div style="display:flex; flex:1; flex-direction:row; justify-content:space-evenly; padding:16px 20px; width:20%">
-                        <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
+                <AuthorizeView Roles="Admin">
+                <div style="display:flex; background-color:#FAFAFA; border-radius:20px; margin-top:14px">
+                    <div style="display:flex; padding:16px 20px; width:100%">
+                        <MudStack Spacing="4" Style="flex:1" Row="true">
+                            <MudPaper Style="display:flex; flex-direction:column; flex:1; border-radius:20px">
+                                <div style="display:flex; flex-direction:row">
+                                    <div style="padding:20px 20px">
+                                        <MudIcon Icon="fas fa-bed" Size="Size.Large" Color="Color.Primary" />
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; padding:12px 20px">
+									    <MudText Typo="Typo.body2">Tổng số bệnh nhân</MudText>
+									    <MudText Typo="Typo.h6">@numberOfPatients</MudText>
+                                    </div>
+                                </div>
+                                <MudLink Href="/patient" Color="Color.Primary" Style="padding:20px 20px">Xem chi tiết -></MudLink>
+                            </MudPaper>
+                            <MudPaper Style="display:flex; flex-direction:column; flex:1; border-radius:20px">
+                                <div style="display:flex; flex-direction:row">
+                                    <div style="padding:20px 20px">
+                                        <MudIcon Icon="fas fa-users" Size="Size.Large" Color="Color.Primary" />
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; padding:12px 20px">
+                                        <MudText Typo="Typo.body2">Tổng số nhân viên</MudText>
+                                        <MudText Typo="Typo.h6">@numberOfUsers</MudText>
+                                    </div>
+                                </div>
+                                <MudLink Href="/user_management" Color="Color.Primary" Style="padding:20px 20px">Xem chi tiết -></MudLink>
+                            </MudPaper>
+                            <MudPaper Style="display:flex; flex-direction:column; flex:1; border-radius:20px">
+                                <div style="display:flex; flex-direction:row">
+                                    <div style="padding:20px 20px">
+                                        <MudIcon Icon="fas fa-file-medical" Size="Size.Large" Color="Color.Primary" />
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; padding:12px 20px">
+                                        <MudText Typo="Typo.body2">Tổng số đơn khám</MudText>
+                                        <MudText Typo="Typo.h6">@numberOfMedicalExaminations</MudText>
+                                    </div>
+                                </div>
+                                <MudLink Href="/medical_examination" Color="Color.Primary" Style="padding:20px 20px">Xem chi tiết -></MudLink>
+                            </MudPaper>
+                        </MudStack>
+                        @*<MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
                                   InputData="@data1" InputLabels="@labels1">
                             <CustomGraphics>
                                 <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
@@ -40,15 +81,16 @@
                                 <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
                                 <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
                             </CustomGraphics>
-                        </MudChart>
+                        </MudChart>*@
                     </div>
-                </div>
+                    </div>
+                </AuthorizeView>
             </div>
-	        <div style="display:flex; height:52rem; background-color:#FAFAFA; border-radius:20px; margin-left:40px; width:24%">
-                    <div style="display:flex; flex:1; flex-direction:column; padding:14px 20px; justify-content:space-evenly">
+	        <div style="display:flex; height:52rem; background-color:#FFFFFF; border-radius:20px; margin-left:40px; width:22%">
+                    <div style="display:flex; flex:1; flex-direction:column;">
 			        <MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today)" />
-                    <MudPaper Elevation="0" Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:space-between; height:45%; border-radius:24px; overflow:auto">
-                        @*<MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>*@
+                    @*<MudPaper Elevation="0" Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:space-between; height:45%; border-radius:24px; overflow:auto">
+                        <MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>
                         <MudStack>
                             @for(int i = 0; i<10; i++){
                                 <MudPaper Elevation="0" Class="pa-4" style="@($"border-left: solid 8px {GenerateRandomColor()} ; margin: 14px 20px")">
@@ -62,7 +104,8 @@
 					        </MudPaper>
                             }
 			            </MudStack>
-                    </MudPaper>
+                        <MudTimePicker PickerVariant="PickerVariant.Static" Time="@(DateTime.Now.TimeOfDay)" AmPm="true" />
+                    </MudPaper>*@
                     </div>
             </div>
         </div>
@@ -74,10 +117,30 @@
 
     private string userName = string.Empty;
 
+    private string userRole = string.Empty;
+
+    private long numberOfPatients = 0;
+    private long numberOfUsers = 0;
+    private long numberOfMedicalExaminations = 0;
+
     protected override async Task OnInitializedAsync()
     {
+        await GetUser();
         SetDayTime();
-        await GetUserName();
+        if (userRole.Equals("Admin"))
+        {
+            var autoRefreshUI = new Timer( _ =>
+            {
+                InvokeAsync(async () =>
+                {
+                    numberOfPatients = await PatientService.GetNumberPatients();
+                    numberOfUsers = await UserService.GetNumberUsers();
+                    numberOfMedicalExaminations = await MedicalExaminationService.GetNumberMedicalExaminations();
+                    StateHasChanged();
+                }
+                );
+            }, null, 0, 1000);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -109,29 +172,28 @@
         }
     }
 
-    private async Task GetUserName()
+    private async Task GetUser()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity.IsAuthenticated)
         {
-            var userId = authState.User.Claims
-            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-            .SingleOrDefault().Value;
+            var userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
             userName = await UserService.GetUserNameByUserId(userId);
+
         }
-        else NavigationManager.NavigateTo("/auth/login");
-        
+        else NavigationManager.NavigateTo("/auth/login"); 
     }
 
-    private string GenerateRandomColor()
-    {
-		return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
-    }
+    //private string GenerateRandomColor()
+    //{
+	    //return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
+    //}
 
     //example Chart
-    public static double[] data1 = { 20.0, 80.0 };
-    public string[] labels1 = { $"Đang điều trị ({data1[0]}%)", $"Đã xuất viện ({data1[1]}%)" };
+    //public static double[] data1 = { 20.0, 80.0 };
+    //public string[] labels1 = { $"Đang điều trị ({data1[0]}%)", $"Đã khỏi bệnh ({data1[1]}%)" };
 
-    public static double[] data = { 60.0, 40.0 };
-    public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
+    //public static double[] data = { 60.0, 40.0 };
+    //public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
 }

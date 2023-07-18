@@ -1,10 +1,11 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 <MudDrawer Open="true" Elevation="0" Variant="@DrawerVariant.Persistent" Color="Color.Transparent">
     <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; margin-top:10px">
         <div class="pl-5 pr-3">
             <MudDrawerHeader>
-                <MudLink Href="@homeUrl" Typo="Typo.h4" Underline="Underline.None">HustHosp</MudLink>
+                <MudLink Href="@homeUrl" Typo="Typo.h4" Underline="Underline.None">HustMec</MudLink>
             </MudDrawerHeader>
             <MudNavMenu>
                 <AuthorizeView Roles="@role">
@@ -38,7 +39,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        role = await GetUserRole();
+        await GetUserRole();
         DisplayNavMenu();
     }
 
@@ -47,12 +48,16 @@
         open = !open;
     }
 
-    private async Task<string> GetUserRole()
+    private async Task GetUserRole()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        return authState.User.Claims
-        .Where(c => c.Type.Equals(ClaimTypes.Role))
-        .SingleOrDefault().Value;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            role = authState.User.Claims
+            .Where(c => c.Type.Equals(ClaimTypes.Role))
+            .SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
     }
 
     private void DisplayHomeUrl()
@@ -98,7 +103,7 @@
                     ItemContent = "Quản lý đơn khám",
                     NavLinkItem = new MudNavLink()
                     {
-                        Href = "medicalExamination",
+                        Href = "medical_examination",
                         Icon = MudBlazor.Icons.Material.Filled.Sick,
                     }
                 });
@@ -145,6 +150,15 @@
                     {
                         Href = "user_management",
                         Icon = MudBlazor.Icons.Material.Filled.ManageAccounts,
+                    }
+                });
+            NavItem.Add(new NavItem()
+                {
+                    ItemContent = "Thống kê",
+                    NavLinkItem = new MudNavLink()
+                    {
+                        Href = "statistic",
+                        Icon = MudBlazor.Icons.Material.Filled.QueryStats,
                     }
                 });
         }

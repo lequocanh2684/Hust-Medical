@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IUserService UserService
 
 <MudThemeProvider/>
@@ -21,9 +22,13 @@
 	protected override async Task OnInitializedAsync()
 	{
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-		var userId = authState.User.Claims
-		.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-		.SingleOrDefault().Value;
-		userName = await UserService.GetUserNameByUserId(userId);
+		if (authState.User.Identity.IsAuthenticated)
+		{
+			var userId = authState.User.Claims
+			.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
+			.SingleOrDefault().Value;
+			userName = await UserService.GetUserNameByUserId(userId);
+		}
+		else NavigationManager.NavigateTo("/auth/login");
 	}
 }

@@ -1,3 +1,5 @@
+using Patient_Health_Management_System.Domain.Models;
+
 namespace Patient_Health_Management_System.Services
 {
     public class PatientService : IPatientService
@@ -113,6 +115,42 @@ namespace Patient_Health_Management_System.Services
                     patient.DeletedBy = userId;
                 }
                 await _patientRepo.ModifyPatientById(patient);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<long> GetNumberPatientsByCreatedDay(DateTime date)
+        {
+            try
+            {
+                return await _patientRepo.GetNumberPatientsByCreatedDay(date);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Patient>> GetPatientsByDoctorId(string doctorId)
+        {
+            try
+            {
+                return await _patientRepo.GetPatientsByDoctorId(doctorId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<long> GetNumberPatients()
+        {
+            try
+            {
+                return await _patientRepo.GetNumberPatients();
             }
             catch (Exception e)
             {

@@ -18,11 +18,11 @@
     <MudTextField Label="Địa chỉ" Value="@user.Address" ReadOnly="true"></MudTextField>
     <MudTextField Label="Giới tính" Value="@user.Gender" ReadOnly="true"></MudTextField>
     <MudTextField Label="Chức danh" Value="@user.Role" ReadOnly="true"></MudTextField>
-    @if(user.Role is "Doctor")
+    @if(user.Role is "Bác sĩ")
     {
         <MudTextField Label="Chuyên khoa" Value="@user.Specialist" ReadOnly="true"></MudTextField>
     }
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa thông tin cá nhân</MudButton>  
+    <MudButton Style="margin-top:20px" Variant="Variant.Filled" Color="Color.Primary" @onclick="() => ShowUpdate(user)">Chỉnh sửa thông tin cá nhân</MudButton>  
 </div>
 </div>
 

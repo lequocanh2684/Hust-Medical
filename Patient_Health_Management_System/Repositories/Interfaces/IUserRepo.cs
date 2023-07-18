@@ -11,5 +11,7 @@
 		Task<User> CreateUser(User user);
 
         Task ModifyUserByUserId(User user);
+
+        Task<long> GetNumberUsers();
     }
 }

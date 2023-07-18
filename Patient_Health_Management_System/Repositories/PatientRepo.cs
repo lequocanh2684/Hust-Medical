@@ -71,5 +71,45 @@ namespace Patient_Health_Management_System.Repositories
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<long> GetNumberPatientsByCreatedDay(DateTime date)
+        {
+            try
+            {
+                var filter = Builders<Patient>.Filter;
+                var filterDate = filter.Gte(p => p.CreatedAt, date.Date) & filter.Lt(p => p.CreatedAt, date.Date.AddDays(1));
+                return await _patient.Find(filterDate).CountDocumentsAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Patient>> GetPatientsByDoctorId(string doctorId)
+        {
+            try
+            {
+                var filter = Builders<Patient>.Filter;
+                var filterDoctorId = filter.Eq(p => p.CreatedBy, doctorId) & filter.Eq(p => p.IsDeleted, false);
+                return await _patient.Find(filterDoctorId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<long> GetNumberPatients()
+        {
+            try
+            {
+                return await _patient.Find(p => !p.IsDeleted).CountDocumentsAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

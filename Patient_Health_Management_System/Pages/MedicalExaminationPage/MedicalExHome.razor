@@ -1,12 +1,10 @@
-﻿@page "/medicalExamination"
+﻿@page "/medical_examination"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicalExaminationService medicalExamService
-@inject IPatientService patientService
-@inject IDiseaseService diseaseService
+@inject IPatientService PatientService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@layout MainLayout
 
 <PageTitle>Quản lý đơn khám</PageTitle>
 
@@ -17,7 +15,7 @@
     <Authorized>
         <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
             <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
-                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách đơn khám</MudText>
 
                 <MudDataGrid T="MedicalExamination" Items="@medicalExaminations" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
@@ -77,13 +75,27 @@
     private IEnumerable<MedicalExamination> medicalExaminations = new List<MedicalExamination>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private IEnumerable<Disease> diseases = new List<Disease>();
-    private string searchS = "";
+    private string searchS = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
+    private string userId = string.Empty;
+    private string userRole = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        medicalExaminations = await medicalExamService.GetMedicalExaminations();
-        patients = await patientService.GetPatients();
+        var getUserClaim = await GetUserClaim();
+        if (getUserClaim.IsCompletedSuccessfully)
+        {
+            if (userRole.Equals("Admin"))
+            {
+                medicalExaminations = await medicalExamService.GetMedicalExaminations();
+                patients = await PatientService.GetPatients();
+            }
+            else
+            {
+                medicalExaminations = await medicalExamService.GetMedicalExaminationsByDoctorId(userId);
+                patients = await PatientService.GetPatientsByDoctorId(userId);
+            }
+        }
     }
 
     private async Task ShowDetail(string id, MedicalExamination medicalExamination)
@@ -129,5 +141,17 @@
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (medicalExam.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
+    }
+
+    private async Task<Task> GetUserClaim()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+        return Task.CompletedTask;
     }
 }

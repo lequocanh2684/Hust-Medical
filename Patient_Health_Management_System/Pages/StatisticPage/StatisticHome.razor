@@ -1,0 +1,146 @@
+﻿@page "/statistic"
+@attribute [Authorize(Roles = "Admin")]
+@using System.Globalization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject IPatientService PatientService
+@inject IPrescriptionService PrescriptionService
+
+<PageTitle>Thống kê</PageTitle>
+
+<div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%; overflow:auto">
+    <div style="display:flex; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
+        <div style="display:flex">
+            <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin-left:10px">Biểu đồ số bệnh nhân theo ngày</MudText>
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@listPatientSeries" @bind-SelectedIndex="Index" XAxisLabels="@patientXAxisLabels" Width="100vh" Height="350px" ChartOptions="@patientChartOption"></MudChart>
+            <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column">
+                <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>
+				<div>
+                    <MudDatePicker @ref="pickerPatientChart" Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="defaultDatePatientChart">
+                        <PickerActions>
+                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(async () => await OnChangeDatePatientChart())">Ok</MudButton>
+                        </PickerActions>
+                    </MudDatePicker>
+                </div>
+            </div>
+		</div>
+        <MudDivider></MudDivider>
+        <div style="display:flex">
+            <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin-left:10px">Biểu đồ doanh thu</MudText>
+            <MudChart ChartType="ChartType.Bar" ChartSeries="@listRevenueSeries" @bind-SelectedIndex="Index" XAxisLabels="@revenueXAisLabels" Width="100vh" Height="350px" ChartOptions="@revenueChartOption"></MudChart>
+            <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column;">
+                <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>
+                <div>
+                    <MudDatePicker @ref="pickerRevenueChart" Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="defaultDateRevenueChart">
+                        <PickerActions>
+                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(async () => await OnChangeDateRevenueChart())">Ok</MudButton>
+                        </PickerActions>
+                    </MudDatePicker>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
+
+    //List of chart series
+    private List<ChartSeries> listPatientSeries = new List<ChartSeries>();
+    private List<ChartSeries> listRevenueSeries = new List<ChartSeries>();
+
+    //Patient chart
+    private ChartSeries patientSeries = new ChartSeries();
+    private ChartOptions patientChartOption = new ChartOptions();
+    private string[] patientXAxisLabels = new string[7];
+    private DateTime[] patientWeek = new DateTime[7];
+
+    //Revenue chart
+    private ChartSeries revenueSeries = new ChartSeries();
+    private ChartOptions revenueChartOption = new ChartOptions();
+    private string[] revenueXAisLabels = new string[7];
+    private DateTime[] revenueWeek = new DateTime[7];
+
+    //Default date
+    private DateTime? defaultDatePatientChart = DateTime.Today.AddDays(-6);
+    private DateTime? defaultDateRevenueChart = DateTime.Today.AddDays(-6);
+
+    //Picker
+    private MudDatePicker pickerPatientChart;
+    private MudDatePicker pickerRevenueChart;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var autoRefreshUI = new Timer( _ =>
+            {
+                InvokeAsync(async () =>
+                {
+                    await SetPatientChart();
+                    await SetRevenueChart();
+                    StateHasChanged();
+                });
+            }, null, 0, 1000);
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+    }
+
+    //Set value patient chart
+    private async Task SetPatientChart()
+    {
+        listPatientSeries.Clear();
+        patientWeek[0] = defaultDatePatientChart.Value.ToLocalTime();
+        patientXAxisLabels[0] = patientWeek[0].ToString("dd/MM/yyyy");
+        for (int i = 1; i < 7; i++)
+        {
+            patientWeek[i] = patientWeek[0].AddDays(i);
+            patientXAxisLabels[i] = patientWeek[i].ToString("dd/MM/yyyy");
+        }
+        patientSeries.Name = "Số bệnh nhân tới khám";
+        patientSeries.Data = new double[patientXAxisLabels.Length];
+        for (int i = 0; i < patientSeries.Data.Length; i++)
+        {
+            patientSeries.Data[i] = await PatientService.GetNumberPatientsByCreatedDay(patientWeek[i]);
+        }
+        patientChartOption.YAxisTicks = 1;
+        listPatientSeries.Add(patientSeries);
+    }
+
+    private async Task OnChangeDatePatientChart()
+    {
+        pickerPatientChart.Close();
+        await SetPatientChart();
+	}
+
+    //Set value revenue chart
+    private async Task SetRevenueChart()
+    {
+        listRevenueSeries.Clear();
+        revenueWeek[0] = defaultDateRevenueChart.Value.ToLocalTime();
+        revenueXAisLabels[0] = revenueWeek[0].ToString("dd/MM/yyyy");
+        for (int i = 1; i < 7; i++)
+        {
+            revenueWeek[i] = revenueWeek[0].AddDays(i);
+            revenueXAisLabels[i] = revenueWeek[i].ToString("dd/MM/yyyy");
+        }
+        revenueSeries.Name = "Doanh thu theo đơn thuốc";
+        revenueSeries.Data = new double[revenueXAisLabels.Length];
+        for (int i = 0; i < revenueSeries.Data.Length; i++)
+		{
+			revenueSeries.Data[i] = await PrescriptionService.GetRevenueMedicinePrescribedByCreatedDay(revenueWeek[i]);
+		}
+        revenueChartOption.YAxisTicks = 20000;
+		listRevenueSeries.Add(revenueSeries);
+        //listRevenueSeries.Add(
+        //new ChartSeries() { Name = "Doanh thu theo dịch vụ khám", Data = new double[] { 19000, 24000, 35000, 130000, 28000, 15000, 130000 } }
+        //);
+    }
+
+    private async Task OnChangeDateRevenueChart()
+    {
+        pickerRevenueChart.Close();
+        await SetRevenueChart();
+    }
+}

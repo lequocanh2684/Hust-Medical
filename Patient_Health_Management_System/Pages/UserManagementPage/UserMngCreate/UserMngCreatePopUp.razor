@@ -16,7 +16,8 @@
         <MudForm @bind-IsValid="@success">
             <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" Required="true" RequiredError="Họ và tên không được bỏ trống" />
             <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" Required="true" RequiredError="Email không được bỏ trống" />
-            <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Required="true" />
+            <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Required="true" Mask="@passwordMask" 
+            HelperText="@passwordHelper" RequiredError="Mật khẩu không hợp lệ"/>
             <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
                 <MudSelectItem Value="@("Nam")" />
                 <MudSelectItem Value="@("Nữ")" />
@@ -55,6 +56,10 @@
     private string accessToken = string.Empty;
 
     private bool success = false;
+
+    private IMask passwordMask = new RegexMask(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$");
+
+    private string passwordHelper = new string("Mât khẩu cần có tối thiểu 8 kí tự, bắt đầu bằng chữ in hoa và có tối thiểu 1 chữ số");
 
     [Parameter]
     public string AdminId {get; set;}

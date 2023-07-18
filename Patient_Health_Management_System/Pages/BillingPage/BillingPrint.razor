@@ -19,12 +19,12 @@
 				<MudText Typo="Typo.body1">Tên bệnh nhân: @patient.Name</MudText>
 				<MudText Typo="Typo.body1">Số điện thoại: @patient.PhoneNumber</MudText>
 				<MudText Typo="Typo.body1">Địa chỉ: @patient.Address</MudText>
-				<MudDataGrid Style="display:flex; width:700px" Elevation="0" Items="@prescription.MedicinePrescribed" ReadOnly="true">
+				<MudDataGrid Style="width:700px" Elevation="0" Items="@prescription.MedicinePrescribed" ReadOnly="true">
 					<Columns>
-						<PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
-						<PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
-						<PropertyColumn Property="m => m.SellingPrice" Title="Giá bán (đơn vị: đồng)" />
-						<PropertyColumn Property="m => m.SellingPrice * m.BuyingQuantity" Title="Thành tiền (đơn vị: đồng)" />
+						<PropertyColumn Property="m => m.Name" Title="Tên thuốc" Sortable="false" CellStyle="width:30%" />
+						<PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" Sortable="false" CellStyle="width:20%" />
+						<PropertyColumn Property="m => m.SellingPrice" Title="Giá bán (đơn vị: đồng)" Sortable="false" CellStyle="width:30%" />
+						<PropertyColumn Property="m => m.SellingPrice * m.BuyingQuantity" Title="Thành tiền (đơn vị: đồng)" Sortable="false" CellStyle="width:30%" />
 					</Columns>
 				</MudDataGrid>
 				<MudText Style="padding-top:20px; font-weight:bold" Typo="Typo.body1">Tổng cộng: @totalBillCost (đồng) </MudText>

@@ -1,0 +1,70 @@
+﻿@inject IBillingService BillingService
+@inject IPatientService PatientService
+@inject IPrescriptionService PrescriptionService
+
+<MudDialog Style="max-width:900px">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3 mb-n1" />
+            Thông tin hóa đơn
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm>
+            <MudTextField Value="@patient.PatientId" Label="Mã bệnh nhân" ReadOnly="true" />
+            <MudTextField Value="@patient.Name" Label="Tên bệnh nhân" ReadOnly="true" />
+            <MudTextField Value="@prescription.PrescriptionId" Label="Mã đơn thuốc" ReadOnly="true" />
+            <MudDataGrid Style="display:flex; max-height:250px" Items="@prescription.MedicinePrescribed" ReadOnly="true" FixedHeader="true" Striped="true">
+                <Columns>
+                    <PropertyColumn Property="m => m.Name" Title="Tên thuốc" />
+                    <PropertyColumn Property="m => m.BuyingQuantity" Title="Số lượng" />
+                    <PropertyColumn Property="m => m.SellingPrice" Title="Thành tiền (đơn vị: đồng)" />
+                </Columns>
+            </MudDataGrid>
+            <MudNumericField HideSpinButtons="true" Value="@totalBillCost" Label="Tổng tiền (đơn vị: đồng)" ReadOnly="true" />
+            @if (Bill.IsPaid)
+            {
+                <MudTextField Label="Trạng thái thanh toán" Value="@("Đã thanh toán")" ReadOnly="true"/>
+                <MudTextField Label="Phương thức thanh toán" Value="@Bill.PaymentMethod" ReadOnly="true" />
+                <MudTextField Value="@Bill.PaidAt.ToLocalTime().ToString("dd/MM/yyyy h:mm tt")" Label="Ngày thanh toán" ReadOnly="true" />
+            }
+            else
+            {
+                <MudTextField Label="Trạng thái thanh toán" Value="@("Chưa thanh toán")" ReadOnly="true" />
+            }
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [Parameter]
+    public Billing Bill { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    private Patient patient = new Patient();
+
+    private Prescription prescription = new Prescription();
+
+    private int totalBillCost = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        patient = await PatientService.GetPatientById(Bill.PatientId);
+        prescription = await PrescriptionService.GetPrescriptionById(Bill.PrescriptionId);
+        GetTotalBillCost();
+    }
+
+    private void GetTotalBillCost()
+    {
+        foreach (var item in prescription.MedicinePrescribed)
+        {
+            totalBillCost += item.SellingPrice * item.BuyingQuantity;
+        }
+    }
+}

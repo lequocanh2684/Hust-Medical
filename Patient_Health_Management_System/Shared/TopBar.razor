@@ -3,8 +3,8 @@
 @inject IDiseaseRepo DiseaseRepo
 
 <div style="display:flex; width:97%; padding:16px 0px">
-	<MudAutocomplete @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium"
-					 Placeholder="Tìm kiếm..." DisableUnderLine="true" SearchFunc="@Search" ResetValueOnEmptyText="true"/>
+	@*<MudAutocomplete @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium"
+					 Placeholder="Tìm kiếm..." DisableUnderLine="true" SearchFunc="@Search" ResetValueOnEmptyText="true"/>*@
 	<MudSpacer />
 	<MudAvatar Class="hovicon effect-9 sub-b" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
 	@onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>

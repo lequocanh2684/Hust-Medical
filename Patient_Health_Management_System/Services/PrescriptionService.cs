@@ -142,6 +142,31 @@
             }
         }
 
+        public async Task<int> GetRevenueMedicinePrescribedByCreatedDay(DateTime date)
+        {
+            try
+            {
+                var listMedicinePrescribed = await _presriptionRepo.GetRevenueMedicinePrescribedByCreatedDay(date);
+                return listMedicinePrescribed.Sum(medicinePrescribed => medicinePrescribed.BuyingQuantity * medicinePrescribed.SellingPrice);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Prescription>> GetPrescriptionsByDoctorId(string doctorId)
+        {
+            try
+            {
+                return await _presriptionRepo.GetPrescriptionsByDoctorId(doctorId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private async Task<string> AutoGenerateNewPrescriptionId()
         {
             try

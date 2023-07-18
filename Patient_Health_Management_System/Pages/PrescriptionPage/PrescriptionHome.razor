@@ -1,11 +1,10 @@
 ﻿@page "/prescription"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @inject IPrescriptionService PrescriptionService
 @inject IPatientService PatientService
 @inject IDialogService DialogService
-@inject NavigationManager NavigationManager
-@layout MainLayout
 
 <PageTitle>Quản lý đơn thuốc</PageTitle>
 
@@ -16,7 +15,7 @@
     <Authorized>
         <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
             <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
-                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách đơn thuốc</MudText>
 
                 <MudDataGrid T="Prescription" Items="@prescriptions" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
@@ -45,7 +44,7 @@
                                         <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
                                                      OnClick="(e) => UpdatePrescription(context.Item.Id)">Chỉnh sửa thông tin</MudMenuItem>
                                         <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Print" IconColor="Color.Info" IconSize="Size.Medium" 
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Print" IconSize="Size.Medium" 
                                                      OnClick="(e) => ShowPrint(context.Item)">In đơn thuốc</MudMenuItem>
                                         <MudDivider />
                                         <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
@@ -76,13 +75,27 @@
 @code {
     private IEnumerable<Prescription> prescriptions = new List<Prescription>();
     private IEnumerable<Patient> patients = new List<Patient>();
-    private string searchS = "";
+    private string searchS = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
+    private string userId = string.Empty;
+    private string userRole = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        prescriptions = await PrescriptionService.GetPrescriptions();
-        patients = await PatientService.GetPatients();
+        var getUserClaim = await GetUserClaim();
+        if (getUserClaim.IsCompletedSuccessfully)
+        {
+            if (userRole.Equals("Admin"))
+            {
+                prescriptions = await PrescriptionService.GetPrescriptions();
+                patients = await PatientService.GetPatients();
+            }
+            else
+            {
+                prescriptions = await PrescriptionService.GetPrescriptionsByDoctorId(userId);
+                patients = await PatientService.GetPatientsByDoctorId(userId);
+            }
+        }
     }
 
     private async Task ShowDetail(string Id)
@@ -125,5 +138,17 @@
         if (string.IsNullOrWhiteSpace(searchString)) return true;
         if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
         return false;
+    }
+
+    private async Task<Task> GetUserClaim()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+        return Task.CompletedTask;
     }
 }

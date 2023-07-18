@@ -153,5 +153,18 @@
                 throw new Exception(ex.Message);
             }
         }
-	}
+
+		public async Task<long> GetNumberUsers()
+		{
+            try
+			{
+                return await _userRepo.GetNumberUsers();
+            }
+            catch (Exception e)
+			{
+                throw new Exception(e.Message);
+            }
+        }
+
+    }
 }
