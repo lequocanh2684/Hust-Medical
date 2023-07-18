@@ -146,6 +146,18 @@ namespace Patient_Health_Management_System.Services
             }
         }
 
+        public async Task<long> GetNumberPatients()
+        {
+            try
+            {
+                return await _patientRepo.GetNumberPatients();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         /*Deprecated*/
         //private void ValidatePatientForm(PatientForm patientForm)
         //{

@@ -15,5 +15,7 @@
         Task DeleteUserByUserId(string userId, string adminId);
 
         Task ChangeUserEmailByUserId(string userId, string adminId, string newEmail);
+
+        Task<long> GetNumberUsers();
     }
 }

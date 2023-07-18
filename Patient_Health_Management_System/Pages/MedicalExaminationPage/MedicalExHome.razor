@@ -1,11 +1,10 @@
-﻿@page "/medicalExamination"
+﻿@page "/medical_examination"
 @attribute [Authorize(Roles = "Doctor, Admin")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IMedicalExaminationService medicalExamService
 @inject IPatientService PatientService
 @inject IDialogService DialogService
 @inject NavigationManager NavigationManager
-@layout MainLayout
 
 <PageTitle>Quản lý đơn khám</PageTitle>
 

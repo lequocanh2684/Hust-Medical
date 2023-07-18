@@ -18,11 +18,11 @@
                 <MudSelectItem Value="@("Nữ")" />
             </MudSelect>
             <MudTextField @bind-Value="@patientForm.Ethnic" Label="Dân tộc" ReadOnly="false" Required="true" RequiredError="Dân tộc không được bỏ trống" />
-            <MudTextField @bind-Value="@patientForm.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="false" />
-            <MudTextField @bind-Value="@patientForm.IDNumber" Label="Số căn cước công dân" ReadOnly="false" Required="true" RequiredError="Số căn cước không được bỏ trống" />
+            <MudNumericField HideSpinButtons="true" @bind-Value="@patientForm.MedicalInsuranceNumber" Label="Số bảo hiểm y tế" ReadOnly="false" />
+            <MudNumericField HideSpinButtons="true" @bind-Value="@patientForm.IDNumber" Label="Số căn cước công dân" ReadOnly="false" Required="true" RequiredError="Số căn cước không được bỏ trống" />
             <MudDatePicker @bind-Date="@patientForm.DateOfBirth" Editable="true" Label="Ngày tháng năm sinh" ReadOnly="false" />
             <MudTextField @bind-Value="@patientForm.Address" Label="Địa chỉ" ReadOnly="false" Required="true" RequiredError="Địa chỉ không được bỏ trống" />
-            <MudTextField @bind-Value="@patientForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
+            <MudNumericField HideSpinButtons="true" @bind-Value="@patientForm.PhoneNumber" Label="Số điện thoại" ReadOnly="false" />
             <MudTextField @bind-Value="@patientForm.Email" Label="Email" ReadOnly="false" />
         </MudForm>
     </DialogContent>

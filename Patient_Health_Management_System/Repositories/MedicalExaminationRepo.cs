@@ -1,6 +1,4 @@
-﻿using Patient_Health_Management_System.Domain.Models;
-
-namespace Patient_Health_Management_System.Repositories
+﻿namespace Patient_Health_Management_System.Repositories
 {
     public class MedicalExaminationRepo : IMedicalExaminationRepo
     {
@@ -47,6 +45,17 @@ namespace Patient_Health_Management_System.Repositories
                 var filter = Builders<MedicalExamination>.Filter;
                 var filterDoctorId = filter.Eq(p => p.CreatedBy, doctorId) & filter.Eq(p => p.IsDeleted, false);
                 return await _medicalExaminations.Find(filterDoctorId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public async Task<long> GetNumberMedicalExaminations()
+        {
+            try
+            {
+                return await _medicalExaminations.Find(me => !me.IsDeleted).CountDocumentsAsync();
             }
             catch (Exception e)
             {

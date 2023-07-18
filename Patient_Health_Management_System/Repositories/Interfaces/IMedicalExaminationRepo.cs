@@ -10,5 +10,6 @@
         Task<string> GetLastMedicalExaminationId();
         Task ModifyMedicalExaminationById(MedicalExamination medicalExamination);
         Task<List<MedicalExamination>> GetMedicalExaminationsByDoctorId(string doctorId);
+        Task<long> GetNumberMedicalExaminations();
     }
 }

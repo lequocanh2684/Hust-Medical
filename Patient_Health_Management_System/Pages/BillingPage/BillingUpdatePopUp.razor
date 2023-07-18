@@ -22,7 +22,7 @@
                     <PropertyColumn Property="m => m.SellingPrice" Title="Thành tiền (đơn vị: đồng)" />
                 </Columns>
             </MudDataGrid>
-            <MudTextField Value="@totalBillCost" Label="Tổng tiền (đơn vị: đồng)" ReadOnly="true" />
+            <MudNumericField HideSpinButtons="true" Value="@totalBillCost" Label="Tổng tiền (đơn vị: đồng)" ReadOnly="true" />
             <MudSelect T="string" Label="Trạng thái thanh toán" AnchorOrigin="Origin.BottomCenter" @bind-Value="@isPaid" ReadOnly="@readOnly">
                 <MudSelectItem Value="@("Chưa thanh toán")" />
                 <MudSelectItem Value="@("Đã thanh toán")" />

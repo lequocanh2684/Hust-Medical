@@ -99,5 +99,17 @@ namespace Patient_Health_Management_System.Repositories
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task<long> GetNumberPatients()
+        {
+            try
+            {
+                return await _patient.Find(p => !p.IsDeleted).CountDocumentsAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }
