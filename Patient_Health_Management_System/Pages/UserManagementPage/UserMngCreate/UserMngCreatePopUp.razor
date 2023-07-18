@@ -59,7 +59,7 @@
 
     private IMask passwordMask = new RegexMask(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$");
 
-    private string passwordHelper = new string("Mât khẩu cần có tối thiểu 8 kí tự\nBắt đầu bằng chữ in hoa và có tối thiểu 1 chữ số");
+    private string passwordHelper = new string("Mât khẩu cần có tối thiểu 8 kí tự, bắt đầu bằng chữ in hoa và có tối thiểu 1 chữ số");
 
     [Parameter]
     public string AdminId {get; set;}

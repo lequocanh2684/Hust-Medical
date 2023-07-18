@@ -40,17 +40,24 @@
                             </CellTemplate>
                         </TemplateColumn>
                         <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
-                            <CellTemplate>
-                                <MudStack Row>
-                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
-                                                   OnClick="(e) => ShowUpdate(context.Item)" />
-                                    <MudIconButton Icon="@Icons.Material.Filled.Print" Color="Color.Surface" Size="Size.Medium"
-                                                   OnClick="(e) => ShowPrint(context.Item)" />
-                                    @*<MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDelete(context.Item.Id)" />
-                                    <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
-                                                   OnClick="(e) => ShowDetail(context.Item.Id)" /> *@
-                                </MudStack>
+                            <CellTemplate> 
+                                <MudMenu AnchorOrigin="Origin.BottomLeft">
+                                    <ActivatorContent>
+                                        <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
+                                    </ActivatorContent>
+                                    <ChildContent>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Print" OnClick="(e) => ShowPrint(context.Item)">In hóa đơn</MudMenuItem>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDelete(context.Item.Id)">Xóa hóa đơn</MudMenuItem>
+
+                                    </ChildContent>
+                                </MudMenu>
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>
@@ -103,6 +110,22 @@
     {
         var parameter = new DialogParameters { ["Bill"] = billing};
         var dialog = DialogService.Show<BillingPrint>("In hoá đơn", parameter, new DialogOptions(){ FullScreen = true, CloseButton = true });
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowDelete(string billingId)
+    {
+        var parameter = new DialogParameters { ["Id"] = billingId, ["UserId"] = userId };
+        var dialog = DialogService.Show<BillingDeletePopUp>("Xóa hoá đơn", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowDetail(Billing billing)
+    {
+        var parameter = new DialogParameters { ["Bill"] = billing, ["UserId"] = userId };
+        var dialog = DialogService.Show<BillingDetailPopUp>("Thông tin hoá đơn", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }

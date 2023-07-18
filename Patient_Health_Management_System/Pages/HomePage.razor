@@ -27,6 +27,7 @@
                 <MudText Typo="Typo.body1" Style="position: relative; top: 220px; left: 50px; width: 45%; color: #FAF3FF;">One positive command he gave us: You shall love and honor your emperor. In every congregation a prayer must be said for the czar's health, or the chief of police would close the synagogue.</MudText>
 		        </div>
 
+                <AuthorizeView Roles="Admin">
                 <div style="display:flex; background-color:#FAFAFA; border-radius:20px; margin-top:14px">
                     <div style="display:flex; padding:16px 20px; width:100%">
                         <MudStack Spacing="4" Style="flex:1" Row="true">
@@ -82,7 +83,8 @@
                             </CustomGraphics>
                         </MudChart>*@
                     </div>
-                </div>
+                    </div>
+                </AuthorizeView>
             </div>
 	        <div style="display:flex; height:52rem; background-color:#FFFFFF; border-radius:20px; margin-left:40px; width:22%">
                     <div style="display:flex; flex:1; flex-direction:column;">
@@ -115,25 +117,30 @@
 
     private string userName = string.Empty;
 
+    private string userRole = string.Empty;
+
     private long numberOfPatients = 0;
     private long numberOfUsers = 0;
     private long numberOfMedicalExaminations = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        var autoRefreshUI = new Timer( _ =>
-        {
-            InvokeAsync(async () =>
-            {
-                numberOfPatients = await PatientService.GetNumberPatients();
-                numberOfUsers = await UserService.GetNumberUsers();
-                numberOfMedicalExaminations = await MedicalExaminationService.GetNumberMedicalExaminations();
-                StateHasChanged();
-            }
-            );
-        }, null, 0, 1000);
+        await GetUser();
         SetDayTime();
-        await GetUserName();
+        if (userRole.Equals("Admin"))
+        {
+            var autoRefreshUI = new Timer( _ =>
+            {
+                InvokeAsync(async () =>
+                {
+                    numberOfPatients = await PatientService.GetNumberPatients();
+                    numberOfUsers = await UserService.GetNumberUsers();
+                    numberOfMedicalExaminations = await MedicalExaminationService.GetNumberMedicalExaminations();
+                    StateHasChanged();
+                }
+                );
+            }, null, 0, 1000);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -165,28 +172,28 @@
         }
     }
 
-    private async Task GetUserName()
+    private async Task GetUser()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity.IsAuthenticated)
         {
-            var userId = authState.User.Claims
-            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-            .SingleOrDefault().Value;
+            var userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
             userName = await UserService.GetUserNameByUserId(userId);
+
         }
         else NavigationManager.NavigateTo("/auth/login"); 
     }
 
-    private string GenerateRandomColor()
-    {
-		return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
-    }
+    //private string GenerateRandomColor()
+    //{
+	    //return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
+    //}
 
     //example Chart
-    public static double[] data1 = { 20.0, 80.0 };
-    public string[] labels1 = { $"Đang điều trị ({data1[0]}%)", $"Đã khỏi bệnh ({data1[1]}%)" };
+    //public static double[] data1 = { 20.0, 80.0 };
+    //public string[] labels1 = { $"Đang điều trị ({data1[0]}%)", $"Đã khỏi bệnh ({data1[1]}%)" };
 
-    public static double[] data = { 60.0, 40.0 };
-    public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
+    //public static double[] data = { 60.0, 40.0 };
+    //public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
 }
