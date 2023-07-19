@@ -132,6 +132,48 @@
             }
         }
 
+        public async Task DeleteBillingsById(List<Billing> billings, string userId)
+        {
+            try
+            {
+                for (int i = 0; i < billings.Count; i++)
+                {
+                    billings[i].IsDeleted = true;
+                    billings[i].DeletedAt = DateTime.Now;
+                    billings[i].DeletedBy = userId;
+                }
+                await _billingRepo.DeleteBillingsById(billings);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Billing>> GetBillingsByPatientId(string patientId)
+        {
+            try
+            {
+                return await _billingRepo.GetBillingsByPatientId(patientId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Billing> GetBillingByPrescriptionId(string prescriptionId)
+        {
+            try
+            {
+                return await _billingRepo.GetBillingByPrescriptionId(prescriptionId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private async Task<string> AutoGenerateNewBillingId()
         {
             try

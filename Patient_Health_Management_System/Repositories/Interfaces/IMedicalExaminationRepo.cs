@@ -11,5 +11,7 @@
         Task ModifyMedicalExaminationById(MedicalExamination medicalExamination);
         Task<List<MedicalExamination>> GetMedicalExaminationsByDoctorId(string doctorId);
         Task<long> GetNumberMedicalExaminations();
+        Task DeleteMedicalPrescriptionsById(List<MedicalExamination> medicalExaminations);
+        Task<List<MedicalExamination>> GetMedicalExaminationsByPatientId(string patientId);
     }
 }

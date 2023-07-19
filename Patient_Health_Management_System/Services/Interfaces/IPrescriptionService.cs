@@ -12,5 +12,8 @@
         Task DeletePrescriptionById(string id, string userId);
         Task<int> GetRevenueMedicinePrescribedByCreatedDay(DateTime date);
         Task<List<Prescription>> GetPrescriptionsByDoctorId(string doctorId);
+        Task DeletePrescriptionById(List<Prescription> prescriptions, string userId);
+        Task<List<Prescription>> GetPrescriptionsByPatientId(string patientId);
+        Task<Prescription> GetPrescriptionsByMedicalExaminationId(string medicalExaminationId);
     }
 }

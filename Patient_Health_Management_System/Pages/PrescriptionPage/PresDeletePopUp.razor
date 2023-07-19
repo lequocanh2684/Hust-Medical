@@ -1,6 +1,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 @inject IPrescriptionService PrescriptionService
+@inject IBillingService BillingService
 
 <MudDialog>
     <DialogContent>
@@ -16,7 +17,9 @@
 
     private Patient patient = new Patient();
 
-    private string userId = new string("");
+    private Billing billing = new Billing();
+
+    private string userId = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -25,6 +28,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        billing = await BillingService.GetBillingByPrescriptionId(Id);
         await GetUserId();
     }
 
@@ -35,6 +39,7 @@
 
     private async Task Submit()
     {
+        if(billing is not null) await BillingService.DeleteBillingById(billing.Id, userId);
         await PrescriptionService.DeletePrescriptionById(Id, userId);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
 		Snackbar.Add("Xoá đơn thuốc thành công!", Severity.Success);

@@ -47,11 +47,11 @@ namespace Patient_Health_Management_System.Services
                     Note = medicalExaminationForm.Note,
                     CreatedBy = userId,
                     CreatedAt = DateTime.Now,
-                    UpdatedBy = null,
+                    UpdatedBy = string.Empty,
                     UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
                     IsDeleted = false,
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                    DeletedBy = null
+                    DeletedBy = string.Empty
                 };
                 return await _medicalExaminationRepo.CreateMedicalExamination(medicalExamination);
             }
@@ -131,6 +131,36 @@ namespace Patient_Health_Management_System.Services
             try
             {
                 return await _medicalExaminationRepo.GetNumberMedicalExaminations();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task DeleteMedicalExaminationsById(List<MedicalExamination> medicalExaminations, string userId)
+        {
+            try
+            {
+                for (int i = 0; i < medicalExaminations.Count; i++)
+                {
+                    medicalExaminations[i].IsDeleted = true;
+                    medicalExaminations[i].DeletedAt = DateTime.Now;
+                    medicalExaminations[i].DeletedBy = userId;
+                }
+                await _medicalExaminationRepo.DeleteMedicalPrescriptionsById(medicalExaminations);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<MedicalExamination>> GetMedicalExaminationsByPatientId(string patientId)
+        {
+            try
+            {
+                return await _medicalExaminationRepo.GetMedicalExaminationsByPatientId(patientId);
             }
             catch (Exception e)
             {

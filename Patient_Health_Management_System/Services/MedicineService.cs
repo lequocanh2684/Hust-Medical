@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using Patient_Health_Management_System.Domain.Models;
 using System.Data;
 
 namespace Patient_Health_Management_System.Services
@@ -183,11 +182,11 @@ namespace Patient_Health_Management_System.Services
         {
             try
             {
-                foreach (var medicine in medicines)
+                for (int i = 0; i < medicines.Count; i++)
                 {
-                    medicine.IsDeleted = true;
-                    medicine.DeletedAt = DateTime.Now;
-                    medicine.DeletedBy = userId;
+                    medicines[i].IsDeleted = true;
+                    medicines[i].DeletedAt = DateTime.Now;
+                    medicines[i].DeletedBy = userId;
                 }
                 await _medicineRepo.DeleteMultiMedicinesById(medicines);
             }

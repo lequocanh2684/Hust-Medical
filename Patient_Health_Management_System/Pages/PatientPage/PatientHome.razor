@@ -119,7 +119,7 @@
 
     private async Task ShowDelete(string id, string name)
     {
-        var parameter = new DialogParameters { ["Id"] = id, ["name"] = name };
+        var parameter = new DialogParameters { ["Id"] = id, ["PatientName"] = name };
         var dialog = DialogService.Show<PatientDeletePopUp>("Xóa bệnh nhân", parameter);
         var result = await dialog.Result;
         if (!result.Canceled) await InvokeAsync(OnInitializedAsync);

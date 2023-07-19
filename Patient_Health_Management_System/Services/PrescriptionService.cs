@@ -167,6 +167,48 @@
             }
         }
 
+        public async Task DeletePrescriptionById(List<Prescription> prescriptions, string userId)
+        {
+            try
+            {
+                for (int i = 0; i < prescriptions.Count; i++)
+                {
+                    prescriptions[i].IsDeleted = true;
+                    prescriptions[i].DeletedAt = DateTime.Now;
+                    prescriptions[i].DeletedBy = userId;
+                }
+                await _presriptionRepo.DeletePrescriptionById(prescriptions);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<Prescription>> GetPrescriptionsByPatientId(string patientId)
+        {
+            try
+            {
+                return await _presriptionRepo.GetPrescriptionsByPatientId(patientId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Prescription> GetPrescriptionsByMedicalExaminationId(string medicalExaminationId)
+        {
+            try
+            {
+                return await _presriptionRepo.GetPrescriptionsByMedicalExaminationId(medicalExaminationId);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
         private async Task<string> AutoGenerateNewPrescriptionId()
         {
             try
