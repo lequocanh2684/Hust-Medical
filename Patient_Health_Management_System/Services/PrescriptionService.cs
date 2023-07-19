@@ -79,6 +79,7 @@
                     PatientId = prescriptionForm.PatientId,
                     Note = prescriptionForm.Note,
                     MedicinePrescribed = prescriptionForm.MedicinePrescribed,
+                    MedicalExaminationId = prescriptionForm.MedicalExaminationId,
                     CreatedAt = DateTime.Now,
                     CreatedBy = userId,
                     UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
