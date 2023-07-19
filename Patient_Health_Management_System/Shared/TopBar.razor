@@ -2,13 +2,25 @@
 @inject IMedicineService MedicineService
 @inject IDiseaseRepo DiseaseRepo
 
-<div style="display:flex; width:97%; padding:16px 0px">
+<div style="display:flex; width:97%">
 	@*<MudAutocomplete @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium"
 					 Placeholder="Tìm kiếm..." DisableUnderLine="true" SearchFunc="@Search" ResetValueOnEmptyText="true"/>*@
-	<MudSpacer />
+	@*<MudSpacer />
 	<MudAvatar Class="hovicon effect-9 sub-b" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
 	@onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>
-	<MudText Style="display:flex; align-items:center; padding-left: 20px" Typo="Typo.body1">@UserName</MudText>
+	<MudText Style="display:flex; align-items:center; padding-left: 20px" Typo="Typo.body1">@UserName</MudText>*@
+	<MudText Typo="Typo.h4" Style="padding-left: 40px; display: flex; align-items: center;">HustMec</MudText>
+	<MudTabs Elevation="0" Rounded="true" Color="@Color.Primary" Style="margin-top:12px; padding-left:20px; --mud-palette-primary: #594ae200;">
+		<MudTabPanel Text="Trang chủ" OnClick="@(_ => NavigationManager.NavigateTo("/home"))">
+			
+		</MudTabPanel>
+		<MudTabPanel Text="Bệnh nhân" OnClick="@(_ => NavigationManager.NavigateTo("/patient"))">
+			
+		</MudTabPanel>
+		<MudTabPanel Text="Đơn thuốc" OnClick="@(_ => NavigationManager.NavigateTo("/prescription"))">
+			
+		</MudTabPanel>
+	</MudTabs>
 </div>
 
 @code {
