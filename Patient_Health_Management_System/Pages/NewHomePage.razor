@@ -1,0 +1,187 @@
+﻿@page "/home"
+@attribute [Authorize(Roles = "Doctor, Admin")]
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage ProtectedLocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject IAccountService AccountService
+@inject IPatientService PatientService
+@inject IMedicalExaminationService MedicalExaminationService
+@inject IUserService UserService
+@layout MainLayout
+
+<PageTitle>Trang chủ</PageTitle>
+
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+        <div style="display:flex; flex-direction:column">
+            <MudImage style="margin-bottom:18px" Src="./assets/imgs/hospital.png" Height="100" Width="100" />
+        <MudGrid Style="margin-bottom:10px" Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+						<MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+					</div>
+                </MudPaper>
+            </MudItem>
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Style="margin-bottom:10px" Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+            <MudItem>
+                <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center" @onclick="NavigateToPatientPage">
+                    <div style="display:flex; flex-direction:column; align-items:center">
+                        <MudIcon Style="margin-bottom:10px" Icon="@Icons.Material.Filled.EmojiEmotions" Size="Size.Large" Color="Color.Primary"></MudIcon>
+                        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+			</MudGrid>
+		</div>
+    </Authorized>
+</AuthorizeView>
+
+@code{
+    private string dayTime = string.Empty;
+
+    private string userName = string.Empty;
+
+    private string userRole = string.Empty;
+
+    private MudTabs mudTabs;
+
+    private long numberOfPatients = 0;
+    private long numberOfUsers = 0;
+    private long numberOfMedicalExaminations = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUser();
+        //SetDayTime();
+        //if (userRole.Equals("Admin"))
+        //{
+        //    var autoRefreshUI = new Timer( _ =>
+        //    {
+        //        InvokeAsync(async () =>
+        //        {
+        //            numberOfPatients = await PatientService.GetNumberPatients();
+        //            numberOfUsers = await UserService.GetNumberUsers();
+        //            numberOfMedicalExaminations = await MedicalExaminationService.GetNumberMedicalExaminations();
+        //            StateHasChanged();
+        //        }
+        //        );
+        //    }, null, 0, 1000);
+        //}
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+            if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
+            {
+                var auth0Token = await AccountService.TokenGenerator();
+                await ProtectedLocalStorage.SetAsync("access_token", auth0Token.access_token);
+            }
+        }
+    }
+
+    private void SetDayTime()
+    {
+        if(DateTime.Now.Hour >= 0 && DateTime.Now.Hour < 12)
+        {
+            dayTime = "Chào buổi sáng";
+        }
+        else if (DateTime.Now.Hour >= 12 && DateTime.Now.Hour < 18)
+        {
+            dayTime = "Chào buổi chiều";
+        }
+        else
+        {
+            dayTime = "Chào buổi tối";
+        }
+    }
+
+    private async Task GetUser()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+            userName = await UserService.GetUserNameByUserId(userId);
+
+        }
+        else NavigationManager.NavigateTo("/auth/login"); 
+    }
+
+    //private string GenerateRandomColor()
+    //{
+    //return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
+    //}
+
+    //example Chart
+    //public static double[] data1 = { 20.0, 80.0 };
+    //public string[] labels1 = { $"Đang điều trị ({data1[0]}%)", $"Đã khỏi bệnh ({data1[1]}%)" };
+
+    //public static double[] data = { 60.0, 40.0 };
+    //public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
+
+    private void NavigateToPatientPage()
+    {
+        NavigationManager.NavigateTo("/patient");
+	}
+}

@@ -1,9 +1,50 @@
 ﻿@page "/support"
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@layout LoginLayout
 
-<div class="d-flex" style="height:50rem; background-color:#FBFCFF; border-radius:20px; width:96.7%; justify-content:center">
-    <MudImage Src="./assets/imgs/UnderConstruction.jpg"/>
+<div class="d-flex" style="height:100vh; background-color:#FBFCFF; flex-direction:column; align-items:center">
+    <MudImage Src="./assets/imgs/UnderConstruction.jpg" Style="height:811.8px; width:880px"/>
+    <MudButton Href="@homeUrl" Variant="Variant.Filled" Color="Color.Primary" >Quay lại trang chủ</MudButton>
 </div>
 
 @code {
 
+	private string role = string.Empty;
+
+	private string homeUrl = string.Empty;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await GetUserRole();
+		DisplayHomeUrl();
+	}
+
+	private void DisplayHomeUrl()
+	{
+		if (role == "Doctor" || role == "Admin")
+		{
+			homeUrl = "/home";
+		}
+		else if (role == "Cashier")
+		{
+			homeUrl = "/billing";
+		}
+		else if (role == "Warehouse Manager")
+		{
+			homeUrl = "/medicine";
+		}
+	}
+
+	private async Task GetUserRole()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		if (authState.User.Identity.IsAuthenticated)
+		{
+			role = authState.User.Claims
+			.Where(c => c.Type.Equals(ClaimTypes.Role))
+			.SingleOrDefault().Value;
+		}
+		else NavigationManager.NavigateTo("/auth/login");
+	}
 }
