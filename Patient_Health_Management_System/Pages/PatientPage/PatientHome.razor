@@ -20,10 +20,9 @@
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
                              Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                     <ToolBarContent>
-                        @if (!userRole.Equals("Admin"))
-                        {
+                        <AuthorizeView Roles="Doctor">
                             <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm bệnh nhân mới</MudButton>
-                        }
+                        </AuthorizeView>
                         <MudSpacer />
                         <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm bệnh nhân" Adornment="Adornment.Start" Immediate="true"
                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -43,17 +42,19 @@
                                     <ChildContent>
                                         <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDetail(context.Item.Id)">Thông tin chi tiết</MudMenuItem>
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                        @if (userRole.Equals("Doctor"))
+                                        {
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowUpdate(context.Item.Id)">Chỉnh sửa thông tin</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem OnClick="(e) => ShowCreateNewMedicalEx(context.Item.Id, context.Item.Name)">Tạo đơn khám</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                            <MudDivider />
+                                            <MudMenuItem OnClick="(e) => ShowCreateNewMedicalEx(context.Item.Id, context.Item.Name)">Tạo đơn khám</MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDelete(context.Item.Id, context.Item.Name)">Xóa người dùng</MudMenuItem>
-
+                                        }
                                     </ChildContent>
                                 </MudMenu>
-                            </CellTemplate>
+                                </CellTemplate>
                         </TemplateColumn>
                     </Columns>
                     <NoRecordsContent>

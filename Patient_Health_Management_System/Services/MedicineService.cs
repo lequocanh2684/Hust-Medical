@@ -104,7 +104,7 @@ namespace Patient_Health_Management_System.Services
                     GroupName = medicineForm.GroupName,
                     Unit = medicineForm.Unit,
                     HowToUse = medicineForm.HowToUse,
-                    QuantityDefault = medicineForm.QuantityDefault,
+                    QuantityDefault = 0,
                     ImportPrice = medicineForm.ImportPrice,
                     SellingPrice = medicineForm.SellingPrice,
                     MinimumStock = medicineForm.MinimumStock,

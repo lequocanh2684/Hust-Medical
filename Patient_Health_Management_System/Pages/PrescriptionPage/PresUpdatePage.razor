@@ -1,5 +1,5 @@
 @page "/prescription/update/{Id}"
-@attribute [Authorize(Roles = "Doctor, Admin")]
+@attribute [Authorize(Roles = "Doctor")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
@@ -29,8 +29,8 @@
                         <MudTextField @bind-Value="@prescriptionForm.Note" Label="Ghi chú" ReadOnly="false"/>
                     </div>
                 </div>
-                <div style="display:flex; background-color:#FAFAFA; border-radius:20px; height:600px; margin-top:20px">
-                    <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; height:600px">
+                <div style="display:flex; background-color:#FAFAFA; border-radius:20px; height:570px; margin-top:20px">
+                    <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px; height:570px">
                         <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm thuốc</MudText>
                         <MudPaper Style="border-radius:20px; overflow:auto">
                             <MudList Clickable="true">
@@ -46,11 +46,11 @@
             </div>
 
             <div style="display:flex; flex-direction:row; margin-left:20px">
-                <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px">
+                <div style="display:flex; height:815px; background-color:#FAFAFA; border-radius:20px">
                     <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
                         <MudDataGrid T="Medicine" MultiSelection="true" Items="@medicinesTable" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                                      FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
-                                     Hideable="true" Striped="true" Bordered="true" Style="border-radius:20px; width:690px" Height="700px" @bind-SelectedItems="@selectedMedicines">
+                                     Hideable="true" Striped="true" Bordered="true" Style="border-radius:20px; width:690px" Height="670px" @bind-SelectedItems="@selectedMedicines">
                             <ToolBarContent>
                                 <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm" Adornment="Adornment.Start" Immediate="true"
                                               AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -70,9 +70,9 @@
                     </div>
                 </div>
 
-                <div style="display:flex; height:845px; background-color:#FAFAFA; border-radius:20px; margin:0px 20px">
+                <div style="display:flex; height:815px; background-color:#FAFAFA; border-radius:20px; margin:0px 20px">
                     <div style="display:flex; flex:1; flex-direction:column; padding:16px 20px">
-                        <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell" Height="760px"
+                        <MudDataGrid Items="@selectedMedicines" ReadOnly="false" EditMode="DataGridEditMode.Cell" Height="730px"
                                      Style="border-radius:20px; width:460px" FixedHeader="true" Hideable="true" Striped="true" Bordered="true">
                             <Columns>
                                 <PropertyColumn Property="sm => sm.MedicineId" Title="Mã thuốc" IsEditable="false">

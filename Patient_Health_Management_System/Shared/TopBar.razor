@@ -2,7 +2,7 @@
 @inject IMedicineService MedicineService
 @inject IDiseaseRepo DiseaseRepo
 
-<div style="display:flex; width:97%">
+<div style="display:flex; width:100%; background-image: linear-gradient(to top, #6e3fc5, #a799c1); ">
 	@*<MudAutocomplete @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium"
 					 Placeholder="Tìm kiếm..." DisableUnderLine="true" SearchFunc="@Search" ResetValueOnEmptyText="true"/>*@
 	
@@ -32,7 +32,7 @@
 	@*<MudAvatar Class="hovicon effect-9 sub-b" style="margin-top:14px" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
 			   @onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>*@
 	<MudLink Href="/account" Style="height:20px; margin-top:4px; margin-right:6px; color:#FFFFFF !important" Typo="Typo.subtitle2" Underline="Underline.None">Welcome: @UserName</MudLink>
-	<form method="post" action="Account/Logout">
+	<form method="post" action="Account/Logout" style="margin-right:24px">
 		<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text"
 				   Style="text-transform:none; padding:2px 16px; color:#FFFFFF">
 			<MudImage style="width:16px; height:16px; margin-right:4px; margin-top:-2px" Src="./assets/imgs/logout.png"></MudImage>Đăng xuất
@@ -44,7 +44,7 @@
 	//private string search = string.Empty;
 
 
-	private MudTabs _tabs = new MudTabs();
+	private MudTabs _tabs;
 
 	[Parameter]
 	public string UserName { get; set; }
