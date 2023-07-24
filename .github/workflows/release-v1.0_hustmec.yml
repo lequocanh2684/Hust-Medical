@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - hustmec
 on:
   push:
     branches:
-      - release/v1.0
+      - release/v1.0.2
   workflow_dispatch:
 
 jobs:
