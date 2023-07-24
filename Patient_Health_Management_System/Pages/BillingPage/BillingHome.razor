@@ -48,14 +48,16 @@
                                     <ChildContent>
                                         <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDetail(context.Item)">Thông tin chi tiết</MudMenuItem>
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                        @if (userRole.Equals("Cashier"))
+                                        {
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Print" OnClick="(e) => ShowPrint(context.Item)">In hóa đơn</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Print" OnClick="(e) => ShowPrint(context.Item)">In hóa đơn</MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDelete(context.Item.Id)">Xóa hóa đơn</MudMenuItem>
-
+                                        }
                                     </ChildContent>
                                 </MudMenu>
                             </CellTemplate>
@@ -82,11 +84,12 @@
     private IEnumerable<Patient> patients = new List<Patient>();
     private string searchS = string.Empty;
     private string userId = string.Empty;
+    private string userRole = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
 
     protected override async Task OnInitializedAsync()
     {
-        await GetUserId();
+        await GetUserClaim();
         var autoRefreshUI = new Timer((_) =>
         {
             InvokeAsync(async () =>
@@ -145,14 +148,13 @@
         return false;
     }
 
-    private async Task GetUserId()
+    private async Task GetUserClaim()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity.IsAuthenticated)
         {
-            userId = authState.User.Claims
-            .Where(c => c.Type.Equals(ClaimTypes.NameIdentifier))
-            .SingleOrDefault().Value;
+            userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
         }
         else NavigationManager.NavigateTo("/auth/login");
     }

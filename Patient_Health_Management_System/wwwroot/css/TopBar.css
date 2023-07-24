@@ -89,3 +89,11 @@
             .hovicon.effect-9.sub-b:hover i {
                 color: #fff;
             }
+
+.mud-tab.mud-tab-active {
+    background-color: #6e3fc5;
+}
+
+.mud-tab {
+    border-radius: 10px 10px 0px 0px;
+}

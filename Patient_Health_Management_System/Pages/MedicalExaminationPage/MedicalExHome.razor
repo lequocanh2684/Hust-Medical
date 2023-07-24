@@ -41,14 +41,16 @@
                                     <ChildContent>
                                         <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDetail(context.Item.Id, context.Item)">Thông tin chi tiết</MudMenuItem>
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                        @if (userRole.Equals("Doctor"))
+                                        {
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowUpdate(context.Item.Id, patients.Where(p => p.Id.Equals(context.Item.PatientId)).SingleOrDefault().Name)">Chỉnh sửa thông tin</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem OnClick="(e) => CreateNewPrescription(context.Item.PatientId, context.Item.Id)">Tạo đơn thuốc</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                            <MudDivider />
+                                            <MudMenuItem OnClick="(e) => CreateNewPrescription(context.Item.PatientId, context.Item.Id)">Tạo đơn thuốc</MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDelete(context.Item.Id)">Xóa đơn khám</MudMenuItem>
-
+                                        }
                                     </ChildContent>
                                 </MudMenu>
                             </CellTemplate>

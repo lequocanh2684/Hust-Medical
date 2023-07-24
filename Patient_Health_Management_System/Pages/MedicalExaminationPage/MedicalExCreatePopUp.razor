@@ -26,7 +26,7 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
+        <MudButton OnClick="@(_ => Cancel())">Hủy</MudButton>
         <MudButton Variant="Variant.Outlined" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
         <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => SubmitAndCreatePrescription())">Lưu và tạo đơn thuốc</MudButton>
     </DialogActions>

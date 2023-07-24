@@ -1,10 +1,13 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 @inject IPatientService PatientService
+@inject IPrescriptionService PrescriptionService
+@inject IMedicalExaminationService MedicalExaminationService
+@inject IBillingService BillingService
 
 <MudDialog>
     <DialogContent>
-        <MudText>Bạn có chắc muốn xoá bệnh nhân: @name này không?</MudText>
+        <MudText>Bạn có chắc muốn xoá bệnh nhân: @PatientName này không?</MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Huỷ</MudButton>
@@ -16,6 +19,12 @@
 
     private Patient patient = new Patient();
 
+    private List<Prescription> prescriptions = new List<Prescription>();
+
+    private List<MedicalExamination> medicalExaminations = new List<MedicalExamination>();
+
+    private List<Billing> billings = new List<Billing>();
+
     private string userId = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
@@ -24,10 +33,13 @@
     public string Id { get; set; }
 
     [Parameter]
-    public string name { get; set; }
+    public string PatientName { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        prescriptions = await PrescriptionService.GetPrescriptionsByPatientId(Id);
+        medicalExaminations = await MedicalExaminationService.GetMedicalExaminationsByPatientId(Id);
+        billings = await BillingService.GetBillingsByPatientId(Id);
         await GetUserId();
     }
 
@@ -38,6 +50,18 @@
 
     private async Task Submit()
     {
+        if(prescriptions.Any())
+        {
+            await PrescriptionService.DeletePrescriptionById(prescriptions, userId);
+        }
+        if(medicalExaminations.Any())
+        {
+            await MedicalExaminationService.DeleteMedicalExaminationsById(medicalExaminations, userId);
+        }
+        if(billings.Any())
+        {
+            await BillingService.DeleteBillingsById(billings, userId);
+        }
         await PatientService.DeletePatientById(Id, userId);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
 		Snackbar.Add("Xoá bệnh nhân thành công!", Severity.Success);

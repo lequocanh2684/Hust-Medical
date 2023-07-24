@@ -1,4 +1,6 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿using Patient_Health_Management_System.Domain.Models;
+
+namespace Patient_Health_Management_System.Repositories
 {
     public class PrescriptionRepo : IPrescriptionRepo
     {
@@ -131,6 +133,42 @@
                 var filter = Builders<Prescription>.Filter;
                 var filterDoctorId = filter.Eq(p => p.CreatedBy, doctorId) & filter.Eq(p => p.IsDeleted, false);
                 return await _prescriptions.Find(filterDoctorId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task DeletePrescriptionById(List<Prescription> prescriptions)
+        {
+            var deletes = new List<WriteModel<Prescription>>();
+            foreach (var prescription in prescriptions)
+            {
+                deletes.Add(new ReplaceOneModel<Prescription>(Builders<Prescription>.Filter.Eq(p => p.Id, prescription.Id), prescription));
+            }
+            await _prescriptions.BulkWriteAsync(deletes, new BulkWriteOptions() { IsOrdered = false });
+        }
+
+        public async Task<List<Prescription>> GetPrescriptionsByPatientId(string patientId)
+        {
+            try
+            {
+                var filter = Builders<Prescription>.Filter;
+                var filterPatientId = filter.Eq(p => p.PatientId, patientId) & filter.Eq(p => p.IsDeleted, false);
+                return await _prescriptions.Find(filterPatientId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Prescription> GetPrescriptionsByMedicalExaminationId(string medicalExaminationId)
+        {
+            try
+            {
+                return await _prescriptions.Find(prescription => prescription.MedicalExaminationId == medicalExaminationId).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {

@@ -9,5 +9,7 @@ namespace Patient_Health_Management_System.Services
         Task DeleteMedicalExaminationById(string id, string userId);
         Task<List<MedicalExamination>> GetMedicalExaminationsByDoctorId(string doctorId);
         Task<long> GetNumberMedicalExaminations();
+        Task DeleteMedicalExaminationsById(List<MedicalExamination> medicalExaminations, string userId);
+        Task<List<MedicalExamination>> GetMedicalExaminationsByPatientId(string patientId);
     }
 }

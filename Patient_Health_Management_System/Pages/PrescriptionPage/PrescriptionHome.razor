@@ -41,15 +41,17 @@
                                     <ChildContent>
                                         <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDetail(context.Item.Id)">Thông tin chi tiết</MudMenuItem>
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                        @if (userRole.Equals("Doctor"))
+                                        {
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
                                                      OnClick="(e) => UpdatePrescription(context.Item.Id)">Chỉnh sửa thông tin</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Print" IconSize="Size.Medium" 
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Print" IconSize="Size.Medium" 
                                                      OnClick="(e) => ShowPrint(context.Item)">In đơn thuốc</MudMenuItem>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
                                                      OnClick="(e) => ShowDelete(context.Item.Id)">Xóa đơn thuốc</MudMenuItem>
-
+                                        }
                                     </ChildContent>
                                 </MudMenu>
                             </CellTemplate>

@@ -62,5 +62,29 @@
                 throw new Exception(e.Message);
             }
         }
+
+        public async Task DeleteMedicalPrescriptionsById(List<MedicalExamination> medicalExaminations)
+        {
+            var deletes = new List<WriteModel<MedicalExamination>>();
+            foreach (var medicalExamination in medicalExaminations)
+            {
+                deletes.Add(new ReplaceOneModel<MedicalExamination>(Builders<MedicalExamination>.Filter.Eq(me => me.Id, medicalExamination.Id), medicalExamination));
+            }
+            await _medicalExaminations.BulkWriteAsync(deletes, new BulkWriteOptions() { IsOrdered = false });
+        }
+
+        public async Task<List<MedicalExamination>> GetMedicalExaminationsByPatientId(string patientId)
+        {
+            try
+            {
+                var filter = Builders<MedicalExamination>.Filter;
+                var filterPatientId = filter.Eq(me => me.PatientId, patientId) & filter.Eq(me => me.IsDeleted, false);
+                return await _medicalExaminations.Find(filterPatientId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }

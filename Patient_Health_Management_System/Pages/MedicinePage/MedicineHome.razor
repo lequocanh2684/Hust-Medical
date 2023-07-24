@@ -1,5 +1,6 @@
 ﻿@page "/medicine"
 @attribute [Authorize(Roles = "Warehouse Manager, Admin")]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @inject IMedicineService MedicineService
 @inject IDialogService DialogService
@@ -21,23 +22,25 @@
                                  FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu" @bind-SelectedItems="@selectedMedicines"
                                  Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                         <ToolBarContent>
-                            <MudGrid Spacing="2">
-                                <MudItem>
-                                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ShowMedicineCreate">Thêm thuốc mới</MudButton>
-                                </MudItem>
-                                <MudItem>
-                                    <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="ExportReport">Xuất báo cáo</MudButton>
-                                </MudItem>
-                                <MudItem>
-                                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ImportMedicineExcel">Nhập từ file excel</MudButton>
-                                </MudItem>
-                                @if (selectedMedicines.Count > 0)
-                                {
+                            <AuthorizeView Roles="Warehouse Manager">
+                                <MudGrid Spacing="2">
                                     <MudItem>
-                                        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteMultiMedicine">Xóa @selectedMedicines.Count thuốc</MudButton>
+                                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ShowMedicineCreate">Thêm thuốc mới</MudButton>
                                     </MudItem>
-                                }
-                            </MudGrid>
+                                    <MudItem>
+                                        <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="ExportReport">Xuất báo cáo</MudButton>
+                                    </MudItem>
+                                    <MudItem>
+                                        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ImportMedicineExcel">Nhập từ file excel</MudButton>
+                                    </MudItem>
+                                    @if (selectedMedicines.Count > 0)
+                                    {
+                                        <MudItem>
+                                            <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteMultiMedicine">Xóa @selectedMedicines.Count thuốc</MudButton>
+                                        </MudItem>
+                                    }
+                                </MudGrid>
+                            </AuthorizeView>
                             <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm thuốc" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </ToolBarContent>
@@ -52,10 +55,13 @@
                             <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
                                 <CellTemplate>
                                     <MudStack Row>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                                        @if (userRole.Equals("Warehouse Manager"))
+                                        {
+                                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
                                                    OnClick="(e) => ShowMedicineUpdate(context.Item.Id)" />
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                                    OnClick="(e) => ShowMedicineDelete(context.Item.Id)" />
+                                        }
                                         <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Medium"
                                                        OnClick="(e) => ShowMedicineDetail(context.Item.Id)" />
                                     </MudStack>
@@ -76,30 +82,36 @@
             </div>
         </div>
 
-        <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px; width:21%">
-            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:21%">
+        <div style="display:flex; height:50rem; background-color:#FAFAFA; border-radius:20px; margin-left:45px; width:25%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px">
             <MudText Typo="Typo.h6" Style="padding-bottom:10px">Nhóm thuốc</MudText>
 
                 <MudTable Elevation="2" T="MedicineGroup" Items="@medicineGroups" Bordered="true" Striped="true" FixedHeader="true"
                           SortLabel="Sort By" @ref="medicineGroupTable"
                           Style="overflow:auto; position:relative; border-radius:20px;" Height="650px">
                     <ToolBarContent>
-                        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowMedicineGroupCreate()">Thêm</MudButton>
+                        <AuthorizeView Roles="Warehouse Manager">
+                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowMedicineGroupCreate()">Thêm</MudButton>
+                        </AuthorizeView>
                     </ToolBarContent>
                     <HeaderContent>
                         <MudTh>Tên nhóm</MudTh>
-                        <MudTh>Chức năng</MudTh>
+                        <AuthorizeView Roles="Warehouse Manager">
+                            <MudTh>Chức năng</MudTh>
+                        </AuthorizeView>
                     </HeaderContent>
                     <RowTemplate >
                         <MudTd DataLabel="Tên nhóm">@context.Name</MudTd>
-                        <MudTd>
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
+                            @if (userRole.Equals("Warehouse Manager"))
+                            {
+                                <MudTd>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" Size="Size.Medium"
                                                OnClick="(e) => ShowMedicineGroupUpdate(context.Id, context.Name)" />
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Medium"
                                            OnClick="(e) => ShowMedicineGroupDelete(context.Id, context.Name)" />
-                        </MudTd>
+                                </MudTd>
+                            }
                     </RowTemplate>
-
                     <NoRecordsContent>
                         <MudText>Không tìm thấy dữ liệu</MudText>
                     </NoRecordsContent>
@@ -128,8 +140,11 @@
 
     private string searchS = string.Empty;
 
+    private string userRole = string.Empty;
+
     protected override async Task OnInitializedAsync()
     {
+        await GetUserClaim();
         medicines = await MedicineService.GetMedicines();
         medicineGroups = await MedicineService.GetMedicineGroups();
     }
@@ -225,5 +240,15 @@
         return false;
     }
     #endregion
+
+    private async Task GetUserClaim()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+    }
 }
 

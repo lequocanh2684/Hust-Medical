@@ -1,6 +1,8 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 @inject IMedicalExaminationService medicalExamService
+@inject IPrescriptionService prescriptionService
+@inject IBillingService billingService
 
 <MudDialog>
     <DialogContent>
@@ -16,6 +18,10 @@
 
     private MedicalExamination medicalExamination= new MedicalExamination();
 
+    private Prescription prescription = new Prescription();
+
+    private Billing billing = new Billing();
+
     private string userId = string.Empty;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
@@ -25,6 +31,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        prescription = await prescriptionService.GetPrescriptionsByMedicalExaminationId(Id);
+        if (Task.FromResult<Prescription>(prescription).IsCompletedSuccessfully)
+        {
+            billing = await billingService.GetBillingByPrescriptionId(prescription.Id);
+        }
         await GetUserId();
     }
 
@@ -35,8 +46,10 @@
 
     private async Task Submit()
     {
+        if(prescription is not null) await prescriptionService.DeletePrescriptionById(prescription.Id, userId);
+        if(billing is not null) await billingService.DeleteBillingById(billing.Id, userId);
         await medicalExamService.DeleteMedicalExaminationById(Id, userId);
-    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
 		Snackbar.Add("Xoá đơn khám thành công!", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
     }

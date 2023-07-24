@@ -104,7 +104,7 @@
         {
             patientSeries.Data[i] = await PatientService.GetNumberPatientsByCreatedDay(patientWeek[i]);
         }
-        patientChartOption.YAxisTicks = 1;
+        patientChartOption.YAxisTicks = 5;
         listPatientSeries.Add(patientSeries);
     }
 
@@ -131,7 +131,7 @@
 		{
 			revenueSeries.Data[i] = await PrescriptionService.GetRevenueMedicinePrescribedByCreatedDay(revenueWeek[i]);
 		}
-        revenueChartOption.YAxisTicks = 20000;
+        revenueChartOption.YAxisTicks = 1000000;
 		listRevenueSeries.Add(revenueSeries);
         //listRevenueSeries.Add(
         //new ChartSeries() { Name = "Doanh thu theo dịch vụ khám", Data = new double[] { 19000, 24000, 35000, 130000, 28000, 15000, 130000 } }

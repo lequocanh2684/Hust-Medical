@@ -8,6 +8,7 @@
 @inject IPatientService PatientService
 @inject IMedicalExaminationService MedicalExaminationService
 @inject IUserService UserService
+@layout MainLayout
 
 <PageTitle>Trang chủ</PageTitle>
 
@@ -16,99 +17,78 @@
         <MudText>Not Authorized</MudText>
     </NotAuthorized>
     <Authorized>
-        <div style="display:flex; flex-direction:row">
-            <div style="display:flex; flex-direction:column; width:70%">
-                <div style="display:flex; flex-direction:column; height:58%">
-                <MudImage Src="./assets/imgs/Stethoscope.jpg" Fluid="false" ObjectPosition="ObjectPosition.Right" ObjectFit="ObjectFit.Fill" 
-                Style="background-color:#FAFAFA; border-radius:24px; width:60%; height:50%; position:absolute" />
-                <MudText Typo="Typo.h5" Style="position: relative; top: 80px; left: 50px; color: #FAF3FF;">@dayTime</MudText>
-                <MudText Typo="Typo.h2" Style="position: relative; top: 90px; left: 50px; color: #FAF3FF; font-weight:400">@userName</MudText>
-                <MudText Typo="Typo.h6" Style="position: relative; top: 210px; left: 50px; color: #FAF3FF;">Quote trong ngày</MudText>
-                <MudText Typo="Typo.body1" Style="position: relative; top: 220px; left: 50px; width: 45%; color: #FAF3FF;">One positive command he gave us: You shall love and honor your emperor. In every congregation a prayer must be said for the czar's health, or the chief of police would close the synagogue.</MudText>
-		        </div>
-
+        <div style="display:flex; flex-direction:row; width:100vh; justify-content:space-between; margin-top:140px">
+            <div style="display:flex; align-items:center; width:40%; justify-content:space-evenly">
+                <MudImage style="margin-bottom:18px" Src="./assets/imgs/clinic.png" Height="100" Width="100" />
+                <MudText Typo="Typo.h3">HustMec</MudText>
+            </div>
+            <div style="display:flex; flex-direction:column">
+                <MudGrid Style="margin-bottom:10px" Spacing="2" Justify="Justify.Center">
+                    <MudItem>
+                        <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToPatientPage">
+                            <div style="display:flex; flex-direction:column; align-items:center">
+                                <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/patient.png"></MudImage>
+						        <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Bệnh nhân</MudText>
+					        </div>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem>
+                        <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToMedicalExPage">
+                            <div style="display:flex; flex-direction:column; align-items:center">
+                                <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/medicalEx.png"></MudImage>
+                                <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Đơn khám</MudText>
+                            </div>
+                        </MudPaper>
+                    </MudItem>
+                    <MudItem>
+                        <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToPrescriptionPage">
+                            <div style="display:flex; flex-direction:column; align-items:center">
+                                <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/prescription.png"></MudImage>
+                                <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Đơn thuốc</MudText>
+                            </div>
+                        </MudPaper>
+                    </MudItem>
+                </MudGrid>
                 <AuthorizeView Roles="Admin">
-                <div style="display:flex; background-color:#FAFAFA; border-radius:20px; margin-top:14px">
-                    <div style="display:flex; padding:16px 20px; width:100%">
-                        <MudStack Spacing="4" Style="flex:1" Row="true">
-                            <MudPaper Style="display:flex; flex-direction:column; flex:1; border-radius:20px">
-                                <div style="display:flex; flex-direction:row">
-                                    <div style="padding:20px 20px">
-                                        <MudIcon Icon="fas fa-bed" Size="Size.Large" Color="Color.Primary" />
-                                    </div>
-                                    <div style="display:flex; flex-direction:column; padding:12px 20px">
-									    <MudText Typo="Typo.body2">Tổng số bệnh nhân</MudText>
-									    <MudText Typo="Typo.h6">@numberOfPatients</MudText>
-                                    </div>
+                    <MudGrid Style="margin-bottom:10px" Spacing="2" Justify="Justify.Center">
+                        <MudItem>
+                            <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToBillingPage">
+                                <div style="display:flex; flex-direction:column; align-items:center">
+                                    <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/bill.png"></MudImage>
+                                    <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Hóa đơn</MudText>
                                 </div>
-                                <MudLink Href="/patient" Color="Color.Primary" Style="padding:20px 20px">Xem chi tiết -></MudLink>
                             </MudPaper>
-                            <MudPaper Style="display:flex; flex-direction:column; flex:1; border-radius:20px">
-                                <div style="display:flex; flex-direction:row">
-                                    <div style="padding:20px 20px">
-                                        <MudIcon Icon="fas fa-users" Size="Size.Large" Color="Color.Primary" />
-                                    </div>
-                                    <div style="display:flex; flex-direction:column; padding:12px 20px">
-                                        <MudText Typo="Typo.body2">Tổng số nhân viên</MudText>
-                                        <MudText Typo="Typo.h6">@numberOfUsers</MudText>
-                                    </div>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToMedicinePage">
+                                <div style="display:flex; flex-direction:column; align-items:center">
+                                    <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/medicine.png"></MudImage>
+                                    <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Thuốc</MudText>
                                 </div>
-                                <MudLink Href="/user_management" Color="Color.Primary" Style="padding:20px 20px">Xem chi tiết -></MudLink>
                             </MudPaper>
-                            <MudPaper Style="display:flex; flex-direction:column; flex:1; border-radius:20px">
-                                <div style="display:flex; flex-direction:row">
-                                    <div style="padding:20px 20px">
-                                        <MudIcon Icon="fas fa-file-medical" Size="Size.Large" Color="Color.Primary" />
-                                    </div>
-                                    <div style="display:flex; flex-direction:column; padding:12px 20px">
-                                        <MudText Typo="Typo.body2">Tổng số đơn khám</MudText>
-                                        <MudText Typo="Typo.h6">@numberOfMedicalExaminations</MudText>
-                                    </div>
+                        </MudItem>
+                        <MudItem>
+                            <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToStatisticPage">
+                                <div style="display:flex; flex-direction:column; align-items:center">
+                                    <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/analytics.png"></MudImage>
+                                    <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Thống kê</MudText>
                                 </div>
-                                <MudLink Href="/medical_examination" Color="Color.Primary" Style="padding:20px 20px">Xem chi tiết -></MudLink>
                             </MudPaper>
-                        </MudStack>
-                        @*<MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
-                                  InputData="@data1" InputLabels="@labels1">
-                            <CustomGraphics>
-                                <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
-                                <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
-                            </CustomGraphics>
-                        </MudChart>
-                        <MudChart ChartType="ChartType.Donut" LegendPosition="@Position.Right" Width="300px" Height="300px"
-                                  InputData="@data" InputLabels="@labels">
-                            <CustomGraphics>
-                                <text class="donut-inner-text" x="50%" y="40%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Tổng số bệnh nhân</text>
-                                <text class="donut-inner-text" x="47%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
-                            </CustomGraphics>
-                        </MudChart>*@
-                    </div>
-                    </div>
+                        </MudItem>
+                    </MudGrid>
+                    <MudGrid Spacing="2" Justify="Justify.Center">
+                        <MudItem>
+                            <MudPaper Height="140px" Width="140px" Style="display:flex; flex-direction:column; cursor:pointer; align-items:center; justify-content:center; background-image: linear-gradient(to top, #e5e2e2, #ffffff);" @onclick="NavigateToUserMngPage">
+                                <div style="display:flex; flex-direction:column; align-items:center">
+                                    <MudImage Style="height:36px; width:36px; margin-bottom:10px" Src="./assets/imgs/userMng.png"></MudImage>
+                                    <MudText Typo="Typo.subtitle1" Style="font-weight:bold">Người dùng</MudText>
+                                </div>
+                            </MudPaper>
+                        </MudItem>
+                        </MudGrid>
                 </AuthorizeView>
             </div>
-	        <div style="display:flex; height:52rem; background-color:#FFFFFF; border-radius:20px; margin-left:40px; width:22%">
-                    <div style="display:flex; flex:1; flex-direction:column;">
-			        <MudDatePicker PickerVariant="PickerVariant.Static" Date="@(DateTime.Today)" />
-                    @*<MudPaper Elevation="0" Style="display:flex; flex-wrap:wrap; flex-direction:column; justify-content:space-between; height:45%; border-radius:24px; overflow:auto">
-                        <MudText Typo="Typo.h5">Không có lịch hẹn nào</MudText>
-                        <MudStack>
-                            @for(int i = 0; i<10; i++){
-                                <MudPaper Elevation="0" Class="pa-4" style="@($"border-left: solid 8px {GenerateRandomColor()} ; margin: 14px 20px")">
-                                    <MudStack Row="true">  
-                                        <MudStack Justify="Justify.Center" Spacing="0">
-                                            <MudText Style="font-weight:bold" Typo="Typo.body2">9:30</MudText>
-                                            <MudText Style="font-weight:bold" Typo="Typo.body1">khám cho bệnh nhân abc</MudText>
-                                            <MudText Typo="Typo.body2">Bác sĩ Nguyễn Văn A</MudText>
-                                        </MudStack>
-							        </MudStack>
-					        </MudPaper>
-                            }
-			            </MudStack>
-                        <MudTimePicker PickerVariant="PickerVariant.Static" Time="@(DateTime.Now.TimeOfDay)" AmPm="true" />
-                    </MudPaper>*@
-                    </div>
-            </div>
-        </div>
+		</div>
     </Authorized>
 </AuthorizeView>
 
@@ -119,6 +99,8 @@
 
     private string userRole = string.Empty;
 
+    private MudTabs mudTabs;
+
     private long numberOfPatients = 0;
     private long numberOfUsers = 0;
     private long numberOfMedicalExaminations = 0;
@@ -126,21 +108,21 @@
     protected override async Task OnInitializedAsync()
     {
         await GetUser();
-        SetDayTime();
-        if (userRole.Equals("Admin"))
-        {
-            var autoRefreshUI = new Timer( _ =>
-            {
-                InvokeAsync(async () =>
-                {
-                    numberOfPatients = await PatientService.GetNumberPatients();
-                    numberOfUsers = await UserService.GetNumberUsers();
-                    numberOfMedicalExaminations = await MedicalExaminationService.GetNumberMedicalExaminations();
-                    StateHasChanged();
-                }
-                );
-            }, null, 0, 1000);
-        }
+        //SetDayTime();
+        //if (userRole.Equals("Admin"))
+        //{
+        //    var autoRefreshUI = new Timer( _ =>
+        //    {
+        //        InvokeAsync(async () =>
+        //        {
+        //            numberOfPatients = await PatientService.GetNumberPatients();
+        //            numberOfUsers = await UserService.GetNumberUsers();
+        //            numberOfMedicalExaminations = await MedicalExaminationService.GetNumberMedicalExaminations();
+        //            StateHasChanged();
+        //        }
+        //        );
+        //    }, null, 0, 1000);
+        //}
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -187,7 +169,7 @@
 
     //private string GenerateRandomColor()
     //{
-	    //return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
+    //return String.Format("#{0:X6}", DefaultVariable.random.Next(0x1000000));
     //}
 
     //example Chart
@@ -196,4 +178,39 @@
 
     //public static double[] data = { 60.0, 40.0 };
     //public string[] labels = { $"Nam ({data[0]}%)", $"Nữ ({data[1]}%)" };
+
+    private void NavigateToPatientPage()
+    {
+        NavigationManager.NavigateTo("/patient");
+	}
+
+    private void NavigateToMedicalExPage()
+    {
+        NavigationManager.NavigateTo("/medical_examination");
+    }
+
+    private void NavigateToPrescriptionPage()
+    {
+        NavigationManager.NavigateTo("/prescription");
+	}
+
+    private void NavigateToBillingPage()
+    {
+        NavigationManager.NavigateTo("/billing");
+	}
+
+    private void NavigateToStatisticPage()
+    {
+        NavigationManager.NavigateTo("/statistic");
+	}
+
+    private void NavigateToMedicinePage()
+    {
+        NavigationManager.NavigateTo("/medicine");
+	}
+
+    private void NavigateToUserMngPage()
+    {
+        NavigationManager.NavigateTo("/user_management");
+	}
 }

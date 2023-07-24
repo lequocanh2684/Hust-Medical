@@ -2,25 +2,57 @@
 @inject IMedicineService MedicineService
 @inject IDiseaseRepo DiseaseRepo
 
-<div style="display:flex; width:97%; padding:16px 0px">
+<div style="display:flex; width:100%; background-image: linear-gradient(to top, #6e3fc5, #a799c1); ">
 	@*<MudAutocomplete @bind-Value="search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Dark" IconSize="Size.Medium"
 					 Placeholder="Tìm kiếm..." DisableUnderLine="true" SearchFunc="@Search" ResetValueOnEmptyText="true"/>*@
+	
+	<MudText Typo="Typo.h6" Style="padding-left: 40px; display: flex; align-items: center; color:#FFFFFF">HustMec</MudText>
+	<div style="display:flex; flex-direction:column; padding-left:30px; ">
+		<MudLink Href="/support" Style="margin-top:4px; margin-left:4px; color:#FFFFFF !important" Typo="Typo.subtitle2" Underline="Underline.None">? Trợ giúp</MudLink>
+			<MudTabs @ref="_tabs" Elevation="0" Rounded="true" Color="@Color.Primary" Style="margin-top:12px; --mud-palette-primary: #594ae200;" DisableRipple="true">
+			<AuthorizeView Roles="Admin,Doctor">
+				<MudTabPanel Text="Trang chủ" OnClick="@(_ => NavigationManager.NavigateTo("/home"))"/>	
+				<MudTabPanel Text="Bệnh nhân" OnClick="@(_ => NavigationManager.NavigateTo("/patient"))"/>
+				<MudTabPanel Text="Đơn Khám" OnClick="@(_ => NavigationManager.NavigateTo("/medical_examination"))" />
+				<MudTabPanel Text="Đơn thuốc" OnClick="@(_ => NavigationManager.NavigateTo("/prescription"))"/>
+			</AuthorizeView>
+			<AuthorizeView Roles="Admin,Cashier">
+				<MudTabPanel Text="Hóa đơn" OnClick="@(_ => NavigationManager.NavigateTo("/billing"))" />
+			</AuthorizeView>
+			<AuthorizeView Roles="Admin,Warehouse Manager">
+				<MudTabPanel Text="Thuốc" OnClick="@(_ => NavigationManager.NavigateTo("/medicine"))" />
+			</AuthorizeView>
+			<AuthorizeView Roles="Admin">
+				<MudTabPanel Text="Thống kê" OnClick="@(_ => NavigationManager.NavigateTo("/statistic"))" />
+				<MudTabPanel Text="Người dùng" OnClick="@(_ => NavigationManager.NavigateTo("/user_management"))" />	
+			</AuthorizeView>
+		</MudTabs>
+	</div>
 	<MudSpacer />
-	<MudAvatar Class="hovicon effect-9 sub-b" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
-	@onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>
-	<MudText Style="display:flex; align-items:center; padding-left: 20px" Typo="Typo.body1">@UserName</MudText>
+	@*<MudAvatar Class="hovicon effect-9 sub-b" style="margin-top:14px" Image="https://res.cloudinary.com/dx6nxcdvv/image/upload/v1685349844/male_doctor.png"
+			   @onclick="@(() => NavigationManager.NavigateTo("/account"))"></MudAvatar>*@
+	<MudLink Href="/account" Style="height:20px; margin-top:4px; margin-right:6px; color:#FFFFFF !important" Typo="Typo.subtitle2" Underline="Underline.None">Welcome: @UserName</MudLink>
+	<form method="post" action="Account/Logout" style="margin-right:24px">
+		<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Text"
+				   Style="text-transform:none; padding:2px 16px; color:#FFFFFF">
+			<MudImage style="width:16px; height:16px; margin-right:4px; margin-top:-2px" Src="./assets/imgs/logout.png"></MudImage>Đăng xuất
+		</MudButton>
+	</form>
 </div>
 
 @code {
-	private string search = string.Empty;
+	//private string search = string.Empty;
+
+
+	private MudTabs _tabs;
 
 	[Parameter]
 	public string UserName { get; set; }
 
-	private async Task<IEnumerable<string>> Search(string value)
-	{
-		var medicines =  await MedicineService.GetMedicineByKeyword(value);
-		var diseases = await DiseaseRepo.GetDiseasesByName(value);
-		return medicines.Select(m => m.Name).Union(diseases.Select(d => d.Name));
-	}
+	//private async Task<IEnumerable<string>> Search(string value)
+	//{
+	//	var medicines =  await MedicineService.GetMedicineByKeyword(value);
+	//	var diseases = await DiseaseRepo.GetDiseasesByName(value);
+	//	return medicines.Select(m => m.Name).Union(diseases.Select(d => d.Name));
+	//}
 }
