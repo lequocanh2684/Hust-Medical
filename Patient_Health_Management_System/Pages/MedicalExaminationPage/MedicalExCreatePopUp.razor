@@ -27,7 +27,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="@(_ => Cancel())">Hủy</MudButton>
-        <MudButton Variant="Variant.Outlined" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
+        <MudButton Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
         <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => SubmitAndCreatePrescription())">Lưu và tạo đơn thuốc</MudButton>
     </DialogActions>
 </MudDialog>
@@ -62,20 +62,21 @@
         MudDialog.Cancel();
     }
 
-    private async Task Submit()
+    private async Task<MedicalExamination> Submit()
     {
         medicalExaminationForm.PatientId = PatientId;
-        await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
+        var newMedicalEx = await MedicalExaminationService.CreateMedicalExamination(medicalExaminationForm, userId);
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
         Snackbar.Add($"Thêm thông tin đơn khám thành công", Severity.Success);
         MudDialog.Close(DialogResult.Ok(true));
         NavigationManager.NavigateTo("/medicalExamination");
+        return newMedicalEx;
     }
 
     private async Task SubmitAndCreatePrescription()
     {
-        await Submit();
-        NavigationManager.NavigateTo($"/prescription/create/{medicalExaminationForm.PatientId}");
+        var newMedicalEx = await Submit();
+        NavigationManager.NavigateTo($"/prescription/create/{medicalExaminationForm.PatientId}/{newMedicalEx.Id}");
     }
 
     private async Task GetUserId()

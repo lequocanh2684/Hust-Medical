@@ -15,7 +15,7 @@
             <MudTextField @bind-Value="@medicineForm.Name" Label="Tên thuốc" ReadOnly="false" Required="true" RequiredError="Tên thuốc không được bỏ trống" />
             <MudTextField @bind-Value="@medicineForm.Unit" Label="Đơn vị" ReadOnly="false" Required="true" RequiredError="Đơn vị không được bỏ trống" />
             <MudNumericField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" Min="0" HideSpinButtons="true"/>
-            <MudNumericField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" Min="0" HideSpinButtons="true" />
+            @*<MudNumericField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" Min="0" HideSpinButtons="true" />*@
             <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" Required="true" RequiredError="Cách dùng không được bỏ trống" />
             <MudAutocomplete T="string" Label="Nhóm thuốc" @bind-Value="@medicineForm.GroupName" SearchFunc="@OnSearchMedicineGroup" ResetValueOnEmptyText="true" MaxItems="null" />
             <MudNumericField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" Min="0" HideSpinButtons="true" />
