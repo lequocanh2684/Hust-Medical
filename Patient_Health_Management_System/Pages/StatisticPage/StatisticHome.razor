@@ -29,7 +29,7 @@
 		</div>
         <MudDivider></MudDivider>
         <div style="display:flex">
-            <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin-left:10px">Biểu đồ doanh thu</MudText>
+            <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin-left:10px">Biểu đồ doanh thu (đơn vị: đồng)</MudText>
             <MudChart ChartType="ChartType.Bar" ChartSeries="@listRevenueSeries" @bind-SelectedIndex="Index" XAxisLabels="@revenueXAisLabels" Width="100vh" Height="350px" ChartOptions="@revenueChartOption"></MudChart>
             <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column;">
                 <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>

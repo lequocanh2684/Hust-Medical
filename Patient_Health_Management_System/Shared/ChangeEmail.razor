@@ -17,7 +17,7 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
+        <MudButton OnClick="@(_ => Cancel())">Hủy</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(_ => Submit())" Disabled="@(!success)">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
