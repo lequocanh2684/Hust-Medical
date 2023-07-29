@@ -9,6 +9,9 @@
 @inject IPrintingService PrintingService
 
 <PageTitle>Quản lý hóa đơn</PageTitle>
+<HeadContent>
+    <link rel="icon" href="./assets/icns/bill.ico" />
+</HeadContent>
 
 <AuthorizeView Context="contextAuthorize">
     <NotAuthorized>
@@ -51,7 +54,7 @@
                                         @if (userRole.Equals("Cashier"))
                                         {
                                             <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
-                                                     OnClick="(e) => ShowUpdate(context.Item)">Chỉnh sửa thông tin</MudMenuItem>
+                                                     OnClick="(e) => ShowUpdate(context.Item)">Cập nhật trạng thái</MudMenuItem>
                                             <MudDivider />
                                             <MudMenuItem Icon="@Icons.Material.Filled.Print" OnClick="(e) => ShowPrint(context.Item)">In hóa đơn</MudMenuItem>
                                             <MudDivider />

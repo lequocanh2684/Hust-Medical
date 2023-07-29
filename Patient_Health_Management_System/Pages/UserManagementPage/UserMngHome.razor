@@ -6,6 +6,9 @@
 @inject IUserService UserService
 
 <PageTitle>Quản lý người dùng</PageTitle>
+<HeadContent>
+    <link rel="icon" href="./assets/icns/userMng.ico" />
+</HeadContent>
 
 <AuthorizeView Context="contextAuthorize">
     <NotAuthorized>
@@ -14,7 +17,7 @@
     <Authorized>
         <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
             <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
-                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách thuốc</MudText>
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách người dùng</MudText>
 
                 <MudDataGrid T="User" MultiSelection="true" Items="@users" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
                              FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
