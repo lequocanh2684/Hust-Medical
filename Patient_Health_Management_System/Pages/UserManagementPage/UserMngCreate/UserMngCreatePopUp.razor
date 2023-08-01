@@ -16,7 +16,7 @@
         <MudForm @bind-IsValid="@success">
             <MudTextField @bind-Value="@accountForm.Name" Label="Họ và tên" ReadOnly="false" Required="true" RequiredError="Họ và tên không được bỏ trống" />
             <MudTextField @bind-Value="@accountForm.Email" Label="Email" ReadOnly="false" Required="true" RequiredError="Email không được bỏ trống" />
-            <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Required="true" Mask="@passwordMask" 
+            <MudTextField @bind-Value="@accountForm.Password" Label="Mật khẩu" ReadOnly="false" InputType="InputType.Password" Validation="@(new Func<string, IEnumerable<string>>(PasswordValidator))" Required="true"  
             HelperText="@passwordHelper" RequiredError="Mật khẩu không hợp lệ"/>
             <MudSelect T="string" Label="Giới tính" AnchorOrigin="Origin.BottomCenter" @bind-Value="@userForm.Gender">
                 <MudSelectItem Value="@("Nam")" />
@@ -37,7 +37,7 @@
         </MudForm>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Outlined" OnClick="@(_ => Cancel())">Hủy</MudButton>
+        <MudButton OnClick="@(_ => Cancel())">Hủy</MudButton>
         <MudButton Variant="Variant.Filled" Disabled="@(!success)" Color="Color.Primary" OnClick="@(_ => Submit())">Lưu</MudButton>
     </DialogActions>
 </MudDialog>
@@ -56,8 +56,6 @@
     private string accessToken = string.Empty;
 
     private bool success = false;
-
-    private IMask passwordMask = new RegexMask(@"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$");
 
     private string passwordHelper = new string("Mât khẩu cần có tối thiểu 8 kí tự, bắt đầu bằng chữ in hoa và có tối thiểu 1 chữ số");
 
@@ -131,5 +129,22 @@
         }
         await Task.Delay(0);
         return DefaultVariable.specialist.Where(s => s.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
+    }
+
+    private IEnumerable<string> PasswordValidator(string password)
+    {
+        if (string.IsNullOrEmpty(password))
+        {
+            yield return "Mật khẩu không được bỏ trống";
+            yield break;
+        }
+        if(password.Length < 8) 
+            yield return "Mật khẩu cần có tối thiểu 8 kí tự";
+        if (!Regex.IsMatch(password, @"^(?=.*?[A-Z])")) 
+            yield return "Mật khẩu bắt đầu bằng 1 chữ in hoa";
+        if (!Regex.IsMatch(password, @"^(?=.*?[a-z])"))
+            yield return "Mật khẩu cần có tối thiểu 1 chữ thường";
+        if (!Regex.IsMatch(password, @"^(?=.*?[0-9])"))
+            yield return "Mật khẩu cần có tối thiểu 1 chữ số";
     }
 }

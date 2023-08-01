@@ -6,13 +6,16 @@
 <MudThemeProvider/>
 <MudDialogProvider />
 <MudSnackbarProvider />
-<NavMenu />
+@*<NavMenu />*@
 
-<div style="margin-left:280px;">
+<div style="margin-bottom: 18px">
 	<TopBar UserName="@userName"/>
 </div>
-<div style="margin-left:280px;">
+<div style="display:flex; justify-content:center">
 	@Body
+</div>
+<div>
+	<Footer />
 </div>
 
 @code {
