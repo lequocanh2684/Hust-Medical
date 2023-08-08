@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using MudBlazor;
 using MudBlazor.Services;
 
-namespace Patient_Health_Management_System.Extensions
+namespace Hust_Medical.Extensions
 {
     public static class WebAppBuilderExt
     {

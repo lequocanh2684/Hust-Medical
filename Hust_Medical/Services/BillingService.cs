@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Services
+﻿namespace Hust_Medical.Services
 {
     public class BillingService : IBillingService
     {

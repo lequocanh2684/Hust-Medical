@@ -1,6 +1,6 @@
 using RestSharp;
 
-namespace Patient_Health_Management_System.Services.Interfaces
+namespace Hust_Medical.Services.Interfaces
 {
     public interface IAccountService
     {

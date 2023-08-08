@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Patient_Health_Management_System.Pages.Account
+namespace Hust_Medical.Pages.Account
 {
 	public class LoginModel : PageModel
 	{

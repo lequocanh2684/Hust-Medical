@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Domain.Models
+﻿namespace Hust_Medical.Domain.Models
 {
     public class User
     {

@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Domain.DTOs
+﻿namespace Hust_Medical.Domain.DTOs
 {
     public class UserResponse
     {

@@ -1,6 +1,6 @@
-﻿using Patient_Health_Management_System.Domain.Models;
+﻿using Hust_Medical.Domain.Models;
 
-namespace Patient_Health_Management_System.Repositories
+namespace Hust_Medical.Repositories
 {
     public class UserRepo : IUserRepo
     {

@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Repositories.Interfaces
+﻿namespace Hust_Medical.Repositories.Interfaces
 {
     public interface IPatientRepo
     {

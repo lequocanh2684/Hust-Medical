@@ -1,6 +1,6 @@
-using Patient_Health_Management_System.Domain.Models;
+using Hust_Medical.Domain.Models;
 
-namespace Patient_Health_Management_System.Services
+namespace Hust_Medical.Services
 {
     public class PatientService : IPatientService
     {

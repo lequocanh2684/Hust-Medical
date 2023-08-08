@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Controller
+﻿namespace Hust_Medical.Controller
 {
     [Route("api/[controller]")]
     public class ExportController : ControllerBase

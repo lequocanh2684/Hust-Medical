@@ -1,4 +1,4 @@
-namespace Patient_Health_Management_System.Domain.Forms
+namespace Hust_Medical.Domain.Forms
 {
     public class DiseaseGroupForm
     {

@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Repositories
+﻿namespace Hust_Medical.Repositories
 {
     public class RepoInitialize
     {

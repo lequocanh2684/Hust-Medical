@@ -1,4 +1,4 @@
-﻿namespace Patient_Health_Management_System.Extensions
+﻿namespace Hust_Medical.Extensions
 {
     public static class DefaultVariable
     {

@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "Patient_Health_Management_System": {
+    "Hust_Medical": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

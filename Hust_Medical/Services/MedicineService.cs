@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
-namespace Patient_Health_Management_System.Services
+namespace Hust_Medical.Services
 {
     public class MedicineService : IMedicineService
     {
