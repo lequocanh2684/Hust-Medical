@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hust-Medical", "Patient_Health_Management_System\Hust-Medical.csproj", "{EE9EB9C6-5FF1-41A0-9D83-3ED19922EE30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hust-Medical", "Hust_Medical\Hust-Medical.csproj", "{EE9EB9C6-5FF1-41A0-9D83-3ED19922EE30}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
