@@ -1,0 +1,68 @@
+﻿@inject IMedicalExaminationService MedicalExaminationService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Info" Class="mr-3 mb-n1" />
+            Lịch sử khám bệnh
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <div class="d-flex" style="height:47rem; background-color:#FAFAFA; border-radius:20px">
+            <div style="display:flex; flex:1; flex-direction:column; margin:16px 20px;">
+                <MudDataGrid T="MedicalExamination" Items="@medicalExaminations" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                    <ToolBarContent>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm đơn khám" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <PropertyColumn Property="m => m.MedicalExaminationId" Title="Mã đơn khám"/>
+                        <PropertyColumn Property="m => m.DiseaseName" Title="Chẩn đoán"/>
+                        <PropertyColumn Property="m => m.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
+                    </Columns>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
+
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudDataGridPager T="MedicalExamination" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string PatientId { get; set; }
+
+    private List<MedicalExamination> medicalExaminations = new List<MedicalExamination>();
+    private string searchS = string.Empty;
+    private string dateTimeFormat = "dd/MM/yyyy";
+
+    protected override async Task OnInitializedAsync()
+    {
+        medicalExaminations = await MedicalExaminationService.GetMedicalExaminationsByPatientId(PatientId);
+
+    }
+
+    private bool FilterS(Domain.Models.MedicalExamination medicalExam) => FilterSearch(medicalExam, searchS);
+
+    private bool FilterSearch(Domain.Models.MedicalExamination medicalExam, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (medicalExam.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicalExam.DiseaseName.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        return false;
+    }
+}

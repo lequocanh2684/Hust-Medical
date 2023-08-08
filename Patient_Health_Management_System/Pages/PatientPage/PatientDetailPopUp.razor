@@ -24,7 +24,7 @@
 
 
 @code {
-    private Domain.Models.Patient? patient = new Domain.Models.Patient();
+    private Patient patient = new Patient();
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
@@ -34,10 +34,5 @@
     protected override async Task OnInitializedAsync()
     {
         patient = await PatientService.GetPatientById(Id);
-    }
-
-    private void Cancel()
-    {
-        MudDialog.Cancel();
     }
 }
