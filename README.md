@@ -1,6 +1,6 @@
 # Hust-Medical
 ### Graduation Project
-#### website: [here](hustmec.azurewebsites.net)
+#### website: [here](https://hustmec.azurewebsites.net/)
 Project's aim: create a simple clinic managing website
 # Technologies
 - Framework: ASP.NET Core Blazor
