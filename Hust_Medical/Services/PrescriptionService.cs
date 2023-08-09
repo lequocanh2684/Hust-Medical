@@ -198,11 +198,11 @@
             }
         }
 
-        public async Task<Prescription> GetPrescriptionsByMedicalExaminationId(string medicalExaminationId)
+        public async Task<Prescription> GetPrescriptionByMedicalExaminationId(string medicalExaminationId)
         {
             try
             {
-                return await _presriptionRepo.GetPrescriptionsByMedicalExaminationId(medicalExaminationId);
+                return await _presriptionRepo.GetPrescriptionByMedicalExaminationId(medicalExaminationId);
             }
             catch (Exception e)
             {

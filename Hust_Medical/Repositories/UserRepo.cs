@@ -13,7 +13,7 @@ namespace Hust_Medical.Repositories
 
         public async Task<IEnumerable<User>> GetUsers()
         {
-            return await _user.Find(u => !u.IsDeleted).ToListAsync();
+            return await _user.Find(u => !u.IsDeleted).SortByDescending(u => u.Id).ToListAsync();
         }
 
         public async Task<User> GetUserByUserId(string userId)

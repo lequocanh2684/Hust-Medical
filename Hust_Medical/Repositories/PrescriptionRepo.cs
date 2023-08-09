@@ -15,7 +15,7 @@ namespace Hust_Medical.Repositories
         {
             try
             {
-                return await _prescriptions.Find(prescription => !prescription.IsDeleted).ToListAsync();
+                return await _prescriptions.Find(prescription => !prescription.IsDeleted).SortByDescending(prescription => prescription.Id).ToListAsync();
             }
             catch (Exception e)
             {
@@ -164,11 +164,11 @@ namespace Hust_Medical.Repositories
             }
         }
 
-        public async Task<Prescription> GetPrescriptionsByMedicalExaminationId(string medicalExaminationId)
+        public async Task<Prescription> GetPrescriptionByMedicalExaminationId(string medicalExaminationId)
         {
             try
             {
-                return await _prescriptions.Find(prescription => prescription.MedicalExaminationId == medicalExaminationId).FirstOrDefaultAsync();
+                return await _prescriptions.Find(prescription => prescription.MedicalExaminationId.Equals(medicalExaminationId) && !prescription.IsDeleted).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {

@@ -22,7 +22,7 @@
         }
         public async Task<List<MedicalExamination>> GetMedicalExaminations()
         {
-            return await _medicalExaminations.Find(medicalExamination => !medicalExamination.IsDeleted).ToListAsync();
+            return await _medicalExaminations.Find(medicalExamination => !medicalExamination.IsDeleted).SortByDescending(medicalExaminaton => medicalExaminaton.Id).ToListAsync();
         }
         public async Task<List<MedicalExamination>> GetMedicalExaminationsByPage(int page, int pageSize)
         {
