@@ -91,6 +91,7 @@
     private IEnumerable<MedicalExamination> medicalExaminations = new List<MedicalExamination>();
     private IEnumerable<Patient> patients = new List<Patient>();
     private IEnumerable<Disease> diseases = new List<Disease>();
+    private IEnumerable<Prescription> prescriptions = new List<Prescription>();
     private string searchS = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
     private string userId = string.Empty;
@@ -105,11 +106,13 @@
             {
                 medicalExaminations = await medicalExamService.GetMedicalExaminations();
                 patients = await PatientService.GetPatients();
+                prescriptions = await PrescriptionService.GetPrescriptions();
             }
             else
             {
                 medicalExaminations = await medicalExamService.GetMedicalExaminationsByDoctorId(userId);
                 patients = await PatientService.GetPatientsByDoctorId(userId);
+                prescriptions = await PrescriptionService.GetPrescriptionsByDoctorId(userId);
             }
         }
     }
@@ -161,7 +164,7 @@
 
     private bool checkPrescriptionIsExisted(string id)
 	{
-		var prescription = PrescriptionService.GetPrescriptionByMedicalExaminationId(id).Result;
+		var prescription = prescriptions.Where(p => p.MedicalExaminationId.Equals(id) && !p.IsDeleted).FirstOrDefault();
 		if (prescription is not null) return true;
 		return false;
 	}

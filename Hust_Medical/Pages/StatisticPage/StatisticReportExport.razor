@@ -1,0 +1,23 @@
+﻿@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <DialogContent>
+        <MudDatePicker Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="startTime"/>  
+        <MudDatePicker Label="Đến ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="endTime"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Xuất báo cáo</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private DateTime? startTime = DateTime.Now;
+
+    private DateTime? endTime = DateTime.Now;
+
+    private async Task Submit() => NavigationManager.NavigateTo($"api/export/statistic/{startTime.Value.ToString("MM-dd-yyyy")}/{endTime.Value.ToString("MM-dd-yyyy")}", true);
+}

@@ -40,7 +40,7 @@
         }
 
         [HttpGet("statistic/{startTime}/{endTime}")]
-        public IActionResult ExportStatistic([FromQuery] string startTime, [FromQuery] string endTime)
+        public IActionResult ExportStatistic([FromRoute] string startTime, [FromRoute] string endTime)
         {
             try
             {
