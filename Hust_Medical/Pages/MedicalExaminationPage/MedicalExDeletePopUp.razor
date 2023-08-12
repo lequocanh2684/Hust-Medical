@@ -31,7 +31,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        prescription = await prescriptionService.GetPrescriptionsByMedicalExaminationId(Id);
+        prescription = await prescriptionService.GetPrescriptionByMedicalExaminationId(Id);
         if (Task.FromResult<Prescription>(prescription).IsCompletedSuccessfully)
         {
             billing = await billingService.GetBillingByPrescriptionId(prescription.Id);

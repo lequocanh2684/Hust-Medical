@@ -38,7 +38,7 @@ namespace Hust_Medical.Repositories
         {
             try
             {
-                return await _patient.Find(p => !p.IsDeleted).ToListAsync();
+                return await _patient.Find(p => !p.IsDeleted).SortByDescending(p => p.Id).ToListAsync();
             }
             catch (Exception e)
             {

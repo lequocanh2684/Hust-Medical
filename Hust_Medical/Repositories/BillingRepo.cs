@@ -38,7 +38,7 @@
         {
             try
             {
-                return await _billing.Find(b => !b.IsDeleted).ToListAsync();
+                return await _billing.Find(b => !b.IsDeleted).SortByDescending(b => b.Id).ToListAsync();
             }
             catch (Exception e)
             {

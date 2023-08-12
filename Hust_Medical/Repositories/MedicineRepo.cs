@@ -14,7 +14,7 @@
         #region medicine
         public async Task<List<Medicine>> GetMedicines()
         {
-            return await _medicines.Find(medicine => !medicine.IsDeleted).ToListAsync();
+            return await _medicines.Find(medicine => !medicine.IsDeleted).SortByDescending(medicine => medicine.Id).ToListAsync();
         }
 
         public async Task<List<Medicine>> GetMedicinesByPage(int page, int pageSize)
@@ -86,7 +86,7 @@
         #region medicine_group
         public async Task<List<MedicineGroup>> GetMedicineGroups()
         {
-            return await _medicineGroups.Find(medicineGroup => !medicineGroup.IsDeleted).ToListAsync();
+            return await _medicineGroups.Find(medicineGroup => !medicineGroup.IsDeleted).SortByDescending(medicineGroup => medicineGroup.Id).ToListAsync();
         }
 
         public async Task<MedicineGroup> GetMedicineGroupById(string id)

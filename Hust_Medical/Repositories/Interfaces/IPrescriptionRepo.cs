@@ -14,6 +14,6 @@
         Task<List<Prescription>> GetPrescriptionsByDoctorId(string doctorId);
         Task DeletePrescriptionById(List<Prescription> prescriptions);
         Task<List<Prescription>> GetPrescriptionsByPatientId(string patientId);
-        Task<Prescription> GetPrescriptionsByMedicalExaminationId(string medicalExaminationId);
+        Task<Prescription> GetPrescriptionByMedicalExaminationId(string medicalExaminationId);
     }
 }

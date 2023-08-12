@@ -5,43 +5,52 @@
 @inject NavigationManager NavigationManager
 @inject IPatientService PatientService
 @inject IPrescriptionService PrescriptionService
+@inject IDialogService DialogService
 
 <PageTitle>Thống kê</PageTitle>
 <HeadContent>
     <link rel="icon" href="./assets/icns/analytics.ico" />
 </HeadContent>
 
-<div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%; overflow:auto">
+<div class="d-flex" style="height:43rem; background-color:#FAFAFA; border-radius:20px; width:96.7%; overflow:auto">
     <div style="display:flex; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
-        <div style="display:flex">
-            <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin-left:10px">Biểu đồ số bệnh nhân theo ngày</MudText>
-            <MudChart ChartType="ChartType.Bar" ChartSeries="@listPatientSeries" @bind-SelectedIndex="Index" XAxisLabels="@patientXAxisLabels" Width="100vh" Height="350px" ChartOptions="@patientChartOption"></MudChart>
-            <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column">
-                <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>
-				<div>
-                    <MudDatePicker @ref="pickerPatientChart" Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="defaultDatePatientChart">
-                        <PickerActions>
-                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(async () => await OnChangeDatePatientChart())">Ok</MudButton>
-                        </PickerActions>
-                    </MudDatePicker>
-                </div>
-            </div>
-		</div>
-        <MudDivider></MudDivider>
-        <div style="display:flex">
-            <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin-left:10px">Biểu đồ doanh thu (đơn vị: đồng)</MudText>
-            <MudChart ChartType="ChartType.Bar" ChartSeries="@listRevenueSeries" @bind-SelectedIndex="Index" XAxisLabels="@revenueXAisLabels" Width="100vh" Height="350px" ChartOptions="@revenueChartOption"></MudChart>
-            <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column;">
-                <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>
-                <div>
-                    <MudDatePicker @ref="pickerRevenueChart" Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="defaultDateRevenueChart">
-                        <PickerActions>
-                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(async () => await OnChangeDateRevenueChart())">Ok</MudButton>
-                        </PickerActions>
-                    </MudDatePicker>
-                </div>
-            </div>
+        <div>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ShowStatisticReportExport">Xuất báo cáo thống kê</MudButton>
         </div>
+        <MudCarousel Style="height:100%" ShowBullets="true" AutoCycle="false" ShowArrows="false" TData="object">
+            <MudCarouselItem Style="display:flex; justify-content:center" Transition="Transition.Slide">
+            <div style="display:flex">
+                <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin: 0px 10px">Biểu đồ số bệnh nhân theo ngày</MudText>
+                <MudChart ChartType="ChartType.Bar" ChartSeries="@listPatientSeries" @bind-SelectedIndex="Index" XAxisLabels="@patientXAxisLabels" Width="100vh" Height="500px" ChartOptions="@patientChartOption"></MudChart>
+                <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column; margin-left:10px">
+                    <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>
+				    <div>
+                        <MudDatePicker @ref="pickerPatientChart" Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="defaultDatePatientChart">
+                            <PickerActions>
+                                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(async () => await OnChangeDatePatientChart())">Ok</MudButton>
+                            </PickerActions>
+                        </MudDatePicker>
+                    </div>
+                </div>
+		    </div>
+            </MudCarouselItem>
+            <MudCarouselItem Style="display:flex; justify-content:center" Transition="Transition.Slide">
+            <div style="display:flex">
+                <MudText Typo="Typo.body1" Style="display:flex; align-items:center; font-weight:bold; margin: 0px 10px">Biểu đồ doanh thu (đơn vị: đồng)</MudText>
+                <MudChart ChartType="ChartType.Bar" ChartSeries="@listRevenueSeries" @bind-SelectedIndex="Index" XAxisLabels="@revenueXAisLabels" Width="100vh" Height="450px" ChartOptions="@revenueChartOption"></MudChart>
+                <div style="display:flex; justify-content:center; align-items:center; flex:1; flex-direction:column; margin-left:10px">
+                    <MudText Typo="Typo.body1" Style="font-weight:bold; margin-bottom:5px">Lọc theo khoảng thời gian (tuần) </MudText>
+                    <div>
+                        <MudDatePicker @ref="pickerRevenueChart" Label="Từ ngày" DisableToolbar="true" Placeholder="chọn ngày bắt đầu" @bind-Date="defaultDateRevenueChart">
+                            <PickerActions>
+                                <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(async () => await OnChangeDateRevenueChart())">Ok</MudButton>
+                            </PickerActions>
+                        </MudDatePicker>
+                    </div>
+                </div>
+            </div>
+            </MudCarouselItem>
+        </MudCarousel>
     </div>
 </div>
 
@@ -107,7 +116,8 @@
         {
             patientSeries.Data[i] = await PatientService.GetNumberPatientsByCreatedDay(patientWeek[i]);
         }
-        patientChartOption.YAxisTicks = 5;
+        patientChartOption.YAxisTicks = 1;
+        patientChartOption.MaxNumYAxisTicks = 5*10;
         listPatientSeries.Add(patientSeries);
     }
 
@@ -134,7 +144,8 @@
 		{
 			revenueSeries.Data[i] = await PrescriptionService.GetRevenueMedicinePrescribedByCreatedDay(revenueWeek[i]);
 		}
-        revenueChartOption.YAxisTicks = 1000000;
+        revenueChartOption.YAxisTicks = 5*10000;
+        revenueChartOption.MaxNumYAxisTicks = 5*1000000;
 		listRevenueSeries.Add(revenueSeries);
         //listRevenueSeries.Add(
         //new ChartSeries() { Name = "Doanh thu theo dịch vụ khám", Data = new double[] { 19000, 24000, 35000, 130000, 28000, 15000, 130000 } }
@@ -145,5 +156,12 @@
     {
         pickerRevenueChart.Close();
         await SetRevenueChart();
+    }
+
+    private async Task ShowStatisticReportExport()
+    {
+        var dialog = await DialogService.ShowAsync<StatisticReportExport>("Chọn khoảng thời gian cho báo cáo thống kê");
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
     }
 }
