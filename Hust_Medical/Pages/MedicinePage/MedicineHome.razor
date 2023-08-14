@@ -24,13 +24,10 @@
                                  FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu" @bind-SelectedItems="@selectedMedicines"
                                  Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
                         <ToolBarContent>
-                            <AuthorizeView Roles="Warehouse Manager">
-                                <MudGrid Spacing="2">
+                            <MudGrid Spacing="2">
+                                <AuthorizeView Roles="Warehouse Manager">
                                     <MudItem>
                                         <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="ShowMedicineCreate">Thêm thuốc mới</MudButton>
-                                    </MudItem>
-                                    <MudItem>
-                                        <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="ExportReport">Xuất báo cáo</MudButton>
                                     </MudItem>
                                     <MudItem>
                                         <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ImportMedicineExcel">Nhập từ file excel</MudButton>
@@ -41,8 +38,11 @@
                                             <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteMultiMedicine">Xóa @selectedMedicines.Count thuốc</MudButton>
                                         </MudItem>
                                     }
-                                </MudGrid>
-                            </AuthorizeView>
+                                </AuthorizeView>
+                                    <MudItem>
+                                        <MudButton Color="Color.Tertiary" Variant="Variant.Filled" OnClick="ExportReport">Xuất báo cáo</MudButton>
+                                    </MudItem>
+                            </MudGrid>
                             <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm thuốc" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </ToolBarContent>

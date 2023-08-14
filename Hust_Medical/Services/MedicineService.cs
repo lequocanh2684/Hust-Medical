@@ -1,5 +1,4 @@
-﻿using Hust_Medical.Domain.Forms;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
 namespace Hust_Medical.Services
@@ -280,6 +279,33 @@ namespace Hust_Medical.Services
                     }
                 }
                 return await _medicineRepo.ImportMedicineExcel(medicines);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public byte[] CreateImportTemplateFile()
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var medicineGroups = _medicineGroupRepo.GetMedicineGroups().Result.OrderBy(mg => mg.Name).Select(mg => mg.Name).ToList();
+                    Workbook workbook = new Workbook();
+                    workbook.LoadFromFile($"{Directory.GetCurrentDirectory()}{@"\wwwroot\reportTemplate\Mẫu nhập kho thuốc.xlsx"}");
+                    Worksheet sheet = workbook.Worksheets[1];
+
+                    //Fill data
+                    sheet.Workbook.MarkerDesigner.AddParameter("MedicineGroupNames", medicineGroups);
+                    sheet.Workbook.MarkerDesigner.Apply();
+
+                    //Save
+                    workbook.SaveToStream(stream);
+                    workbook.Dispose();
+                    return stream.ToArray();
+                }
             }
             catch (Exception e)
             {
