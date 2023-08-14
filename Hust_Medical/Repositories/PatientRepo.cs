@@ -92,7 +92,7 @@ namespace Hust_Medical.Repositories
             {
                 var filter = Builders<Patient>.Filter;
                 var filterDoctorId = filter.Eq(p => p.CreatedBy, doctorId) & filter.Eq(p => p.IsDeleted, false);
-                return await _patient.Find(filterDoctorId).ToListAsync();
+                return await _patient.Find(filterDoctorId).SortByDescending(p => p.Id).ToListAsync();
             }
             catch (Exception e)
             {
@@ -105,6 +105,18 @@ namespace Hust_Medical.Repositories
             try
             {
                 return await _patient.Find(p => !p.IsDeleted).CountDocumentsAsync();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Patient> GetPatientByIDNumber(string iDNumber)
+        {
+            try
+            {
+                return await _patient.Find(p => p.IDNumber.Equals(iDNumber)).FirstOrDefaultAsync();
             }
             catch (Exception e)
             {

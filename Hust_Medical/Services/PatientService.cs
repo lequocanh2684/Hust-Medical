@@ -52,11 +52,12 @@ namespace Hust_Medical.Services
                     Email = patientForm.Email,
                     CreatedBy = userId,
                     CreatedAt = DateTime.Now,
-                    UpdatedBy = null,
+                    UpdatedBy = String.Empty,
                     UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
                     IsDeleted = false,
                     DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                    DeletedBy = null
+                    DeletedBy = String.Empty,
+                    IDNumber = patientForm.IDNumber,
                 };
                 await _patientRepo.CreatePatient(patient);
                 return patient;
@@ -90,6 +91,7 @@ namespace Hust_Medical.Services
                     patient.PhoneNumber = patientForm.PhoneNumber;
                     patient.UpdatedAt = DateTime.Now;
                     patient.UpdatedBy = userId;
+                    patient.IDNumber = patientForm.IDNumber;
                 }
                 await _patientRepo.ModifyPatientById(patient);
             }
@@ -151,6 +153,18 @@ namespace Hust_Medical.Services
             try
             {
                 return await _patientRepo.GetNumberPatients();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<Patient> GetPatientByIDNumber(string iDNumber)
+        {
+            try
+            {
+                return await _patientRepo.GetPatientByIDNumber(iDNumber);
             }
             catch (Exception e)
             {
