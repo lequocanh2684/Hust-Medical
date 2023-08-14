@@ -152,6 +152,8 @@
             return true;
         if (patients.Any(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
             return true;
+        if (prescriptions.Any(p => p.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
         return false;
     }
 

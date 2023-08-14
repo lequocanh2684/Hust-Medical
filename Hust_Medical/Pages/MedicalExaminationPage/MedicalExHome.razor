@@ -157,7 +157,12 @@
     private bool FilterSearch(Domain.Models.MedicalExamination medicalExam, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (medicalExam.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (medicalExam.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (patients.Any(p => p.PatientId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (patients.Any(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (medicalExam.DiseaseName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         return false;
     }
 
