@@ -1,0 +1,50 @@
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage ProtectedLocalStorage
+@inject ISnackbar Snackbar
+@inject IUserService UserService
+@inject IAccountService AccountService
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Bạn có chắc muốn xoá người dùng tên @UserName không?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Huỷ</MudButton>
+        <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="Submit">Xoá</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public string UserId { get; set; }
+
+    [Parameter]
+    public string UserName { get; set; }
+
+    [Parameter]
+    public string AdminId { get; set; }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private async Task Submit()
+    {
+        var access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+        if (String.IsNullOrEmpty(access_token.Value) || AccountService.IsExpired(access_token.Value))
+        {
+            var newToken = await AccountService.TokenGenerator();
+            await ProtectedLocalStorage.SetAsync("access_token", newToken.access_token);
+            access_token = await ProtectedLocalStorage.GetAsync<string>("access_token");
+        }
+        await UserService.DeleteUserByUserId(UserId, AdminId);
+        await AccountService.BlockUserById(UserId, access_token.Value);
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+		Snackbar.Add("Xoá người dùng thành công!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

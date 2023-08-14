@@ -1,0 +1,169 @@
+﻿@page "/patient"
+@attribute [Authorize(Roles = "Doctor, Admin")]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+@inject IPatientService PatientService
+@inject IDialogService DialogService
+
+<PageTitle>Quản lý bệnh nhân</PageTitle>
+<HeadContent>
+    <link rel="icon" href="./assets/icns/patient.ico"/>
+</HeadContent>
+
+<AuthorizeView Context="contextAuthorize">
+    <NotAuthorized>
+        <MudText>Not Authorized</MudText>
+    </NotAuthorized>
+    <Authorized>
+        <div class="d-flex" style="height:50rem; background-color:#FAFAFA; border-radius:20px; width:96.7%">
+            <div style="display:flex; flex:1; flex-direction:column; padding-top:1rem; margin:0px 20px; width:96.7%">
+                <MudText Typo="Typo.h6" Style="padding-bottom:10px">Danh sách bệnh nhân</MudText>
+
+                <MudDataGrid T="Patient" Items="@patients" SortMode="SortMode.Multiple" Filterable="true" QuickFilter="@FilterS" FixedHeader="true"
+                             FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive" FilterMode="DataGridFilterMode.ColumnFilterMenu"
+                             Hideable="true" Striped="true" Bordered="true" Style="overflow:auto; position:relative; width:100%; border-radius:20px;" Height="600px">
+                    <ToolBarContent>
+                        <AuthorizeView Roles="Doctor">
+                            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => ShowAdd()">Thêm bệnh nhân mới</MudButton>
+                        </AuthorizeView>
+                        <MudSpacer />
+                        <MudTextField @bind-Value="searchS" Placeholder="Tìm kiếm bệnh nhân" Adornment="Adornment.Start" Immediate="true"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <Columns>
+                        <PropertyColumn Property="m => m.PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="m => m.Name" Title="Tên bệnh nhân" />
+                        <PropertyColumn Property="m => m.Gender" Title="Giới tính" />
+                        <PropertyColumn Property="m => m.Age" Title="Tuổi" />
+                        <PropertyColumn Property="m => m.DateOfBirth.GetValueOrDefault().ToLocalTime().ToString(dateTimeFormat)" Title="Ngày tháng năm sinh" />
+                        <TemplateColumn Sortable="false" Filterable="false" Title="Chức năng">
+                            <CellTemplate>
+                                <MudMenu AnchorOrigin="Origin.BottomLeft">
+                                    <ActivatorContent>
+                                        <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz" Color="Color.Primary" Size="Size.Medium" />
+                                    </ActivatorContent>
+                                    <ChildContent>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Info" IconColor="Color.Info" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDetail(context.Item.Id)">Thông tin chi tiết</MudMenuItem>
+                                        <MudMenuItem Icon="@Icons.Material.Filled.History" IconColor="Color.Dark" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowMedExHistory(context.Item.Id)">Lịch sử khám bệnh</MudMenuItem>
+                                        @if (userRole.Equals("Doctor"))
+                                        {
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Edit" IconColor="Color.Primary" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowUpdate(context.Item.Id)">Chỉnh sửa thông tin</MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem OnClick="(e) => ShowCreateNewMedicalEx(context.Item.Id, context.Item.Name)">Tạo đơn khám</MudMenuItem>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" IconSize="Size.Medium"
+                                                     OnClick="(e) => ShowDelete(context.Item.Id, context.Item.Name)">Xóa người dùng</MudMenuItem>
+                                        }
+                                    </ChildContent>
+                                </MudMenu>
+                                </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                    <NoRecordsContent>
+                        <MudText>Không tìm thấy dữ liệu</MudText>
+                    </NoRecordsContent>
+                    <LoadingContent>
+                        <MudText>Loading...</MudText>
+                    </LoadingContent>
+                    <PagerContent>
+                        <MudDataGridPager T="Patient" />
+                    </PagerContent>
+                </MudDataGrid>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    private IEnumerable<Patient> patients = new List<Patient>();
+    private string searchS = string.Empty;
+    private string dateTimeFormat = "dd/MM/yyyy";
+    private string userId = string.Empty;
+    private string userRole = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var getUserClaim = await GetUserClaim();
+        if (getUserClaim.IsCompletedSuccessfully)
+        {
+            if (userRole.Equals("Admin"))
+            {
+                patients = await PatientService.GetPatients();
+            }
+            else
+            {
+                patients = await PatientService.GetPatientsByDoctorId(userId);
+            }
+        }
+    }
+
+    private async Task ShowDetail(string Id)
+    {
+        var parameter = new DialogParameters { ["Id"] = Id };
+        var dialog = await DialogService.ShowAsync<PatientDetailPopUp>("Thông tin bệnh nhân", parameter);
+    }
+
+    private async Task ShowAdd()
+    {
+        var dialog = DialogService.Show<PatientCreatePopUp>("Thêm bệnh nhân");
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowUpdate(string id)
+    {
+        var parameter = new DialogParameters { ["Id"] = id };
+        var dialog = DialogService.Show<PatientUpdatePopUp>("Sửa thông tin bệnh nhân", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowDelete(string id, string name)
+    {
+        var parameter = new DialogParameters { ["Id"] = id, ["PatientName"] = name };
+        var dialog = DialogService.Show<PatientDeletePopUp>("Xóa bệnh nhân", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowCreateNewMedicalEx(string id, string name)
+    {
+        var parameter = new DialogParameters { ["PatientId"] = id, ["PatientName"] = name };
+        var dialog = DialogService.Show<MedicalExaminationPage.MedicalExCreatePopUp>("Tạo đơn khám", parameter);
+        var result = await dialog.Result;
+        if (!result.Canceled) await InvokeAsync(OnInitializedAsync);
+    }
+
+    private async Task ShowMedExHistory(string patientId)
+    {
+        var parameter = new DialogParameters { ["PatientId"] = patientId };
+        var option = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<PatientMedExHistory>("Lịch sử khám bệnh", parameter, option);
+    }
+
+    private bool FilterS(Domain.Models.Patient patient) => FilterSearch(patient, searchS);
+
+    private bool FilterSearch(Domain.Models.Patient patient, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (patient.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (patient.PatientId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        return false;
+    }
+
+    private async Task<Task> GetUserClaim()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userId = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.NameIdentifier)).SingleOrDefault().Value;
+            userRole = authState.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Role)).SingleOrDefault().Value;
+        }
+        else NavigationManager.NavigateTo("/auth/login");
+        return Task.CompletedTask;
+    }
+}
