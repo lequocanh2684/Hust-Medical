@@ -146,7 +146,13 @@
     private bool FilterSearch(Domain.Models.Prescription prescription, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (patients.Any(p => p.PatientId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (patients.Any(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (medicalExaminations.Any(m => m.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
         return false;
     }
 

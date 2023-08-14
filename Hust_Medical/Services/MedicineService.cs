@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Hust_Medical.Domain.Forms;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
 
 namespace Hust_Medical.Services
@@ -252,27 +253,31 @@ namespace Hust_Medical.Services
                 var newMedicineId = int.Parse(lastMedicineId.Substring(2, 8));
                 foreach (DataRow row in dt.Rows)
                 {
-                    newMedicineId++;
-                    var medicine = new Medicine
+                    var medicineIsExisted = await _medicineRepo.GetMedicinesByName(ValidateImportRow(row["Tên thuốc"].ToString()));
+                    if (!medicineIsExisted.Any())
                     {
-                        MedicineId = "TH" + newMedicineId.ToString("D8"),
-                        Name = ValidateImportRow(row["Tên thuốc"].ToString()),
-                        GroupName = ValidateImportRow(row["Tên nhóm thuốc"].ToString()),
-                        Unit = ValidateImportRow(row["Đơn vị"].ToString()),
-                        HowToUse = ValidateImportRow(row["Cách dùng"].ToString()),
-                        QuantityDefault = 0,
-                        ImportPrice = int.Parse(ValidateImportRow(row["Giá nhập (đồng)"].ToString())),
-                        SellingPrice = int.Parse(ValidateImportRow(row["Giá bán (đồng)"].ToString())),
-                        MinimumStock = int.Parse(ValidateImportRow(row["Số lượng trong kho"].ToString())),
-                        IsDeleted = false,
-                        CreatedAt = DateTime.Now,
-                        CreatedBy = userId,
-                        UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
-                        UpdatedBy = string.Empty,
-                        DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                        DeletedBy = string.Empty
-                    };
-                    medicines.Add(medicine);
+                        newMedicineId++;
+                        var medicine = new Medicine
+                        {
+                            MedicineId = "TH" + newMedicineId.ToString("D8"),
+                            Name = ValidateImportRow(row["Tên thuốc"].ToString()),
+                            GroupName = ValidateImportRow(row["Tên nhóm thuốc"].ToString()),
+                            Unit = ValidateImportRow(row["Đơn vị"].ToString()),
+                            HowToUse = ValidateImportRow(row["Cách dùng"].ToString()),
+                            QuantityDefault = 0,
+                            ImportPrice = int.Parse(ValidateImportRow(row["Giá nhập (đồng)"].ToString())),
+                            SellingPrice = int.Parse(ValidateImportRow(row["Giá bán (đồng)"].ToString())),
+                            MinimumStock = int.Parse(ValidateImportRow(row["Số lượng trong kho"].ToString())),
+                            IsDeleted = false,
+                            CreatedAt = DateTime.Now,
+                            CreatedBy = userId,
+                            UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
+                            UpdatedBy = string.Empty,
+                            DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
+                            DeletedBy = string.Empty
+                        };
+                        medicines.Add(medicine);
+                    }
                 }
                 return await _medicineRepo.ImportMedicineExcel(medicines);
             }
@@ -282,7 +287,7 @@ namespace Hust_Medical.Services
             }
         }
 
-        private string? ValidateImportRow(string rowData)
+        private string ValidateImportRow(string rowData)
         {
             return rowData.IsNullOrEmpty() ? string.Empty : rowData;
         }
