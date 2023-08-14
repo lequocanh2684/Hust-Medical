@@ -252,27 +252,31 @@ namespace Hust_Medical.Services
                 var newMedicineId = int.Parse(lastMedicineId.Substring(2, 8));
                 foreach (DataRow row in dt.Rows)
                 {
-                    newMedicineId++;
-                    var medicine = new Medicine
+                    var medicineIsExisted = await _medicineRepo.GetMedicinesByName(ValidateImportRow(row["Tên thuốc"].ToString()));
+                    if (!medicineIsExisted.Any())
                     {
-                        MedicineId = "TH" + newMedicineId.ToString("D8"),
-                        Name = ValidateImportRow(row["Tên thuốc"].ToString()),
-                        GroupName = ValidateImportRow(row["Tên nhóm thuốc"].ToString()),
-                        Unit = ValidateImportRow(row["Đơn vị"].ToString()),
-                        HowToUse = ValidateImportRow(row["Cách dùng"].ToString()),
-                        QuantityDefault = 0,
-                        ImportPrice = int.Parse(ValidateImportRow(row["Giá nhập (đồng)"].ToString())),
-                        SellingPrice = int.Parse(ValidateImportRow(row["Giá bán (đồng)"].ToString())),
-                        MinimumStock = int.Parse(ValidateImportRow(row["Số lượng trong kho"].ToString())),
-                        IsDeleted = false,
-                        CreatedAt = DateTime.Now,
-                        CreatedBy = userId,
-                        UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
-                        UpdatedBy = string.Empty,
-                        DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
-                        DeletedBy = string.Empty
-                    };
-                    medicines.Add(medicine);
+                        newMedicineId++;
+                        var medicine = new Medicine
+                        {
+                            MedicineId = "TH" + newMedicineId.ToString("D8"),
+                            Name = ValidateImportRow(row["Tên thuốc"].ToString()),
+                            GroupName = ValidateImportRow(row["Tên nhóm thuốc"].ToString()),
+                            Unit = ValidateImportRow(row["Đơn vị"].ToString()),
+                            HowToUse = ValidateImportRow(row["Cách dùng"].ToString()),
+                            QuantityDefault = 0,
+                            ImportPrice = int.Parse(ValidateImportRow(row["Giá nhập (đồng)"].ToString())),
+                            SellingPrice = int.Parse(ValidateImportRow(row["Giá bán (đồng)"].ToString())),
+                            MinimumStock = int.Parse(ValidateImportRow(row["Số lượng trong kho"].ToString())),
+                            IsDeleted = false,
+                            CreatedAt = DateTime.Now,
+                            CreatedBy = userId,
+                            UpdatedAt = DateTime.Parse(DefaultVariable.UpdatedAt),
+                            UpdatedBy = string.Empty,
+                            DeletedAt = DateTime.Parse(DefaultVariable.DeletedAt),
+                            DeletedBy = string.Empty
+                        };
+                        medicines.Add(medicine);
+                    }
                 }
                 return await _medicineRepo.ImportMedicineExcel(medicines);
             }
@@ -282,7 +286,34 @@ namespace Hust_Medical.Services
             }
         }
 
-        private string? ValidateImportRow(string rowData)
+        public byte[] CreateImportTemplateFile()
+        {
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var medicineGroups = _medicineGroupRepo.GetMedicineGroups().Result.OrderBy(mg => mg.Name).Select(mg => mg.Name).ToList();
+                    Workbook workbook = new Workbook();
+                    workbook.LoadFromFile($"{Directory.GetCurrentDirectory()}{@"\wwwroot\reportTemplate\Mẫu nhập kho thuốc.xlsx"}");
+                    Worksheet sheet = workbook.Worksheets[1];
+
+                    //Fill data
+                    sheet.Workbook.MarkerDesigner.AddParameter("MedicineGroupNames", medicineGroups);
+                    sheet.Workbook.MarkerDesigner.Apply();
+
+                    //Save
+                    workbook.SaveToStream(stream);
+                    workbook.Dispose();
+                    return stream.ToArray();
+                }
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        private string ValidateImportRow(string rowData)
         {
             return rowData.IsNullOrEmpty() ? string.Empty : rowData;
         }

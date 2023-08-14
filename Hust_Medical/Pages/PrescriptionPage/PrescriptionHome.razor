@@ -4,6 +4,7 @@
 @inject NavigationManager NavigationManager
 @inject IPrescriptionService PrescriptionService
 @inject IPatientService PatientService
+@inject IMedicalExaminationService medicalExamService
 @inject IDialogService DialogService
 
 <PageTitle>Quản lý đơn thuốc</PageTitle>
@@ -30,8 +31,9 @@
                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
                     <Columns>
-                        <PropertyColumn Property="pr => pr.PrescriptionId" Title="Mã đơn thuốc" Sortable="false" Filterable="false" />
-                        <PropertyColumn Property="pr => patients.Where(p => p.Id.Equals(pr.PatientId)).SingleOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="pr => pr.PrescriptionId" Title="Mã đơn thuốc"/>
+                        <PropertyColumn Property="pr => medicalExaminations.Where(me => me.Id.Equals(pr.MedicalExaminationId)).SingleOrDefault().MedicalExaminationId" Title="Mã đơn khám"/>
+                        <PropertyColumn Property="pr => patients.Where(p => p.Id.Equals(pr.PatientId)).SingleOrDefault().PatientId" Title="Mã bệnh nhân"/>
                         <PropertyColumn Property="pr => patients.Where(p => p.Id.Equals(pr.PatientId)).SingleOrDefault().Name" Title="Tên bệnh nhân" />
                         <PropertyColumn Property="pr => pr.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
                         <PropertyColumn Property="pr => pr.Note" Title="Ghi chú" />
@@ -80,6 +82,7 @@
 @code {
     private IEnumerable<Prescription> prescriptions = new List<Prescription>();
     private IEnumerable<Patient> patients = new List<Patient>();
+    private IEnumerable<MedicalExamination> medicalExaminations = new List<MedicalExamination>();
     private string searchS = string.Empty;
     private string dateTimeFormat = "dd/MM/yyyy";
     private string userId = string.Empty;
@@ -94,11 +97,13 @@
             {
                 prescriptions = await PrescriptionService.GetPrescriptions();
                 patients = await PatientService.GetPatients();
+                medicalExaminations = await medicalExamService.GetMedicalExaminations();
             }
             else
             {
                 prescriptions = await PrescriptionService.GetPrescriptionsByDoctorId(userId);
                 patients = await PatientService.GetPatientsByDoctorId(userId);
+                medicalExaminations = await medicalExamService.GetMedicalExaminationsByDoctorId(userId);
             }
         }
     }
@@ -141,7 +146,13 @@
     private bool FilterSearch(Domain.Models.Prescription prescription, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (prescription.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (patients.Any(p => p.PatientId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (patients.Any(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (medicalExaminations.Any(m => m.MedicalExaminationId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
         return false;
     }
 

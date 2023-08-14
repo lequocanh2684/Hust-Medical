@@ -139,7 +139,7 @@
     private bool FilterSearch(User user, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (user.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (user.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         return false;
     }
     #endregion

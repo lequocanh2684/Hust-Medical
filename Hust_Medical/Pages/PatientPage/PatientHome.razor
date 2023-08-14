@@ -150,8 +150,10 @@
     private bool FilterSearch(Domain.Models.Patient patient, string searchString)
     {
         if (string.IsNullOrWhiteSpace(searchString)) return true;
-        if (patient.Name?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
-        if (patient.PatientId?.Contains(searchString, StringComparison.OrdinalIgnoreCase) == true) return true;
+        if (patient.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (patient.PatientId.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (patient.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (patient.Address.Contains(searchString, StringComparison.OrdinalIgnoreCase)) return true;
         return false;
     }
 

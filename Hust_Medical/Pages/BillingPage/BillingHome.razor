@@ -5,6 +5,7 @@
 @inject NavigationManager NavigationManager
 @inject IBillingService BillingService
 @inject IPatientService PatientService
+@inject IPrescriptionService PrescriptionService
 @inject IDialogService DialogService
 @inject IPrintingService PrintingService
 
@@ -31,9 +32,10 @@
                                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                     </ToolBarContent>
                     <Columns>
-                        <PropertyColumn Property="b=> b.BillId" Title="Mã đơn khám" Sortable="false" Filterable="false" />
-                        <PropertyColumn Property="b=> patients.Where(p => p.Id.Equals(b.PatientId)).FirstOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
-                        <PropertyColumn Property="b=> patients.Where(p => p.Id.Equals(b.PatientId)).FirstOrDefault().Name" Title="Tên bệnh nhân" />
+                        <PropertyColumn Property="b=> b.BillId" Title="Mã hóa đơn" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="b=> prescriptions.Where(p => p.Id.Equals(b.PrescriptionId)).SingleOrDefault().PrescriptionId" Title="Mã đơn thuốc" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="b=> patients.Where(p => p.Id.Equals(b.PatientId)).SingleOrDefault().PatientId" Title="Mã bệnh nhân" Sortable="false" Filterable="false" />
+                        <PropertyColumn Property="b=> patients.Where(p => p.Id.Equals(b.PatientId)).SingleOrDefault().Name" Title="Tên bệnh nhân" />
                         <PropertyColumn Property="b=> b.CreatedAt.ToLocalTime().ToString(dateTimeFormat)" Title="Thời gian tạo đơn" />
                         <TemplateColumn Sortable="false" Filterable="false" Title="Tình trạng thanh toán">
                             <CellTemplate>
@@ -85,6 +87,7 @@
 @code {
     private IEnumerable<Billing> billings = new List<Billing>();
     private IEnumerable<Patient> patients = new List<Patient>();
+    private IEnumerable<Prescription> prescriptions = new List<Prescription>();
     private string searchS = string.Empty;
     private string userId = string.Empty;
     private string userRole = string.Empty;
@@ -99,6 +102,7 @@
             {
                 billings = await BillingService.GetBillings();
                 patients = await PatientService.GetPatients();
+                prescriptions = await PrescriptionService.GetPrescriptions();
                 StateHasChanged();
             });
         }, null, 0, 10000);
@@ -147,6 +151,8 @@
         if (patients.Any(p => p.PatientId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
             return true;
         if (patients.Any(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+            return true;
+        if (prescriptions.Any(p => p.PrescriptionId.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
             return true;
         return false;
     }

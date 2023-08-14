@@ -15,6 +15,7 @@ namespace Hust_Medical.Services.Interfaces
         byte[] ExportToExcel();
         Task<List<Medicine>> ImportMedicineExcel(Workbook workbook, string userId);
         Task DeleteMultiMedicinesById(List<Medicine> medicines, string userId);
+        byte[] CreateImportTemplateFile();
         #endregion
 
         #region medicine_group
