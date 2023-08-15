@@ -16,7 +16,7 @@
             <MudNumericField @bind-Value="@medicineForm.SellingPrice" Label="Giá bán" ReadOnly="false" Min="0" HideSpinButtons="true" />
             @*<MudNumericField @bind-Value="@medicineForm.QuantityDefault" Label="Mặc định mỗi ngày" ReadOnly="false" Min="0" HideSpinButtons="true" />*@
             <MudTextField @bind-Value="@medicineForm.HowToUse" Label="Cách dùng" ReadOnly="false" Required="true" RequiredError="Cách dùng không được bỏ trống" />
-            <MudAutocomplete T="string" Label="Nhóm thuốc" @bind-Value="searchMedicineGroup" SearchFunc="@OnSearchMedicineGroup" ResetValueOnEmptyText="true" MaxItems="null" />
+            <MudAutocomplete T="string" Label="Nhóm thuốc" @bind-Value="medicineForm.GroupName" SearchFunc="@OnSearchMedicineGroup" ResetValueOnEmptyText="true" MaxItems="null" />
             <MudNumericField @bind-Value="@medicineForm.ImportPrice" Label="Giá nhập" ReadOnly="false" Min="0" HideSpinButtons="true" />
             <MudNumericField @bind-Value="@medicineForm.MinimumStock" Label="Tồn kho" ReadOnly="false" Min="0" HideSpinButtons="true" />
         </MudForm>
@@ -31,7 +31,6 @@
 @code {
     private MedicineForm medicineForm = new Domain.Forms.MedicineForm();
     private string userId = string.Empty;
-    private string searchMedicineGroup = string.Empty;
     private bool success = false;
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
