@@ -90,14 +90,7 @@
         var getUserClaim = await GetUserClaim();
         if (getUserClaim.IsCompletedSuccessfully)
         {
-            if (userRole.Equals("Admin"))
-            {
-                patients = await PatientService.GetPatients();
-            }
-            else
-            {
-                patients = await PatientService.GetPatientsByDoctorId(userId);
-            }
+            patients = await PatientService.GetPatients();
         }
     }
 
